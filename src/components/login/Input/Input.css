@@ -1,0 +1,20 @@
+.inputs{
+    width: 717px;
+    height: 51px;
+    display: flex;
+    margin-top: 15px;
+    margin-left: 230px;
+   
+ 
+}
+
+.inputs input{
+    width: 717px;
+    height: 51px;
+    font-size: 40px;
+    border-radius: 20px;  
+    display: flex;
+    background-color: rgba(63, 111, 126, 0.6);
+    border: 6px solid rgba(20, 30, 52, 1)  ;
+   
+}

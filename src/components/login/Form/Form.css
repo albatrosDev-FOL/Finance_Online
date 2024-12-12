@@ -1,0 +1,72 @@
+.register{
+    
+    width: 1200px;
+    height: 920px;
+    margin-top: 76px;
+    margin-left: 863px;
+    border-radius: 142px 142px 142px 142px;
+    background-color:  rgba(217, 217, 217, 0.28);
+    border:  4px solid #D9D9D947;
+    display: flex;
+    
+    @media (min-width: 768px) {
+        .register {
+    width: 1200px;
+    height: 920px;
+    margin-top: 76px;
+    margin-left: 663px;
+          
+}
+}
+
+}
+
+.register form{
+ 
+    width: 1200px;
+    height: 920px;
+    padding-top: 15px;
+  
+   
+
+   
+   
+}
+
+.logo{
+    
+    width: 428px;
+    height: 428px;
+    color: rgba(217, 217, 217, 0.28);
+    display: block;
+    margin: auto;
+   
+  
+
+}
+
+.register a{
+ display: flex;
+ justify-content: center;
+ padding-top: 10px;
+ color: rgba(225, 225, 225, 1);
+ font-size: 24px;
+
+}
+
+.register h2{
+    padding-top: 15px;
+    display: flex;
+    justify-content: center;
+    color: rgba(225, 225, 225, 1);
+    font-size: 40px;
+
+     
+   }
+
+.register a{
+    cursor: pointer;
+
+}
+   
+
