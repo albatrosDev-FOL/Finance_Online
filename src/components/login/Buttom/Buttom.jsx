@@ -1,10 +1,10 @@
 import "./Buttom.css"
 import React from 'react'
 
-const Buttom = () => {
+const Buttom = ({type ="button",children}) => {
   return (
-    <button className='buttom'>
-        Inicio
+    <button className='buttom' type={type}>
+        {children}
 
     </button>
 
