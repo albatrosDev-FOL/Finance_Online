@@ -26,6 +26,7 @@ const Form = () => {
     e.preventDefault();
     console.log("Datos del formulario:", formData)
   }
+  
   return (
     <section className='register'>
    
@@ -44,7 +45,7 @@ const Form = () => {
       onChange = {handleChange}
       />
       <a>¿Olvido la contraseña?</a>
-      <Buttom type="submit"/>
+      <Buttom type="submit">Inicio</Buttom>
       </form>
     </section>
   );

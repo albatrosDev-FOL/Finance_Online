@@ -1,7 +1,7 @@
-.register{
+.containerS{
     
     width: 1200px;
-    height: 920px;
+    height:782px;
     margin-top: 76px;
     margin-left: 863px;
     border-radius: 142px 142px 142px 142px;
@@ -10,7 +10,7 @@
     display: flex;
     
     @media (min-width: 768px) {
-        .register {
+        .containerS {
     width: 1200px;
     height: 920px;
     margin-top: 76px;
@@ -21,11 +21,12 @@
 
 }
 
-.register form{
+.contaninerF{
  
     width: 1200px;
     height: 920px;
-    padding-top: 15px;
+  
+  
   
    
 
@@ -33,42 +34,26 @@
    
 }
 
-.logo{
-    
+.SucursalImg{
     width: 428px;
     height: 428px;
     color: rgba(217, 217, 217, 0.28);
     display: block;
-    margin: auto;
-   
-  
+    margin-top: 16px;
+    margin-left: 375px;
+
 
 }
 
-.register a{
- display: flex;
- justify-content: center;
- padding-top: 10px;
- color: rgba(225, 225, 225, 1);
- font-size: 24px;
 
-}
 
-.register h2{
+.containerS h2{
     padding-top: 15px;
     display: flex;
-    justify-content: center;
     color: rgba(225, 225, 225, 1);
     font-size: 40px;
+    justify-content: center;
 
      
    }
-
-.register form a{
-    cursor: pointer;
-    color: rgba(22, 31, 53, 1);
-    margin-bottom: -30px;
-
-}
-   
 

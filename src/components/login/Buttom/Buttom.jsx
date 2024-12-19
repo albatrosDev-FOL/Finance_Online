@@ -12,3 +12,4 @@ const Buttom = ({type ="button",children}) => {
 }
 
 export default Buttom
+ 
