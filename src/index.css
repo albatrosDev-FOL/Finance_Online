@@ -24,7 +24,7 @@ body {
     /* height: 1117px; */
     box-sizing: border-box;
     /* Ajustamos las propiedades de la imagen de fondo */
-    background-image: url("../../assets/image/background.jpg");
+    background-image: url("./assets/image/background.jpg");
     background-size: cover; /* Hace que la imagen cubra todo el área, ajustándose y recortando si es necesario */
     background-position: center; /* Centra la imagen horizontal y verticalmente */
     background-repeat: no-repeat; /* Evita que la imagen se repita */
@@ -32,7 +32,7 @@ body {
     font-family: "Quicksand", sans-serif;
     @media (min-width: 768px) {
         body {
-          background-image: url("../../assets/image/background-large.jpg");
+          background-image: url("./assets/image/background-large.jpg");
 }
 }
 }

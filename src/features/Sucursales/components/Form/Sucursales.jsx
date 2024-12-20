@@ -1,8 +1,8 @@
 import React from 'react'
 import "./Sucursales.css"
-import img1 from '../../assets/image/sucursales.jpg';
-import MenuDes from "../Sucursales/Menu/MenuDes"
-import Buttom from '../login/Buttom/Buttom';
+import img1 from '../../../../assets/image/sucursales.jpg';
+import MenuDes from "../Menu/MenuDes"
+import Buttom from '../../../../shared/components/Buttom/Buttom';
    const Sucursales = () => {
     return (
         <section className='containerS'>

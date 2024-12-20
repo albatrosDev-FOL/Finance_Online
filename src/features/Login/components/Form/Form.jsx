@@ -1,7 +1,7 @@
-import Buttom from '../Buttom/Buttom';
+import Buttom from '../../../../shared/components/Buttom/Buttom';
 import Input from '../Input/Input';
 import React from 'react';
-import logoimg from '../../../assets/image/Login.jpg';
+import logoimg from '../../../../assets/image/Login.jpg';
 import "./Form.css"
 import { useState } from 'react';
 

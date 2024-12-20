@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import Form from '../login/Form/Form'
-import Sucursales from '../Sucursales/Sucursales'
+import Form from '../../features/Login/components/Form/Form'
+import Sucursales from '../../features/Sucursales/components/Form/Sucursales'
 import { BrowserRouter as Router,Routes, Route } from 'react-router-dom'
 
 
