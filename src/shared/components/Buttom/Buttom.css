@@ -1,20 +1,69 @@
+.buttom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height: 50px;
+  border-radius: 20px;
+  border: 2px solid rgba(20, 31, 52, 1);
+  background-color: rgba(20, 31, 52, 1);
+  cursor: pointer;
+  line-height: 50px;
+  color: rgba(225, 225, 225, 1);
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  font-size: 18px;
+}
 
-.buttom{
-    text-decoration: none;
-    font-size:40px ;
-    width: 372px;
-    height: 62px;
-    border-radius: 20px;
-    border: 6px;
-    background-color: rgba(20, 31, 52, 1) ;
-    margin-top: 45px;
-    margin-left: 430px;
-    cursor: pointer;
-    line-height: 50px ;
-    color: rgba(225, 225, 225, 1);
+/* Para teléfonos móviles (max-width: 576px) */
+@media (max-width: 576px) {
+  .register form {
+    padding: 10px;
+  }
 
-    
-    
-    
+  .buttom {
+    width: 80%;
+    font-size: 16px;
+    height: 45px;
+  }
+}
 
+/* Para tabletas (max-width: 768px) */
+@media (max-width: 768px) {
+  .register form {
+    padding: 15px;
+  }
+
+  .buttom {
+    width: 70%;
+    font-size: 17px;
+    height: 48px;
+  }
+}
+
+/* Para portátiles (max-width: 992px) */
+@media (max-width: 992px) {
+  .register form {
+    padding: 20px;
+  }
+
+  .buttom {
+    width: 60%;
+    font-size: 18px;
+    height: 50px;
+  }
+}
+
+/* Para pantallas grandes (min-width: 1200px) */
+@media (min-width: 1200px) {
+  .register form {
+    padding: 5px;
+  }
+
+  .buttom {
+    width: 50%;
+    font-size: 25px;
+    height: 50px;
+  }
 }

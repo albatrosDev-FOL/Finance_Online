@@ -1,20 +1,52 @@
-.inputs{
-    width: 717px;
-    height: 51px;
-    display: flex;
-    margin-top: 15px;
-    margin-left: 230px;
-   
- 
+.inputs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 5px;
 }
 
-.inputs input{
-    width: 717px;
-    height: 51px;
-    font-size: 40px;
-    border-radius: 20px;  
-    display: flex;
-    background-color: rgba(63, 111, 126, 0.6);
-    border: 6px solid rgba(20, 30, 52, 1)  ;
-   
+.inputs input {
+  width: 170%;
+  height: 35px;
+  font-size: 20px;
+  border-radius: 20px;
+  display: flex;
+  background-color: rgba(63, 111, 126, 0.5);
+  border: 3px solid rgba(20, 30, 52, 1);
+}
+
+/* Para teléfonos móviles (max-width: 576px) */
+@media (max-width: 576px) {
+  .inputs input {
+    width: 100%;
+    font-size: 16px;
+    height: 30px;
+  }
+}
+
+/* Para tabletas (max-width: 768px) */
+@media (max-width: 768px) {
+  .inputs input {
+    width: 100%;
+    font-size: 18px;
+    height: 32px;
+  }
+}
+
+/* Para portátiles (max-width: 992px) */
+@media (max-width: 992px) {
+  .inputs input {
+    width: 100%;
+    font-size: 19px;
+    height: 34px;
+  }
+}
+
+/* Para pantallas grandes (min-width: 1200px) */
+@media (min-width: 1200px) {
+  .inputs input {
+    width: 170%;
+    font-size: 20px;
+    height: 35px;
+  }
 }
