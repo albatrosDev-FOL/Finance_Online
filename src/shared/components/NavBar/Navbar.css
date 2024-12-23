@@ -1,0 +1,28 @@
+.containerOne{
+    width: 1824px;
+    height: 200px;
+    border-color: black , 20px;
+    display: flex;
+    justify-content: center;
+  
+    
+}
+
+.containerTwo{
+    width: 1208px;
+    height: 282px;
+    display: flex;
+    justify-content: space-around;
+    margin-top: -146px;
+    background-color: rgba(224, 241, 255, 0.61);
+    border-radius: 32px ;
+}
+
+.containerTwo a{
+    width: 96px;
+    height: 100px;
+    margin-top: 150px;
+    cursor: pointer;
+  
+    
+}

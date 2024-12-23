@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Form from '../../features/Login/components/Form/Form'
 import Sucursales from '../../features/Sucursales/components/Form/Sucursales'
+import TrazaDoc from '../../features/TrazaDoc/TrazaDoc'
 import { BrowserRouter as Router,Routes, Route } from 'react-router-dom'
 
 
@@ -13,6 +14,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Form />} />
       <Route path='/Sucursales' element={<Sucursales/>}/>
+      <Route path='/TrazaDoc' element={<TrazaDoc/>}/>
     </Routes>
     </Router>
   
