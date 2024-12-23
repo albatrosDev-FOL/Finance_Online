@@ -3,7 +3,7 @@
     height: 200px;
     border-color: black , 20px;
     display: flex;
-    justify-content: center;
+    justify-content:space-around
   
     
 }
@@ -18,10 +18,17 @@
     border-radius: 32px ;
 }
 
+.containerOne a{
+    width: 96px;
+    height: 100px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
 .containerTwo a{
     width: 96px;
     height: 100px;
-    margin-top: 150px;
+    margin-top: 160px;
     cursor: pointer;
   
     
