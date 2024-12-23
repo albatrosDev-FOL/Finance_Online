@@ -1,38 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Protest+Strike&family=Quicksand:wght@300..700&family=Spicy+Rice&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Protest+Strike&family=Quicksand:wght@300..700&family=Spicy+Rice&display=swap");
 
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-/* body{
-
-    font-family: "Poppins", sans-serif;
-    width:1728px;
-    height: 1117px;
-    box-sizing: border-box;
-    background-image: url("../../assets/image/background.jpg");
-    font-family: "Quicksand", sans-serif;    
-      
-
-} */
-
-body {
-    font-family: "Poppins", sans-serif;
-    /* Eliminamos el ancho y alto fijos para permitir que el navegador determine el tamaño */
-    /* width: 1728px; */
-    /* height: 1117px; */
-    box-sizing: border-box;
-    /* Ajustamos las propiedades de la imagen de fondo */
-    background-image: url("./assets/image/background.jpg");
-    background-size: cover; /* Hace que la imagen cubra todo el área, ajustándose y recortando si es necesario */
-    background-position: center; /* Centra la imagen horizontal y verticalmente */
-    background-repeat: no-repeat; /* Evita que la imagen se repita */
-    /* Mantenemos una sola familia de fuentes */
-    font-family: "Quicksand", sans-serif;
-    @media (min-width: 768px) {
-        body {
-          background-image: url("./assets/image/background-large.jpg");
-}
-}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }

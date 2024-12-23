@@ -4,12 +4,14 @@ import Sucursales from '../../features/Sucursales/components/Form/Sucursales'
 import TrazaDoc from '../../features/TrazaDoc/TrazaDoc'
 import { BrowserRouter as Router,Routes, Route } from 'react-router-dom'
 
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Form from '../../features/Login/components/Form/Form';
+import Sucursales from '../../features/Sucursales/components/Form/Sucursales';
+import AppLayout from '../../shared/components/layouts/AppLayout'; // Importa el layout correctamente
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
+    <AppLayout>
     <Router>
     <Routes>
       <Route path="/" element={<Form />} />
@@ -18,8 +20,8 @@ function App() {
     </Routes>
     </Router>
   
-    </>
+    </AppLayout>
   )
 }
 
-export default App
+export default App;
