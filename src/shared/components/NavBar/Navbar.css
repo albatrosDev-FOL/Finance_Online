@@ -1,7 +1,6 @@
 .containerOne{
     width: 1824px;
     height: 200px;
-    border-color: black , 20px;
     display: flex;
     justify-content:space-around
   
