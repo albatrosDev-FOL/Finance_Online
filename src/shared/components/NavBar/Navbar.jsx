@@ -13,7 +13,7 @@ const Navbar = () => {
   return (
     <>
       <div className='containerOne'>
-        <a> <img src={imgHome} alt="" /></a>
+        <a> <img src={imgHome} className='imagenesLaterales' alt="" /></a>
         <div className='containerTwo'>
         
         <a><img src={imgAdministracion}alt="administracion" /></a>
