@@ -11,34 +11,46 @@
   display: flex;
   justify-content: space-around;
   align-items: flex-end;
-  width: 70%;
-  height: 260px;
-  margin-top: -146px;
-  padding-bottom: 15px;
+  width: 1170px;
+  height: 210px;
+  margin-top: -86px;
   background-color: rgba(224, 241, 255, 0.61);
   border-radius: 32px;
 }
 
-.containerOne a {
-  /* width: 96px;
-  height: 100px; */
-  margin-top: 10px;
-  cursor: pointer;
-}
+
 
 .containerTwo a {
   /* width: 96px;
   height: 100px; */
-  margin-top: 160px;
+  margin-top: 180px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 
-.containerTwo a img {
-  width: 80%;
-  height: 50%;
-}
 
 .containerOne a img {
-  width: 80%;
-  height: 80%;
+  width: 50%;
+  height: 50%;
+ 
 }
+
+.containerOne a span{
+  width: 99px;
+  height: 30px;
+  font-size: 15px;
+  margin-left: 0%;
+ 
+
+}
+
+.Desplegable{
+width: 150px;
+border-style: solid;
+border-radius:30px
+
+}
+
+
