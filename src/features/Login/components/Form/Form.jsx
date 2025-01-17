@@ -1,11 +1,16 @@
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+
 import Buttom from "../../../../shared/components/Buttom/Buttom";
 import Input from "../Input/Input";
-import React from "react";
 import logoimg from "/image/Login.jpg";
 import "./Form.css";
 import { useState } from "react";
 
 const Form = () => {
+
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     usuario: "",
     password: "",
@@ -22,6 +27,8 @@ const Form = () => {
   const hadleSubmit = (e) => {
     e.preventDefault();
     console.log("Datos del formulario:", formData);
+
+    navigate('/Sucursales');
   };
 
   return (
