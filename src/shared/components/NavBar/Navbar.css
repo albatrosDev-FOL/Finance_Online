@@ -1,10 +1,7 @@
-.containerOne{
-    width: 1824px;
-    height: 200px;
-    display: flex;
-    justify-content:space-around
-  
-    
+.containerOne {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
 }
 
 .containerTwo {
@@ -18,11 +15,7 @@
   border-radius: 32px;
 }
 
-
-
 .containerTwo a {
-  /* width: 96px;
-  height: 100px; */
   margin-top: 180px;
   cursor: pointer;
   display: flex;
@@ -30,27 +23,191 @@
   flex-direction: column;
 }
 
-
 .containerOne a img {
-  width: 50%;
-  height: 50%;
- 
+  width: 60%;
+  height: 60%;
 }
 
-.containerOne a span{
+.containerOne a span {
   width: 99px;
   height: 30px;
   font-size: 15px;
   margin-left: 0%;
- 
-
 }
 
-.Desplegable{
-width: 150px;
-border-style: solid;
-border-radius:30px
-
+.Desplegable {
+  position: absolute; /* Ya está dentro del flujo del contenedor relativo */
+  top: calc(100% + 10px); /* Ajuste dinámico según la altura del contenedor */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #172a48;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 30px;
+  padding: 10px 20px;
+  z-index: 1000; /* Asegúrate de que esté encima */
+  width: 150px;
+  visibility: visible; /* Evitar que afecte el espacio del DOM */
+  opacity: 1; /* Añade una animación suave */
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
+.Desplegable.hidden {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateX(-50%) translateY(-10px);
+}
 
+/* Responsividad */
+
+/* Teléfonos pequeños (pantallas de menos de 576px) */
+@media (max-width: 576px) {
+  .containerTwo {
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    margin-top: 0;
+  }
+
+  .containerTwo a {
+    margin-top: 20px;
+  }
+
+  .containerOne a img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .containerOne a span {
+    font-size: 12px;
+  }
+}
+
+/* Tabletas (pantallas de menos de 768px) */
+@media (max-width: 768px) {
+  .containerTwo {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .containerOne a img {
+    width: 45px;
+    height: 45px;
+  }
+
+  .containerOne a span {
+    font-size: 14px;
+  }
+}
+
+/* Portátiles (pantallas grandes de menos de 992px) */
+@media (max-width: 992px) {
+  .containerTwo {
+    justify-content: space-between;
+    padding: 20px;
+  }
+
+  .containerOne a img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .containerOne a span {
+    font-size: 15px;
+  }
+}
+
+/* Escritorios grandes (pantallas de más de 1200px) */
+@media (min-width: 1200px) {
+  .containerTwo {
+    justify-content: space-around;
+    height: 210px;
+  }
+
+  .containerOne a img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .containerOne a span {
+    font-size: 16px;
+  }
+}
+
+/* Menú desplegable */
+.Desplegable {
+  position: absolute;
+  top: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #172a48;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 30px;
+  padding: 10px 20px;
+  z-index: 100;
+  width: 150px;
+}
+
+.Desplegable ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.Desplegable li {
+  margin: 10px 0;
+  cursor: pointer;
+  color: white;
+  text-align: left;
+}
+
+@media (min-width: 570px) and (max-width: 990px) {
+  .containerOne {
+    flex-direction: column; /* Diseño en columna */
+    align-items: center;
+    padding: 10px;
+  }
+
+  .containerTwo {
+    flex-direction: column;
+    align-items: center;
+    width: 90%; /* Ocupa el 90% del ancho para centrado */
+    height: auto; /* Altura dinámica para pantallas medianas */
+    margin-top: 10px; /* Ajustar margen superior */
+    padding: 15px;
+    border-radius: 16px;
+    background-color: rgba(
+      224,
+      241,
+      255,
+      0.61
+    ); /* Asegura que mantenga el estilo */
+  }
+
+  .containerTwo a {
+    margin-top: 15px; /* Espacio reducido entre enlaces */
+    text-align: center; /* Centrar los elementos */
+  }
+
+  .containerOne a img {
+    width: 45px; /* Ajuste para íconos más pequeños */
+    height: 45px;
+  }
+
+  .containerOne a span {
+    font-size: 12px; /* Reducir tamaño de fuente para pantallas medianas */
+  }
+
+  .Desplegable {
+    position: relative; /* Mantener posición coherente */
+    top: auto; /* Quitar posiciones absolutas que desalineen */
+    transform: none; /* Evitar desplazamientos innecesarios */
+    width: 140px; /* Reducir tamaño del menú */
+    padding: 10px 15px;
+  }
+
+  .Desplegable ul li {
+    font-size: 14px; /* Tamaño proporcional del texto */
+    margin: 8px 0;
+  }
+}
