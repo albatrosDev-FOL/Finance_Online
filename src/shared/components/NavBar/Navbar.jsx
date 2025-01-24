@@ -48,8 +48,7 @@ const Navbar = () => {
                   key={index}
                   className="col"
                   style={{
-                    display: 'flex',
-                    flexDirection: 'column',
+                    display: 'block',
                     alignItems: 'center',
                     textAlign: 'center'
                   }}
@@ -63,7 +62,7 @@ const Navbar = () => {
                     />
                     {label && <span>{label}</span>}
                     {toggleMenu && open && (
-                      <div className="Desplegable" style={{ marginTop: '10px' }}>
+                      <div className="Desplegable" style={{ marginTop: '-20px', display:'flex' }}>
                         <ul>
                           {Menu.map((menu) => (
                             <li key={menu}>{menu}</li>
