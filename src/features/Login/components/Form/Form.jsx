@@ -21,6 +21,7 @@ const Form = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("Token");
+    const Id = localStorage.getItem("Id");
     if (token) {
       navigate("/Sucursales");
     }

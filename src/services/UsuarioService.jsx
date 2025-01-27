@@ -23,6 +23,27 @@ class UsuarioService {
       throw error;
     }
   }
+
+  async getSucursalesByUsuario(strLogin){
+    try{
+      const response = await  axios.get(
+        `${this.url}TravelAgencyBranches/TravelAgencyBranchesbyLogin?strLogin=${strLogin}`,
+        
+        {
+          headers: {
+            "Content-Type": "application/json", 
+            Authorization: `Bearer ${localStorage.getItem("Token")}`
+          },
+        }
+      );
+      return response.data.TravelAgencyBranches.map(branch => branch.Name);
+      }catch (error) {
+      console.error("Error en url:", error.response || error.message);
+      throw error;
+    }
+  } 
 }
+
+
 
 export default new UsuarioService();

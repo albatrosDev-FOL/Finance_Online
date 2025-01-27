@@ -75,10 +75,11 @@ const Navbar = () => {
                   key={index}
                   className="col"
                   style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    textAlign: 'center'
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    textAlign: "center",
+                    position: "relative",
                   }}
                 >
                   <div
@@ -101,16 +102,106 @@ const Navbar = () => {
                       }}
                     />
                     {label && <span>{label}</span>}
-                    {toggleMenu && open && (
-                      <div className="Desplegable" style={{ marginTop: '10px' }}>
-                        <ul>
-                          {Menu.map((menu) => (
-                            <li key={menu}>{menu}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </a>
+                  </div>
+                  {toggleMenu && openState && (
+                    <div
+                      className="Desplegable"
+                      style={{
+                        position: "absolute",
+                        top: "120%",
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                        backgroundColor: "#141e34",
+                        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                        borderRadius: "30px",
+                        padding: "10px 20px",
+                        zIndex: "100",
+                        width: "150px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          content: '""',
+                          position: "absolute",
+                          top: "-12px",
+                          left: "50%",
+                          transform: "translateX(-50%)",
+                          width: "29px",
+                          height: "0px",
+                          borderLeft: "12px solid transparent",
+                          borderRight: "12px solid transparent",
+                          borderBottom: "12px solid #141e34",
+                          zIndex: "101",
+                        }}
+                      />
+                      <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                        {menuItems.map((item, index) => {
+                          // Determina si el ítem es un string o un objeto
+                          const isObject = typeof item === "object";
+                          const isLogo = item.isLogo;
+
+                          return (
+                            <li
+                              key={index}
+                              style={{
+                                cursor: "pointer",
+                                color: "white", // Color para "Salir"
+                                textAlign: isLogo ? "center" : "left", // Centrado solo para el logo
+                                display: "flex",
+                                flexDirection:
+                                  isObject && item.name === "Salir"
+                                    ? "column"
+                                    : "none", // Ícono arriba y texto abajo solo para "Salir"
+                                alignItems: "center", // Alineación centrada
+                                marginBottom: "14px", // Espaciado entre ítems
+                              }}
+                              onClick={
+                                () =>
+                                  console.log(
+                                    `Clicked on ${isObject ? item.name : item}`
+                                  ) // Maneja el click
+                              }
+                            >
+                              {/* Ícono solo si el ítem es un objeto */}
+                              {isObject && !isLogo && (
+                                <img
+                                  src={item.icon}
+                                  alt={item.name}
+                                  style={{
+                                    marginBottom: "2px", // Espacio entre ícono y texto
+                                    width: "30px", // Tamaño para los íconos
+                                    height: "30px", // Tamaño para los íconos
+                                    filter:
+                                      item.name === "Salir"
+                                        ? "invert(64%) sepia(44%) saturate(1625%) hue-rotate(154deg) brightness(96%) contrast(92%)" // Color para "Salir"
+                                        : "none",
+                                  }}
+                                />
+                              )}
+                              {/* Logo, solo si es un logo */}
+                              {isLogo && (
+                                <img
+                                  src={item.icon}
+                                  alt="Logo"
+                                  style={{
+                                    marginBottom: "1px", // Espacio entre ícono y texto
+                                    width: "60px", // Tamaño para el logo
+                                    height: "50px", // Tamaño para el logo
+                                    display: "block", // Asegura que se muestre como bloque
+                                    marginLeft: "auto", // Centra el logo
+                                    marginRight: "auto", // Centra el logo
+                                    filter: "invert(100%) brightness(100%) contrast(100%) saturate(0%)",
+                                  }}
+                                />
+                              )}
+                              {/* Texto debajo del ícono */}
+                              <span>{isObject ? item.name : item}</span>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               )
             )}
