@@ -21,7 +21,6 @@ const Form = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("Token");
-    const Id = localStorage.getItem("Id");
     if (token) {
       navigate("/Sucursales");
     }
@@ -68,6 +67,7 @@ const Form = () => {
           response.Token
         );
         localStorage.setItem("Token", response.Token);
+        localStorage.setItem("UserName", response.UserName);
         navigate("/Sucursales");
         izitoast.success({
           title: 'Bienvenido',

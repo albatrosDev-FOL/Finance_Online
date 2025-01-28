@@ -1,19 +1,17 @@
-import React, { useState , useEffect} from 'react';
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import "bootstrap/dist/css/bootstrap.min.css"
-import './MenuDes.css'; // Archivo de estilos corregido
+import React, { useState } from "react";
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./MenuDes.css"; // Archivo de estilos corregido
 
-
-const MenuDes = ({ sucursales }) => {
+const MenuDes = ({ sucursales, value, onSelectSucursal }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [selectedSucursal, setSelectedSucursal] = useState("");
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
   const handleSelect = (sucursal) => {
-    setSelectedSucursal(sucursal);
+    onSelectSucursal(sucursal);
   };
 
   return (
@@ -24,13 +22,13 @@ const MenuDes = ({ sucursales }) => {
         toggle={toggleDropdown}
       >
         <DropdownToggle caret className="dropdown-toggle-custom">
-          {selectedSucursal || "Seleccionar una sucursal"}
+          {value || "Seleccionar una sucursal"}
         </DropdownToggle>
         <DropdownMenu className="dropdown-menu-custom">
           {sucursales.length > 0 ? (
-            sucursales.map((sucursal, index) => (
-              <DropdownItem key={index} onClick={() => handleSelect(sucursal)}>
-                {sucursal}
+            sucursales.map((sucursal) => (
+              <DropdownItem key={sucursal.Id} onClick={() => handleSelect(sucursal)}>
+                {sucursal.Name}
               </DropdownItem>
             ))
           ) : (
@@ -41,5 +39,6 @@ const MenuDes = ({ sucursales }) => {
     </div>
   );
 };
+
 
 export default MenuDes;

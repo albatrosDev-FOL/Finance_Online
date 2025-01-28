@@ -24,24 +24,26 @@ class UsuarioService {
     }
   }
 
-  async getSucursalesByUsuario(strLogin){
-    try{
-      const response = await  axios.get(
-        `${this.url}TravelAgencyBranches/TravelAgencyBranchesbyLogin?strLogin=${strLogin}`,
-        
-        {
-          headers: {
-            "Content-Type": "application/json", 
-            Authorization: `Bearer ${localStorage.getItem("Token")}`
-          },
-        }
-      );
-      return response.data.TravelAgencyBranches.map(branch => branch.Name);
-      }catch (error) {
-      console.error("Error en url:", error.response || error.message);
-      throw error;
-    }
-  } 
+  // getToken() {
+  //   if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+  //     return localStorage.getItem('Token');
+  //   } else {
+  //     return null;
+  //   }
+  // }
+
+  async getSucursalesByUsuario  (strLogin, token){
+    const response = await axios.get(
+      `${this.url}TravelAgencyBranches/TravelAgencyBranchesbyLogin?strLogin=${strLogin}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  }
 }
 
 

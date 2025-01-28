@@ -12,7 +12,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Form />} />
       <Route path='/Sucursales' element={<Sucursales/>}/>
-      <Route path='/TrazaDoc' element={<TrazaDoc/>}/>
+      <Route path='/TrazaDoc/:id' element={<TrazaDoc/>}/>
     </Routes>
     </Router>
   

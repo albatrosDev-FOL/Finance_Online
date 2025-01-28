@@ -15,10 +15,14 @@ const Navbar = () => {
   const [openPerfil, setOpenPerfil] = useState(false);
 
   const MenuVentas = ["Productos", "Clientes", "Pedidos", "Facturas"];
+
+  const userName = localStorage.getItem("UserName");
+  const sucursalName = localStorage.getItem("Nombre Sucursal");
+
   const MenuPerfil = [
     { name: true, icon: "/image/logoverde.png", isLogo: true },
-    { name: "Nombre", icon: "/image/iconose.png" },
-    { name: "Sucursal", icon: "/image/iconose.png" },
+    { name: userName || "Nombre", icon: "/image/iconose.png" },
+    { name: sucursalName || "Sucursal", icon: "/image/iconose.png" },
     { name: "Agencia", icon: "/image/iconose.png" },
     { name: "Salir", icon: "/image/salir2.png" },
   ];
