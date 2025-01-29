@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import izitoast from "izitoast";
+import "izitoast/dist/css/iziToast.min.css";
 import "./Sucursales.css";
 import img1 from "/image/sucursales.jpg";
 import MenuDes from "../Menu/MenuDes";
@@ -32,7 +34,12 @@ const Sucursales = () => {
     if (loading) return;
 
     if (!selectedSucursal || !selectedSucursal.Id) {
-      setError("Por favor selecciona una sucursal");
+      // setError("Por favor selecciona una sucursal");
+      izitoast.warning({
+        title: 'Recordatorio',
+        message: 'Por favor selecciona una sucursal.',
+        position: 'bottomRight',
+      });
       return;
     }
 
