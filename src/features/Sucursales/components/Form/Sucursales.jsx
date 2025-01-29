@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import izitoast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 import "./Sucursales.css";
@@ -10,6 +10,7 @@ import UsuarioService from "../../../../services/UsuarioService";
 
 const Sucursales = () => {
   const navigate = useNavigate();
+  const { Id } = useParams(); // Obtén el ID de la sucursal desde la URL
   const [sucursales, setSucursales] = useState([]); // Estado para guardar las sucursales
   const [selectedSucursal, setSelectedSucursal] = useState(null);
   const [error, setError] = useState("");
@@ -68,9 +69,27 @@ const Sucursales = () => {
   };
 
   useEffect(() => {
+    const nombreSucursales = localStorage.getItem("Nombre Sucursal");
+  
+    if (nombreSucursales) {
+      if (selectedSucursal) {
+        window.history.replaceState({}, "", `/TrazaDoc/${selectedSucursal.Id}`);
+        navigate(`/TrazaDoc/${selectedSucursal.Id}`);
+      } else {
+        console.error("selectedSucursal es nulo");
+        // Puedes redirigir a una página de error o manejar el caso de otra manera
+      }
+    } else {
+      navigate("/Sucursales");
+    }
+  }, [navigate, selectedSucursal]);
+  
+  useEffect(() => {
     const loadSucursales = async () => {
       const token = localStorage.getItem("Token");
       const strLogin = decodeToken(token);
+
+
 
       try {
         const response = await UsuarioService.getSucursalesByUsuario(
@@ -87,6 +106,7 @@ const Sucursales = () => {
 
     loadSucursales();
   }, []);
+
 
   return (
     <section className="containerS">

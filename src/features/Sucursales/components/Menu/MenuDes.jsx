@@ -1,21 +1,23 @@
 import React, { useState } from "react";
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./MenuDes.css"; // Archivo de estilos corregido
+import "./MenuDes.css"; // Archivo CSS para estilos personalizados
 
 const MenuDes = ({ sucursales, value, onSelectSucursal }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  // Alternar el estado del dropdown (abrir/cerrar)
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
+  // Manejar la selección de una sucursal
   const handleSelect = (sucursal) => {
     onSelectSucursal(sucursal);
   };
 
   return (
-    <div className="container">
+    <div className="menu-container">
       <Dropdown
         className="select1"
         isOpen={dropdownOpen}
@@ -27,7 +29,10 @@ const MenuDes = ({ sucursales, value, onSelectSucursal }) => {
         <DropdownMenu className="dropdown-menu-custom">
           {sucursales.length > 0 ? (
             sucursales.map((sucursal) => (
-              <DropdownItem key={sucursal.Id} onClick={() => handleSelect(sucursal)}>
+              <DropdownItem
+                key={sucursal.Id}
+                onClick={() => handleSelect(sucursal)}
+              >
                 {sucursal.Name}
               </DropdownItem>
             ))
@@ -39,6 +44,5 @@ const MenuDes = ({ sucursales, value, onSelectSucursal }) => {
     </div>
   );
 };
-
 
 export default MenuDes;
