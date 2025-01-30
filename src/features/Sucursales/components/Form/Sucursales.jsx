@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import izitoast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 import "./Sucursales.css";
@@ -10,10 +10,8 @@ import UsuarioService from "../../../../services/UsuarioService";
 
 const Sucursales = () => {
   const navigate = useNavigate();
-  const { Id } = useParams(); // Obtén el ID de la sucursal desde la URL
   const [sucursales, setSucursales] = useState([]); // Estado para guardar las sucursales
   const [selectedSucursal, setSelectedSucursal] = useState(null);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
   const decodeToken = (token) => {
@@ -35,7 +33,6 @@ const Sucursales = () => {
     if (loading) return;
 
     if (!selectedSucursal || !selectedSucursal.Id) {
-      // setError("Por favor selecciona una sucursal");
       izitoast.warning({
         title: 'Recordatorio',
         message: 'Por favor selecciona una sucursal.',
@@ -59,6 +56,7 @@ const Sucursales = () => {
 
       if (selectedBranch) {
         localStorage.setItem("Nombre Sucursal", selectedBranch.Name);
+        localStorage.setItem("SucursalId", selectedBranch.Id); // Guardar el ID de la sucursal
       } else {
         console.log("Sucursal no encontrada");
       }
@@ -69,27 +67,18 @@ const Sucursales = () => {
   };
 
   useEffect(() => {
-    const nombreSucursales = localStorage.getItem("Nombre Sucursal");
-  
-    if (nombreSucursales) {
-      if (selectedSucursal) {
-        window.history.replaceState({}, "", `/TrazaDoc/${selectedSucursal.Id}`);
-        navigate(`/TrazaDoc/${selectedSucursal.Id}`);
-      } else {
-        console.error("selectedSucursal es nulo");
-        // Puedes redirigir a una página de error o manejar el caso de otra manera
-      }
-    } else {
-      navigate("/Sucursales");
+    const nombreSucursal = localStorage.getItem("Nombre Sucursal");
+    const sucursalId = localStorage.getItem("SucursalId");
+
+    if (nombreSucursal && sucursalId) {
+      navigate(`/TrazaDoc/${sucursalId}`);
     }
-  }, [navigate, selectedSucursal]);
-  
+  }, [navigate]);
+
   useEffect(() => {
     const loadSucursales = async () => {
       const token = localStorage.getItem("Token");
       const strLogin = decodeToken(token);
-
-
 
       try {
         const response = await UsuarioService.getSucursalesByUsuario(
@@ -107,7 +96,6 @@ const Sucursales = () => {
     loadSucursales();
   }, []);
 
-
   return (
     <section className="containerS">
       <form onSubmit={handleSubmit}>
@@ -118,7 +106,6 @@ const Sucursales = () => {
           value={selectedSucursal ? selectedSucursal.Name : ""}
           onSelectSucursal={setSelectedSucursal}
         />
-        {error && <p style={{ color: "red" }}>{error}</p>}
         <Buttom type="submit">Entrar</Buttom>
       </form>
     </section>
