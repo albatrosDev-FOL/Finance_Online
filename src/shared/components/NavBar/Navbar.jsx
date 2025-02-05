@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2/dist/sweetalert2.js'
+import 'sweetalert2/src/sweetalert2.scss'
 import "./Navbar.css";
 import imgConta from "/image/contabilidad.png";
 import imgCartera from "/image/Cartera.png";
@@ -13,6 +16,8 @@ import imgHome from "/image/home.png";
 const Navbar = () => {
   const [openVentas, setOpenVentas] = useState(false);
   const [openPerfil, setOpenPerfil] = useState(false);
+  
+  const navigate = useNavigate();
 
   const MenuVentas = ["Productos", "Clientes", "Pedidos", "Facturas"];
 
@@ -26,6 +31,34 @@ const Navbar = () => {
     { name: "Agencia", icon: "/image/iconose.png" },
     { name: "Salir", icon: "/image/salir2.png" },
   ];
+
+  const handleLogout = () => {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¿Deseas cerrar la sesión?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, cerrar sesión',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem("Token");
+        localStorage.removeItem("UserName");
+        localStorage.removeItem("Nombre Sucursal");
+        localStorage.removeItem("SucursalId");
+        navigate("/");
+  
+        Swal.fire({
+          title: 'Sesión cerrada',
+          text: 'Has cerrado la sesión correctamente.',
+          icon: 'success',
+          confirmButtonColor: '#3085d6',
+        });
+      }
+    });
+  };
 
   return (
     <div className="containerOne">
@@ -160,10 +193,9 @@ const Navbar = () => {
                                 marginBottom: "14px", // Espaciado entre ítems
                               }}
                               onClick={
-                                () =>
-                                  console.log(
-                                    `Clicked on ${isObject ? item.name : item}`
-                                  ) // Maneja el click
+                                item.name === "Salir"
+                                  ? handleLogout // Asignar la función de cerrar sesión
+                                  : () => console.log(`Clicked on ${isObject ? item.name : item}`)
                               }
                             >
                               {/* Ícono solo si el ítem es un objeto */}

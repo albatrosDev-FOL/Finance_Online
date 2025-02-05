@@ -39,8 +39,8 @@ const Form = () => {
     setError(""); 
 
     if (!formData.UserName || !formData.Password) {
-      izitoast.error({
-        title: 'Error',
+      izitoast.warning({
+        title: 'Recordatorio',
         message: 'Por favor, completa todos los campos.',
         position: 'bottomRight',
       });
