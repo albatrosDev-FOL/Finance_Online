@@ -14,7 +14,6 @@ function App() {
       <Route path="/" element={<Form />} />
       <Route path='/Sucursales' element={<Sucursales/>}/>
       <Route path='/TrazaDoc/:id' element={<TrazaDoc/>}/>
-
       <Route path="/ListadoFacturacion" element={<ListadoFacturacion />} />
     </Routes>
     </Router>
