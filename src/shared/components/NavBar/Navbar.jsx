@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Swal from 'sweetalert2/dist/sweetalert2.js'
-import 'sweetalert2/src/sweetalert2.scss'
+import Swal from "sweetalert2/dist/sweetalert2.js";
+import izitoast from "izitoast";
+import "izitoast/dist/css/iziToast.min.css";
+import "sweetalert2/src/sweetalert2.scss";
 import "./Navbar.css";
 import imgConta from "/image/contabilidad.png";
 import imgCartera from "/image/Cartera.png";
@@ -14,15 +16,12 @@ import imgPerfil from "/image/perfil.png";
 import imgHome from "/image/home.png";
 import authService from "../../../services/authService";
 
-const Navbar = ({ strLogin, token }) => {
+const Navbar = () => {
   const [openVentas, setOpenVentas] = useState(false);
   const [openPerfil, setOpenPerfil] = useState(false);
-  const [hasBillingPermission, setHasBillingPermission] = useState(false);
-  const [loading, setLoading] = useState(true);
-
   const navigate = useNavigate();
 
-  const MenuVentas = ["Productos", "Clientes", "Pedidos",  "Facturas" ];
+  const MenuVentas = ["Productos", "Clientes", "Pedidos", "Facturas"];
 
   const userName = localStorage.getItem("UserName");
   const sucursalName = localStorage.getItem("Nombre Sucursal");
@@ -37,16 +36,15 @@ const Navbar = ({ strLogin, token }) => {
 
   const handleLogout = () => {
     Swal.fire({
-      title: '¿Estás seguro?',
-      text: '¿Deseas cerrar la sesión?',
-      icon: 'warning',
+      title: "¿Estás seguro?",
+      text: "¿Deseas cerrar la sesión?",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, cerrar sesión',
-      cancelButtonText: 'Cancelar',
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, cerrar sesión",
+      cancelButtonText: "Cancelar",
     }).then((result) => {
-
       if (result.isConfirmed) {
         localStorage.removeItem("Token");
         localStorage.removeItem("UserName");
@@ -55,41 +53,61 @@ const Navbar = ({ strLogin, token }) => {
         navigate("/");
 
         Swal.fire({
-          title: 'Sesión cerrada',
-          text: 'Has cerrado la sesión correctamente.',
-          icon: 'success',
-          confirmButtonColor: '#3085d6',
+          title: "Sesión cerrada",
+          text: "Has cerrado la sesión correctamente.",
+          icon: "success",
+          confirmButtonColor: "#3085d6",
         });
       }
     });
   };
 
-  // const handleFacturasClick = async () => {
-  //   const hasPermission = await authService.hasPermission("mnuInvoice");
-  //   if (hasPermission) {
-  //     navigate("/ListadoFacturacion"); // Redirigir a la página de facturación
-  //   } else {
+  const decodeToken = (token) => {
+    try {
+      const payload = token.split(".")[1];
+      const decodedPayload = atob(payload);
+      const parsedPayload = JSON.parse(decodedPayload);
 
-  //   }
-  // }
-  // useEffect(() => {
-  //   // Verificar si el usuario tiene permiso para Facturación
-  //   const checkPermission = async () => {
-  //     if (strLogin && token) {
-  //       const permission = await authService.hasPermission(strLogin, token, "Facturas");
-  //       setHasBillingPermission(permission);
-  //     }
-  //   };
-  //   checkPermission();
-  // }, [strLogin, token]);
+      if (!parsedPayload.Identity) {
+        console.error("El token no contiene 'Identity'");
+        return null;
+      }
 
-  // const handleBillingClick = () => {
-  //   if (hasBillingPermission) {
-  //     navigate("/ListadoFacturacion"); // 
-  //   } else {
-  //   }
-  // };
+      const identity = JSON.parse(parsedPayload.Identity);
+      return identity.UserName;
+    } catch (err) {
+      console.error("Error al decodificar el token:", err);
+      return null;
+    }
+  };
 
+  const handleFacturasClick = async () => {
+    const token = localStorage.getItem("Token");
+    if (!token) {
+      console.error("Token no encontrado en localStorage");
+      return;
+    }
+
+    const strLogin = decodeToken(token);
+    if (!strLogin) {
+      console.error("No se pudo obtener el usuario del token");
+      return;
+    }
+
+    const hasPermission = await authService.hasPermission("mnuInvoice");
+    console.log("¿Tiene permiso para mnuInvoice?:", hasPermission);
+
+    if (hasPermission) {
+      navigate("/ListadoFacturacion");
+  } else {
+      Swal.fire("Acceso denegado", "No tienes permisos para acceder a Facturas.", "warning");
+      izitoast.warning({
+        title: 'Advertencia',
+        message: 'Acceso denegado", "No tienes permisos para acceder a Facturas.',
+        position: 'bottomRight',
+      });
+  }
+  };
 
   return (
     <div className="containerOne">
@@ -119,7 +137,6 @@ const Navbar = ({ strLogin, token }) => {
                 setOpen: setOpenVentas,
                 openState: openVentas,
                 menuItems: MenuVentas,
-
               },
               { src: imgTesoreria, alt: "Tesorería", label: "Tesorería" },
               { src: imgPagos, alt: "Pagos", label: "Pagos" },
@@ -137,7 +154,7 @@ const Navbar = ({ strLogin, token }) => {
               },
             ].map(
               (
-                { src, alt, label, toggleMenu, setOpen, openState, menuItems, handleItemClick },
+                { src, alt, label, toggleMenu, setOpen, openState, menuItems },
                 index
               ) => (
                 <div
@@ -162,30 +179,19 @@ const Navbar = ({ strLogin, token }) => {
                     onClick={toggleMenu ? () => setOpen(!openState) : undefined}
                   >
                     <img
-
                       src={src}
                       alt={alt}
                       style={{
                         marginBottom: "10px",
                         width: "50px",
                         height: "50px",
-
                       }}
-                      // onClick={() => {
-                      //   if (toggleMenu) {
-                      //     setOpen(!openState);
-                      //   } else if (handleItemClick) {
-                      //     handleItemClick(label);
-                      //   }
-                      // }}
-
                     />
                     {label && <span>{label}</span>}
                   </div>
                   {toggleMenu && openState && (
                     <div
                       className="Desplegable"
-
                       style={{
                         position: "absolute",
                         top: "120%",
@@ -197,10 +203,7 @@ const Navbar = ({ strLogin, token }) => {
                         padding: "10px 20px",
                         zIndex: "100",
                         width: "150px",
-
                       }}
-
-                  
                     >
                       <div
                         style={{
@@ -219,7 +222,6 @@ const Navbar = ({ strLogin, token }) => {
                       />
                       <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                         {menuItems.map((item, index) => {
-                          // Determina si el ítem es un string o un objeto
                           const isObject = typeof item === "object";
                           const isLogo = item.isLogo;
 
@@ -228,55 +230,60 @@ const Navbar = ({ strLogin, token }) => {
                               key={index}
                               style={{
                                 cursor: "pointer",
-                                color: "white", // Color para "Salir"
-                                textAlign: isLogo ? "center" : "left", // Centrado solo para el logo
+                                color: "white",
+                                textAlign: isLogo ? "center" : "left",
                                 display: "flex",
                                 flexDirection:
                                   isObject && item.name === "Salir"
                                     ? "column"
-                                    : "none", // Ícono arriba y texto abajo solo para "Salir"
-                                alignItems: "center", // Alineación centrada
-                                marginBottom: "14px", // Espaciado entre ítems
+                                    : "none",
+                                alignItems: "center",
+                                marginBottom: "14px",
                               }}
                               onClick={
                                 item.name === "Salir"
-                                  ? handleLogout // Asignar la función de cerrar sesión
-                                  : () => console.log(`Clicked on ${isObject ? item.name : item}`)
+                                  ? handleLogout
+                                  : item === "Facturas"
+                                  ? handleFacturasClick
+                                  : () =>
+                                      console.log(
+                                        `Clicked on ${
+                                          isObject ? item.name : item
+                                        }`
+                                      )
                               }
                             >
-                              {/* Ícono solo si el ítem es un objeto */}
                               {isObject && !isLogo && (
                                 <img
                                   src={item.icon}
                                   alt={item.name}
                                   style={{
-                                    marginBottom: "2px", // Espacio entre ícono y texto
-                                    width: "30px", // Tamaño para los íconos
-                                    height: "30px", // Tamaño para los íconos
+                                    marginBottom: "2px",
+                                    width: "30px",
+                                    height: "30px",
                                     filter:
                                       item.name === "Salir"
-                                        ? "invert(64%) sepia(44%) saturate(1625%) hue-rotate(154deg) brightness(96%) contrast(92%)" // Color para "Salir"
+                                        ? "invert(64%) sepia(44%) saturate(1625%) hue-rotate(154deg) brightness(96%) contrast(92%)"
                                         : "none",
                                   }}
                                 />
                               )}
-                              {/* Logo, solo si es un logo */}
                               {isLogo && (
                                 <img
                                   src={item.icon}
                                   alt="Logo"
                                   style={{
-                                    marginBottom: "1px", // Espacio entre ícono y texto
-                                    width: "60px", // Tamaño para el logo
-                                    height: "50px", // Tamaño para el logo
-                                    display: "block", // Asegura que se muestre como bloque
-                                    marginLeft: "auto", // Centra el logo
-                                    marginRight: "auto", // Centra el logo
-                                    filter: "invert(100%) brightness(100%) contrast(100%) saturate(0%)",
+                                    marginBottom: "1px",
+                                    width: "60px",
+                                    height: "50px",
+                                    display: "block",
+                                    marginLeft: "auto",
+                                    marginRight: "auto",
+                                    filter:
+                                      "invert(100%) brightness(100%) contrast(100%) saturate(0%)",
                                   }}
                                 />
                               )}
-                              {/* Texto debajo del ícono */}
                               <span>{isObject ? item.name : item}</span>
                             </li>
                           );
