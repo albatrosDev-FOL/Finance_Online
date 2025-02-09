@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2/dist/sweetalert2.js'
 import 'sweetalert2/src/sweetalert2.scss'
@@ -12,14 +12,17 @@ import imgAdministracion from "/image/administracion.png";
 import imgTesoreria from "/image/tesoreria.png";
 import imgPerfil from "/image/perfil.png";
 import imgHome from "/image/home.png";
+import authService from "../../../services/authService";
 
-const Navbar = () => {
+const Navbar = ({ strLogin, token }) => {
   const [openVentas, setOpenVentas] = useState(false);
   const [openPerfil, setOpenPerfil] = useState(false);
-  
+  const [hasBillingPermission, setHasBillingPermission] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
 
-  const MenuVentas = ["Productos", "Clientes", "Pedidos", "Facturas"];
+  const MenuVentas = ["Productos", "Clientes", "Pedidos",  "Facturas" ];
 
   const userName = localStorage.getItem("UserName");
   const sucursalName = localStorage.getItem("Nombre Sucursal");
@@ -43,13 +46,14 @@ const Navbar = () => {
       confirmButtonText: 'Sí, cerrar sesión',
       cancelButtonText: 'Cancelar',
     }).then((result) => {
+
       if (result.isConfirmed) {
         localStorage.removeItem("Token");
         localStorage.removeItem("UserName");
         localStorage.removeItem("Nombre Sucursal");
         localStorage.removeItem("SucursalId");
         navigate("/");
-  
+
         Swal.fire({
           title: 'Sesión cerrada',
           text: 'Has cerrado la sesión correctamente.',
@@ -59,6 +63,33 @@ const Navbar = () => {
       }
     });
   };
+
+  // const handleFacturasClick = async () => {
+  //   const hasPermission = await authService.hasPermission("mnuInvoice");
+  //   if (hasPermission) {
+  //     navigate("/ListadoFacturacion"); // Redirigir a la página de facturación
+  //   } else {
+
+  //   }
+  // }
+  // useEffect(() => {
+  //   // Verificar si el usuario tiene permiso para Facturación
+  //   const checkPermission = async () => {
+  //     if (strLogin && token) {
+  //       const permission = await authService.hasPermission(strLogin, token, "Facturas");
+  //       setHasBillingPermission(permission);
+  //     }
+  //   };
+  //   checkPermission();
+  // }, [strLogin, token]);
+
+  // const handleBillingClick = () => {
+  //   if (hasBillingPermission) {
+  //     navigate("/ListadoFacturacion"); // 
+  //   } else {
+  //   }
+  // };
+
 
   return (
     <div className="containerOne">
@@ -88,6 +119,7 @@ const Navbar = () => {
                 setOpen: setOpenVentas,
                 openState: openVentas,
                 menuItems: MenuVentas,
+
               },
               { src: imgTesoreria, alt: "Tesorería", label: "Tesorería" },
               { src: imgPagos, alt: "Pagos", label: "Pagos" },
@@ -105,7 +137,7 @@ const Navbar = () => {
               },
             ].map(
               (
-                { src, alt, label, toggleMenu, setOpen, openState, menuItems },
+                { src, alt, label, toggleMenu, setOpen, openState, menuItems, handleItemClick },
                 index
               ) => (
                 <div
@@ -130,19 +162,30 @@ const Navbar = () => {
                     onClick={toggleMenu ? () => setOpen(!openState) : undefined}
                   >
                     <img
+
                       src={src}
                       alt={alt}
                       style={{
                         marginBottom: "10px",
                         width: "50px",
                         height: "50px",
+
                       }}
+                      // onClick={() => {
+                      //   if (toggleMenu) {
+                      //     setOpen(!openState);
+                      //   } else if (handleItemClick) {
+                      //     handleItemClick(label);
+                      //   }
+                      // }}
+
                     />
                     {label && <span>{label}</span>}
                   </div>
                   {toggleMenu && openState && (
                     <div
                       className="Desplegable"
+
                       style={{
                         position: "absolute",
                         top: "120%",
@@ -154,7 +197,10 @@ const Navbar = () => {
                         padding: "10px 20px",
                         zIndex: "100",
                         width: "150px",
+
                       }}
+
+                  
                     >
                       <div
                         style={{

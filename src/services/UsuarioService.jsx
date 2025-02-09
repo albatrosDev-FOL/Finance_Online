@@ -24,14 +24,6 @@ class UsuarioService {
     }
   }
 
-  // getToken() {
-  //   if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-  //     return localStorage.getItem('Token');
-  //   } else {
-  //     return null;
-  //   }
-  // }
-
   async getSucursalesByUsuario  (strLogin, token){
     const response = await axios.get(
       `${this.url}TravelAgencyBranches/TravelAgencyBranchesbyLogin?strLogin=${strLogin}`,
@@ -45,27 +37,7 @@ class UsuarioService {
     return response.data;
   }
 
-  async getUserPermissions(strLogin, token) {
-    try {
-      const response = await axios.get(
-        `${this.url}TravelAgencyBranches/PermissionbyLogin?strLogin=${strLogin}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
   
-      const userPermissions = response.data.map((permiso) => permiso.Alias);
-      localStorage.setItem("UserPermissions", JSON.stringify(userPermissions));
-  
-      return userPermissions;
-    } catch (error) {
-      console.error("Error al obtener permisos:", error);
-      return [];
-    }
-  }
   
 
 }

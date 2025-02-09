@@ -1,33 +1,33 @@
-import { useState } from 'react'
+// import { useState } from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { AuthGuard } from '../../guards/AuthGuard';
 import Form from '../../features/Login/components/Form/Form'
 import Sucursales from '../../features/Sucursales/components/Form/Sucursales'
 import TrazaDoc from '../../features/TrazaDoc/TrazaDoc'
-import { BrowserRouter as Router,Routes, Route } from 'react-router-dom'
 import AppLayout from '../../shared/components/layouts/AppLayout'; // Importa el layout correctamente
-import ProtectedRoute from './ProtectRoute'
-import Facturas from './facturas/Facturas'
+import ListadoFacturacion from '../../features/Facturas/listado/listado'
+
 
 function App() {
+  
   return (
     <AppLayout>
-    <Router>
-    <Routes>
-      <Route path="/" element={<Form />} />
-      <Route path='/Sucursales' element={<Sucursales/>}/>
-      <Route path='/TrazaDoc/:id' element={<TrazaDoc/>}/>
-      <Route path='/Sucursales' element={<Sucursales/>}/>
-          {/* Ruta protegida de Facturas */}
-          <Route
-            path="/Facturas"
-            element={
-              <ProtectedRoute requiredPermission="mnuInvoice">
-              <Facturas />
-          </ProtectedRoute>
-            }
-          />
-    </Routes>
-    </Router>
-  
+      <Router>
+        <Routes>
+          <Route path="/" element={<Form />} />
+          <Route path='/Sucursales' element={<AuthGuard><Sucursales/></AuthGuard>} />
+          <Route path='/TrazaDoc/:id' element={<AuthGuard><TrazaDoc/></AuthGuard>} />
+        
+
+
+          <Route path="/ListadoFacturacion" element={<AuthGuard><ListadoFacturacion /></AuthGuard>} />
+
+
+
+
+        </Routes>
+      </Router>
+
     </AppLayout>
   )
 }
