@@ -12,6 +12,7 @@ class AuthService {
     };
 
     async getUserPermissions(strLogin, token) {
+        
         try {
             const response = await axios.get(
                 `${this.url}TravelAgencyBranches/PermissionbyLogin?strLogin=${strLogin}`,
@@ -22,9 +23,9 @@ class AuthService {
                     },
                 }
             );
-
+            
             const userPermissions = response.data.Permissions.map((permiso) => permiso.Alias);
-
+            
             return userPermissions;
         } catch (error) {
             console.error("Error al obtener permisos:", error);
