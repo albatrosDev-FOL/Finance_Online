@@ -211,3 +211,20 @@
     margin: 8px 0;
   }
 }
+
+/* Diseño SweetAlert */
+.custom-swal-popup {
+  border-radius: 15px; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos para el título */
+.custom-swal-title {
+  color: #fff !important; 
+  font-size: 1.5em; 
+}
+
+.custom-swal-text {
+  color: #fff !important; 
+  font-size: 1.1em; 
+}
