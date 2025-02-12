@@ -25,12 +25,13 @@ const Navbar = () => {
 
   const userName = localStorage.getItem("UserName");
   const sucursalName = localStorage.getItem("Nombre Sucursal");
+  const sucursalAgencia = localStorage.getItem("Agencia");
 
   const MenuPerfil = [
     { name: true, icon: "/image/logoverde.png", isLogo: true },
     { name: userName || "Nombre", icon: "/image/iconose.png" },
     { name: sucursalName || "Sucursal", icon: "/image/iconose.png" },
-    { name: "Agencia", icon: "/image/iconose.png" },
+    { name: sucursalAgencia || "Agencia", icon: "/image/iconose.png" },
     { name: "Salir", icon: "/image/salir2.png" },
   ];
 

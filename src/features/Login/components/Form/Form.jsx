@@ -68,6 +68,7 @@ const Form = () => {
         );
         localStorage.setItem("Token", response.Token);
         localStorage.setItem("UserName", response.UserName);
+        localStorage.setItem("Agencia", response.AgencyName);
         navigate("/Sucursales");
         izitoast.success({
           title: 'Bienvenido',
