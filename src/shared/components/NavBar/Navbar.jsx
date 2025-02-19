@@ -25,26 +25,35 @@ const Navbar = () => {
 
   const userName = localStorage.getItem("UserName");
   const sucursalName = localStorage.getItem("Nombre Sucursal");
+  const sucursalAgencia = localStorage.getItem("Agencia");
 
   const MenuPerfil = [
     { name: true, icon: "/image/logoverde.png", isLogo: true },
     { name: userName || "Nombre", icon: "/image/iconose.png" },
     { name: sucursalName || "Sucursal", icon: "/image/iconose.png" },
-    { name: "Agencia", icon: "/image/iconose.png" },
+    { name: sucursalAgencia || "Agencia", icon: "/image/iconose.png" },
     { name: "Salir", icon: "/image/salir2.png" },
   ];
 
   const handleLogout = () => {
+    document.body.classList.add("blur-background");
+
     Swal.fire({
       title: "¿Estás seguro?",
       text: "¿Deseas cerrar la sesión?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "#025959",
+      cancelButtonColor: "#597589",
       confirmButtonText: "Sí, cerrar sesión",
       cancelButtonText: "Cancelar",
+      background: "rgba(224, 241, 255, 0.61)",
+      customClass: {
+        popup: "custom-swal-popup",
+      },
     }).then((result) => {
+      document.body.classList.remove("blur-background");
+
       if (result.isConfirmed) {
         localStorage.removeItem("Token");
         localStorage.removeItem("UserName");
@@ -56,7 +65,13 @@ const Navbar = () => {
           title: "Sesión cerrada",
           text: "Has cerrado la sesión correctamente.",
           icon: "success",
-          confirmButtonColor: "#3085d6",
+          background: "#141e34", 
+          confirmButtonColor: "#597589", 
+          customClass: {
+            popup: "custom-swal-popup", 
+            title: "custom-swal-title", 
+            htmlContainer: "custom-swal-text", 
+          },
         });
       }
     });
@@ -99,14 +114,24 @@ const Navbar = () => {
 
     if (hasPermission) {
       navigate("/ListadoFacturacion");
-  } else {
-      Swal.fire("Acceso denegado", "No tienes permisos para acceder a Facturas.", "warning");
+    } else {
+      Swal.fire({
+        title: "Acceso denegado",
+        text: "No tienes permisos para acceder a Facturas.",
+        icon: "warning",
+        confirmButtonColor: "#025959",
+        background: "rgba(224, 241, 255, 0.61)",
+        customClass: {
+          popup: "custom-swal-popup",
+        },
+      }
+      );
       izitoast.warning({
-        title: 'Advertencia',
+        title: "Advertencia",
         message: 'Acceso denegado", "No tienes permisos para acceder a Facturas.',
-        position: 'bottomRight',
+        position: "bottomRight",
       });
-  }
+    }
   };
 
   return (
@@ -284,7 +309,7 @@ const Navbar = () => {
                                   }}
                                 />
                               )}
-                              <span>{isObject ? item.name : item}</span>
+                              <span style={{ fontSize: "14px" }}>{isObject ? item.name : item}</span>
                             </li>
                           );
                         })}

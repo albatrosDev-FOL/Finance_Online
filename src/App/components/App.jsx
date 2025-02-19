@@ -17,14 +17,7 @@ function App() {
           <Route path="/" element={<Form />} />
           <Route path='/Sucursales' element={<AuthGuard><Sucursales/></AuthGuard>} />
           <Route path='/TrazaDoc/:id' element={<AuthGuard><TrazaDoc/></AuthGuard>} />
-        
-
-
           <Route path="/ListadoFacturacion" element={<AuthGuard><ListadoFacturacion /></AuthGuard>} />
-
-
-
-
         </Routes>
       </Router>
 
