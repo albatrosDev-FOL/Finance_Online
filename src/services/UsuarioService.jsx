@@ -24,7 +24,7 @@ class UsuarioService {
     }
   }
 
-  async getSucursalesByUsuario  (strLogin, token){
+  async getSucursalesByUsuario(strLogin, token) {
     const response = await axios.get(
       `${this.url}TravelAgencyBranches/TravelAgencyBranchesbyLogin?strLogin=${strLogin}`,
       {
@@ -36,14 +36,6 @@ class UsuarioService {
     );
     return response.data;
   }
-
-  
-  
-
 }
-
-
-
-
 
 export default new UsuarioService();

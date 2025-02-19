@@ -1,0 +1,15 @@
+.custom-table thead {
+    background-color: #cb1a1a;
+  }
+  
+  .custom-table thead div {
+    background-color: #cd1d1d;
+    padding: 10px 15px;
+    border-radius: 20px; /* Hace los bordes redondeados */
+    margin: 5px;
+    display: inline-block; /* Para que cada título tenga su propio espacio */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    text-align: center;
+  }
+  
