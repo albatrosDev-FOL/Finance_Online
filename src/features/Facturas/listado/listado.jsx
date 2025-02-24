@@ -48,16 +48,6 @@ const ListadoFacturacion = () => {
       NumeroFactura: "F001",
       Cliente: "John Doe",
       FechaExpedicion: "01/01/2022"
-    },
-    {
-      NumeroFactura: "F002",
-      Cliente: "Jane Doe",
-      FechaExpedicion: "02/02/2022"
-    },
-    {
-      NumeroFactura: "F003",
-      Cliente: "Michael Doe",
-      FechaExpedicion: "03/03/2022"
     }
   ]
   return (
@@ -68,7 +58,10 @@ const ListadoFacturacion = () => {
       <div>
         <DataTable
           columns={colums}
-          data={data}
+          data={data} 
+          className="custom-table"
+          style={{ backgroundColor: "rgba(224, 241, 255, 0.61)" }}
+
         />
       </div>
 

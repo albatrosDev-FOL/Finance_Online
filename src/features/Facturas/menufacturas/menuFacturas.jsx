@@ -14,10 +14,7 @@ const menuFacturas = () => {
         <button>Detalles</button>
       </div>
       <div className="box">
-        <button>Representación</button> 
-      </div>
-      <div className="box">
-        <button>Grafica</button>
+        <button>Representación Grafica </button> 
       </div>
     </div>
   )

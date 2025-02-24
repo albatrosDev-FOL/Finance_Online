@@ -1,15 +1,31 @@
-.custom-table thead {
-    background-color: #cb1a1a;
+/* Estilos para la tabla completa */
+.custom-table {
+    background-color: rgba(224, 241, 255, 0.61); 
+    border-radius: 10px; /* Bordes redondeados */
+    padding: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Sombra */
   }
   
-  .custom-table thead div {
-    background-color: #cd1d1d;
-    padding: 10px 15px;
-    border-radius: 20px; /* Hace los bordes redondeados */
-    margin: 5px;
-    display: inline-block; /* Para que cada título tenga su propio espacio */
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  /* Estilos para las filas */
+  .custom-table .rdt_TableRow {
+    background-color: rgba(224, 241, 255, 0.61); 
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .custom-table .rdt_TableRow:hover {
+    background-color: rgba(224, 241, 255, 0.61); 
+  }
+  
+  /* Estilos para los encabezados */
+  .custom-table .rdt_TableHead {
     font-weight: bold;
-    text-align: center;
+    text-align: left;
+  }
+  
+  /* Estilos para las celdas */
+  .custom-table .rdt_TableCell {
+    padding: 12px;
+    background-color: rgba(224, 241, 255, 0.61); 
+
   }
   
