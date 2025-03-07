@@ -9,6 +9,10 @@ import "./listado.css"
 
 const ListadoFacturacion = () => {
 
+  useEffect(() => {
+    
+  })
+
   const colums = [
     {
       name: <div>Numero Factura</div>
