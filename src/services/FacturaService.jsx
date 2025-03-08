@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Global } from "../environments/Global";
 
-class UsuarioService {
+class FacturaService {
     constructor() {
         this.url = Global.url;
     }
@@ -19,10 +19,11 @@ class UsuarioService {
                 }
             );
             return response.data;
-        } catch (error) {e
+        } catch (error) {
             console.error("Error al listar facturas:", error);
             throw error; // Puedes lanzar el error para manejarlo en el componente que llama a esta función
         }
     }
 }
 
+export default new FacturaService();

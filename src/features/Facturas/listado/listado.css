@@ -1,31 +1,80 @@
+/* Contenedor de la tabla */
+.table-container {
+  width: 100%; /* Ocupa el 100% del ancho disponible */
+  max-width: 100%; /* No exceder el ancho de la página */
+  overflow-x: auto; /* Permite el desplazamiento horizontal si es necesario */
+  margin: 0 auto; /* Centra el contenedor */
+  padding: 10px; /* Espaciado interno */
+  box-sizing: border-box; /* Incluye el padding en el ancho total */
+}
+
 /* Estilos para la tabla completa */
 .custom-table {
-    background-color: rgba(224, 241, 255, 0.61); 
-    border-radius: 10px; /* Bordes redondeados */
-    padding: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Sombra */
-  }
-  
-  /* Estilos para las filas */
-  .custom-table .rdt_TableRow {
-    background-color: rgba(224, 241, 255, 0.61); 
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .custom-table .rdt_TableRow:hover {
-    background-color: rgba(224, 241, 255, 0.61); 
-  }
-  
-  /* Estilos para los encabezados */
-  .custom-table .rdt_TableHead {
-    font-weight: bold;
-    text-align: left;
-  }
-  
-  /* Estilos para las celdas */
-  .custom-table .rdt_TableCell {
-    padding: 12px;
-    background-color: rgba(224, 241, 255, 0.61); 
+  width: 100%; /* La tabla ocupa el 100% del contenedor */
+  min-width: 600px; /* Ancho mínimo para evitar que se comprima demasiado */
+  background-color: rgba(224, 241, 255, 0.61);
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Sombra */
+  overflow: hidden; /* Evita que el contenido se desborde */
+}
 
+/* Estilos para las filas */
+.custom-table .rdt_TableRow {
+  background-color: rgba(224, 241, 255, 0.61);
+  border-bottom: 1px solid #ddd;
+}
+
+.custom-table .rdt_TableRow:hover {
+  background-color: rgba(224, 241, 255, 0.61);
+}
+
+/* Estilos para los encabezados */
+.custom-table .rdt_TableHead {
+  font-weight: bold;
+  text-align: left;
+}
+
+/* Estilos para las celdas */
+.custom-table .rdt_TableCell {
+  padding: 12px;
+  background-color: rgba(224, 241, 255, 0.61);
+  white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+}
+
+/* Media Queries para responsividad */
+
+/* Para teléfonos móviles (max-width: 576px) */
+@media (max-width: 576px) {
+  .custom-table {
+      font-size: 12px; 
   }
-  
+
+  .custom-table .rdt_TableCell {
+      padding: 8px; 
+  }
+}
+
+/* Para tabletas (max-width: 768px) */
+@media (max-width: 768px) {
+  .custom-table {
+      font-size: 14px;
+  }
+
+  .custom-table .rdt_TableCell {
+      padding: 10px; 
+  }
+}
+
+/* Para portátiles (max-width: 992px) */
+@media (max-width: 992px) {
+  .custom-table {
+      font-size: 16px;
+  }
+}
+
+/* Para grandes dispositivos (min-width: 1200px) */
+@media (min-width: 1200px) {
+  .custom-table {
+      font-size: 16px;
+  }
+}
