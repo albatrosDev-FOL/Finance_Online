@@ -11,34 +11,41 @@
 /* Estilos para la tabla completa */
 .custom-table {
   width: 100%; /* La tabla ocupa el 100% del contenedor */
-  min-width: 600px; /* Ancho mínimo para evitar que se comprima demasiado */
+  min-width: 1000px; /* Ancho mínimo para evitar que se comprima demasiado */
   background-color: rgba(224, 241, 255, 0.61);
   border-radius: 10px; /* Bordes redondeados */
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Sombra */
   overflow: hidden; /* Evita que el contenido se desborde */
 }
-
+.custom-table .sc-cMqPwU .chaYgW .rdt_TableRow{
+  background-color: blue;
+}
 /* Estilos para las filas */
-.custom-table .rdt_TableRow {
-  background-color: rgba(224, 241, 255, 0.61);
+/* .custom-table{
+.
+ 
   border-bottom: 1px solid #ddd;
-}
+  background: red;
+} */
 
-.custom-table .rdt_TableRow:hover {
+/* .custom-table:hover {
   background-color: rgba(224, 241, 255, 0.61);
-}
+  background: red;
+} */
 
 /* Estilos para los encabezados */
-.custom-table .rdt_TableHead {
+/* .custom-table .rdt_TableHead {
   font-weight: bold;
   text-align: left;
-}
+  background: red;
+} */
 
 /* Estilos para las celdas */
 .custom-table .rdt_TableCell {
   padding: 12px;
-  background-color: rgba(224, 241, 255, 0.61);
   white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+  
+  border-radius: 20px;
 }
 
 /* Media Queries para responsividad */
