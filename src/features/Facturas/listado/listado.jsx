@@ -6,11 +6,13 @@ import DataTable from "react-data-table-component";
 import FacturaService from "../../../services/FacturaService";
 import "./listado.css";
 import FacNavbar from "../../../shared/components/FacNavbar/FacNavbar";
+import { Form } from 'react-bootstrap';
 
 const ListadoFacturacion = () => {
   const [facturas, setFacturas] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1); // Estado para la página actual
-  const rowsPerPage = 10; // Número de filas por página
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedOption, setSelectedOption] = useState("");
+  const rowsPerPage = 10;
 
   useEffect(() => {
     const fetchFacturas = async () => {
@@ -25,142 +27,159 @@ const ListadoFacturacion = () => {
       };
       try {
         const response = await FacturaService.postListarFactura(data, token);
-        console.log(response);
-        setFacturas(response.InvoiceResult); // Actualiza el estado con los datos de la API
+        setFacturas(response.InvoiceResult);
       } catch (error) {
         console.error("Error al obtener facturas:", error);
       }
     };
 
     fetchFacturas();
-  }, []); // <-- Array de dependencias vacío
+  }, []);
 
-  // Calcula las filas que se mostrarán en la página actual
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = facturas.slice(indexOfFirstRow, indexOfLastRow);
 
-  // Maneja el cambio de página
   const handlePageChange = (event, page) => {
     setCurrentPage(page);
   };
-  
-  
 
+  const handleOptionChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
+
+  // Definir las columnas para la tabla
   const columns = [
-    
     {
       name: "Número Factura",
-      selector: (row) => row.InvoiceNumber, // Mapea a InvoiceNumber
+      selector: (row) => row.InvoiceNumber,
       sortable: true,
       width: "143px",
     },
     {
       name: "Cliente",
-      selector: (row) => row.CustomerName, // Mapea a CustomerName
+      selector: (row) => row.CustomerName,
       sortable: true,
-      width: "273px"
+      width: "273px",
     },
     {
       name: "Fecha Expedición",
-      selector: (row) => row.InvoiceDate, // Mapea a InvoiceDate Expedicion
+      selector: (row) => row.InvoiceDate,
       sortable: true,
-      width: "163px"
+      width: "163px",
     },
     {
       name: "Vencimiento",
-      selector: (row) => row.InvoiceDateExp, // Mapea a InvoiceDateExp Vencimiento
+      selector: (row) => row.InvoiceDateExp,
       sortable: true,
-      width: "163px"
+      width: "163px",
     },
     {
       name: "Moneda",
-      selector: (row) => row.Coin, // Mapea a Coin
+      selector: (row) => row.Coin,
       sortable: true,
-      width: "100px"
-
+      width: "100px",
     },
     {
       name: "Valor",
-      selector: (row) => row.TotalValue, // Mapea a TotalValue
+      selector: (row) => row.TotalValue,
       sortable: true,
-      width: "100px"
-
+      width: "100px",
     },
     {
       name: "Estado",
-      selector: (row) => row.State, // Mapea a State
+      selector: (row) => row.State,
       sortable: true,
-      width: "100px"
-
+      width: "100px",
     },
     {
       name: "Sucursal",
       selector: (row) => localStorage.getItem("Agencia"),
       sortable: true,
-      width: "273px"
+      width: "273px",
     },
     {
       name: "Tipo",
-      selector: (row) => row.Type, // Mapea a Type
+      selector: (row) => row.Type,
       sortable: true,
-      width: "100px"
-
+      width: "100px",
     },
   ];
 
+  // Estilos condicionales para las filas
   const conditionalRowStyles = [
     {
-      when: (rowgroup, index) => {
-        console.log(`Fila ${index}:`, index % 2 === 0); // Verifica si la condición se evalúa
-        return index % 2 === 0;
-      },
+      when: (row, index) => index % 2 === 0,
       style: {
         backgroundColor: "#f1e1dc !important",
       },
     },
     {
-      when: (rowgroup, index) => {
-        console.log(`Fila ${index}:`, index % 2 !== 0); // Verifica si la condición se evalúa
-        return index % 2 !== 0;
-      },
+      when: (row, index) => index % 2 !== 0,
       style: {
         backgroundColor: "#dce8f1 !important",
       },
     },
   ];
 
+  // Contenido del modal para ListadoFacturacion
+  const cuerpoModal = (
+    <Form>
+      <Form.Group>
+        <Form.Check
+          type="radio"
+          label="Últimas 10 facturas"
+          value="ultimas10"
+          checked={selectedOption === "ultimas10"}
+          onChange={handleOptionChange}
+        />
+        <Form.Check
+          type="radio"
+          label="Rango de fecha"
+          value="rangoFecha"
+          checked={selectedOption === "rangoFecha"}
+          onChange={handleOptionChange}
+        />
+        <Form.Check
+          type="radio"
+          label="Número de factura"
+          value="numeroFactura"
+          checked={selectedOption === "numeroFactura"}
+          onChange={handleOptionChange}
+        />
+        <Form.Check
+          type="radio"
+          label="Tiquete"
+          value="tiquete"
+          checked={selectedOption === "tiquete"}
+          onChange={handleOptionChange}
+        />
+      </Form.Group>
+    </Form>
+  );
+
   return (
     <>
       <NavBar />
       <MenuFacturas />
-      <FacNavbar/>
-    
+      <FacNavbar cuerpoModal={cuerpoModal} />
 
       <div className="table-container">
-      <DataTable
-      columns={columns} // Columnas definidas
-      data={currentRows} // Datos de la tabla
-      className="custom-table"
-      style={{}}
-      conditionalRowStyles={conditionalRowStyles} // Agregar estilos aquí
-      responsive
-    />
+        <DataTable
+          columns={columns} // Usar las columnas definidas
+          data={currentRows}
+          className="custom-table"
+          conditionalRowStyles={conditionalRowStyles}
+          responsive
+        />
 
-    {/* Paginador de Material-UI */}
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        marginTop: "20px",
-      }}
-    >
-      <Pagination
-        count={Math.ceil(facturas.length / rowsPerPage)}
-        page={currentPage}
-        onChange={handlePageChange}
-        color="primary"
-      />
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+          <Pagination
+            count={Math.ceil(facturas.length / rowsPerPage)}
+            page={currentPage}
+            onChange={handlePageChange}
+            color="primary"
+          />
         </div>
       </div>
     </>

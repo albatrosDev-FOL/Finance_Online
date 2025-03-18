@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import "./FacNavbar.css";
 import imgArchivar from "/search/archivar.png";
 import imgFile from "/search/File.png";
@@ -9,24 +9,18 @@ import imgText from "/search/text.png";
 import imgSave from "/search/save.png";
 import imgImprimir from "/search/imprimir.png";
 import imgReturn from "/search/return.png";
-import Modal from 'react-bootstrap/Modal'; // Importar el modal de react-bootstrap
-import Button from 'react-bootstrap/Button'; // Importar el botón de react-bootstrap
-import Form from 'react-bootstrap/Form'; // Importar el componente Form de react-bootstrap
+import ModalGenerico from '../ModalGenerico/ModalGenerico'; // Importar el modal genérico
 
-const FacNavbar = () => {
-  const [showModal, setShowModal] = useState(false); // Estado para controlar el modal
-  const [selectedOption, setSelectedOption] = useState(""); // Estado para controlar la opción seleccionada
+const FacNavbar = ({ cuerpoModal, onSearchClick }) => {
+  const [showModal, setShowModal] = React.useState(false);
 
   const handleSearchClick = () => {
-    setShowModal(true); // Abrir el modal al hacer clic en el botón de búsqueda
+    setShowModal(true);
+    if (onSearchClick) onSearchClick(); // Notificar al componente padre que se hizo clic en buscar
   };
 
   const handleCloseModal = () => {
-    setShowModal(false); // Cerrar el modal
-  };
-
-  const handleOptionChange = (event) => {
-    setSelectedOption(event.target.value); // Actualizar la opción seleccionada
+    setShowModal(false);
   };
 
   return (
@@ -45,7 +39,7 @@ const FacNavbar = () => {
           { src: imgArchivar, alt: "Archivar", label: "" },
           { src: imgCancel, alt: "Cancelar", label: "" },
           { src: imgExit, alt: "Exit", label: "" },
-          { src: imgSearch, alt: "Search", label: "", onClick: handleSearchClick }, // Asignar la función al botón de búsqueda
+          { src: imgSearch, alt: "Search", label: "", onClick: handleSearchClick },
           { src: imgText, alt: "Text", label: "" },
           { src: imgSave, alt: "Save", label: "" },
           { src: imgImprimir, alt: "Imprimir", label: "" },
@@ -70,7 +64,7 @@ const FacNavbar = () => {
                 textDecoration: "none",
                 cursor: "pointer",
               }}
-              onClick={onClick} // Asignar la función onClick si existe
+              onClick={onClick}
             >
               <img
                 src={src}
@@ -87,55 +81,14 @@ const FacNavbar = () => {
         ))}
       </div>
 
-      {/* Modal */}
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Buscar</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {/* Contenido del modal */}
-          <Form>
-            <Form.Group>
-              <Form.Check
-                type="radio"
-                label="Últimas 10 facturas"
-                value="ultimas10"
-                checked={selectedOption === "ultimas10"}
-                onChange={handleOptionChange}
-              />
-              <Form.Check
-                type="radio"
-                label="Rango de fecha"
-                value="rangoFecha"
-                checked={selectedOption === "rangoFecha"}
-                onChange={handleOptionChange}
-              />
-              <Form.Check
-                type="radio"
-                label="Número de factura"
-                value="numeroFactura"
-                checked={selectedOption === "numeroFactura"}
-                onChange={handleOptionChange}
-              />
-              <Form.Check
-                type="radio"
-                label="Tiquete"
-                value="tiquete"
-                checked={selectedOption === "tiquete"}
-                onChange={handleOptionChange}
-              />
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Cerrar
-          </Button>
-          <Button variant="primary" onClick={handleCloseModal}>
-            Buscar
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {/* Modal genérico */}
+      <ModalGenerico
+        show={showModal}
+        onHide={handleCloseModal}
+        titulo="Buscar"
+        cuerpo={cuerpoModal}
+        onGuardar={handleCloseModal}
+      />
     </div>
   );
 };
