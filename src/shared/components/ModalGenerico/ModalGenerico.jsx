@@ -15,7 +15,7 @@ const ModalGenerico = ({ show, onHide, titulo, cuerpo, onGuardar }) => {
           Cerrar
         </Button>
         <Button variant="primary" onClick={onGuardar}>
-          Buscar
+          Ver
         </Button>
       </Modal.Footer>
     </Modal>

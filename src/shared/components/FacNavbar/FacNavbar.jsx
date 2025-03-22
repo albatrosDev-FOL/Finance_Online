@@ -11,7 +11,7 @@ import imgImprimir from "/search/imprimir.png";
 import imgReturn from "/search/return.png";
 import ModalGenerico from '../ModalGenerico/ModalGenerico'; // Importar el modal genérico
 
-const FacNavbar = ({ cuerpoModal, onSearchClick }) => {
+const FacNavbar = ({ cuerpoModal, piePagina, onSearchClick }) => {
   const [showModal, setShowModal] = React.useState(false);
 
   const handleSearchClick = () => {
