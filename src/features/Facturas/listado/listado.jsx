@@ -14,13 +14,17 @@ const ListadoFacturacion = () => {
   const [selectedOption, setSelectedOption] = useState("");
   const rowsPerPage = 10;
 
+
+  const [fechaInicio, setFechaInicio] = useState('');
+  const [fechaFin, setFechaFin] = useState('');
+
   useEffect(() => {
     const fetchFacturas = async () => {
       const token = localStorage.getItem("Token");
       const data = {
         FinalDate: "2025-02-26T01:11:27.777Z",
-        InitialDate: "2024-02-26T01:11:27.777Z",
-        Invoicenumber: "CT113333",
+        InitialDate: "2023-02-26T01:11:27.777Z",
+        Invoicenumber: "TS01177165",
         Querytype: 1,
         ThirdPartyId: 1,
         Travelagyid: localStorage.getItem("SucursalId"),
@@ -132,6 +136,7 @@ const ListadoFacturacion = () => {
           value="ultimas10"
           checked={selectedOption === "ultimas10"}
           onChange={handleOptionChange}
+
         />
         <Form.Check
           type="radio"
@@ -140,6 +145,23 @@ const ListadoFacturacion = () => {
           checked={selectedOption === "rangoFecha"}
           onChange={handleOptionChange}
         />
+        {selectedOption === 'rangoFecha' && (
+          <div className="mt-3 d-flex align-items-center">
+            <Form.Label className="me-2">Fecha Inicio:</Form.Label>
+            <Form.Control
+              type="text"
+              value={fechaInicio}
+              onChange={(e) => setFechaInicio(e.target.value)}
+              className="me-3"
+            />
+            <Form.Label className="me-2">Fecha Fin:</Form.Label>
+            <Form.Control
+              type="text"
+              value={fechaFin}
+              onChange={(e) => setFechaFin(e.target.value)}
+            />
+          </div>
+        )}
         <Form.Check
           type="radio"
           label="Número de factura"
@@ -147,6 +169,17 @@ const ListadoFacturacion = () => {
           checked={selectedOption === "numeroFactura"}
           onChange={handleOptionChange}
         />
+        {selectedOption === 'numeroFactura' && (
+          <div className="mt-3 d-flex align-items-center">
+            <Form.Label className="me-2"></Form.Label>
+            <Form.Control
+              type="text"
+              value={fechaInicio}
+              onChange={(e) => setFechaInicio(e.target.value)}
+              className="me-3"
+            />
+          </div>
+        )}
         <Form.Check
           type="radio"
           label="Tiquete"
@@ -154,6 +187,23 @@ const ListadoFacturacion = () => {
           checked={selectedOption === "tiquete"}
           onChange={handleOptionChange}
         />
+        {selectedOption === 'tiquete' && (
+          <div className="mt-3 d-flex align-items-center">
+            <Form.Label className="me-2"> </Form.Label>
+            <Form.Control
+              type="text"
+              value={fechaInicio}
+              onChange={(e) => setFechaInicio(e.target.value)}
+              className="me-3"
+            />
+            <Form.Label className="me-2"></Form.Label>
+            <Form.Control
+              type="text"
+              value={fechaFin}
+              onChange={(e) => setFechaFin(e.target.value)}
+            />
+          </div>)}
+
       </Form.Group>
     </Form>
   );
