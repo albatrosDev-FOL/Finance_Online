@@ -6,39 +6,84 @@ import DataTable from "react-data-table-component";
 import FacturaService from "../../../services/FacturaService";
 import "./listado.css";
 import FacNavbar from "../../../shared/components/FacNavbar/FacNavbar";
-import { Form } from 'react-bootstrap';
+import { Form } from "react-bootstrap";
 
 const ListadoFacturacion = () => {
   const [facturas, setFacturas] = useState([]);
+  const [queryType, setQueryType] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedOption, setSelectedOption] = useState("");
   const rowsPerPage = 10;
 
+  const [fechaInicio, setFechaInicio] = useState("");
+  const [fechaFin, setFechaFin] = useState("");
 
-  const [fechaInicio, setFechaInicio] = useState('');
-  const [fechaFin, setFechaFin] = useState('');
+  const [numeroFactura, setNumeroFactura] = useState("");
+
 
   useEffect(() => {
     const fetchFacturas = async () => {
       const token = localStorage.getItem("Token");
+  
+      // Formatear fechas si es necesario
+      const formatDate = (dateString) => {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        return date.toISOString().split("T")[0]; // Formato YYYY-MM-DD
+      };
+  
       const data = {
-        FinalDate: "2025-02-26T01:11:27.777Z",
-        InitialDate: "2023-02-26T01:11:27.777Z",
-        Invoicenumber: "TS01177165",
-        Querytype: 1,
+        FinalDate: selectedOption === "rangoFecha" || selectedOption === "tiquete" ? formatDate(fechaFin) : "",
+        InitialDate: selectedOption === "rangoFecha" || selectedOption === "tiquete" ? formatDate(fechaInicio) : "",
+        Invoicenumber: selectedOption === "numeroFactura" ? numeroFactura : "",
+        Querytype: queryType,
         ThirdPartyId: 1,
         Travelagyid: localStorage.getItem("SucursalId"),
       };
+  
       try {
         const response = await FacturaService.postListarFactura(data, token);
-        setFacturas(response.InvoiceResult);
+        console.log("Respuesta del servidor:", response); // Depuración
+        if (response && response.InvoiceResult) {
+          setFacturas(response.InvoiceResult);
+        } else {
+          console.error("Respuesta inesperada del servidor:", response);
+          setFacturas([]); // Limpiar la lista de facturas
+        }
       } catch (error) {
         console.error("Error al obtener facturas:", error);
+        if (error.response) {
+          console.error("Detalles del error:", error.response.data); // Depuración
+        }
+        setFacturas([]); // Limpiar la lista de facturas
       }
     };
-
+  
     fetchFacturas();
-  }, []);
+  }, [queryType, numeroFactura, fechaInicio, fechaFin, selectedOption]);
+
+  const handleOptionChange = (e) => {
+    const value = e.target.value;
+    setSelectedOption(value);
+
+    // Asignar el Querytype correspondiente
+    switch (value) {
+      case "ultimas10":
+        setQueryType(1);
+        break;
+      case "rangoFecha":
+        setQueryType(2);
+        break;
+      case "numeroFactura":
+        setQueryType(3);
+        break;
+      case "tiquete":
+        setQueryType(4);
+        break;
+      default:
+        setQueryType(1);
+    }
+  };
 
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -48,9 +93,9 @@ const ListadoFacturacion = () => {
     setCurrentPage(page);
   };
 
-  const handleOptionChange = (event) => {
-    setSelectedOption(event.target.value);
-  };
+  // const handleOptionChange = (event) => {
+  //   setSelectedOption(event.target.value);
+  // };
 
   // Definir las columnas para la tabla
   const columns = [
@@ -136,7 +181,6 @@ const ListadoFacturacion = () => {
           value="ultimas10"
           checked={selectedOption === "ultimas10"}
           onChange={handleOptionChange}
-
         />
         <Form.Check
           type="radio"
@@ -145,7 +189,7 @@ const ListadoFacturacion = () => {
           checked={selectedOption === "rangoFecha"}
           onChange={handleOptionChange}
         />
-        {selectedOption === 'rangoFecha' && (
+        {selectedOption === "rangoFecha" && (
           <div className="mt-3 d-flex align-items-center">
             <Form.Label className="me-2">Fecha Inicio:</Form.Label>
             <Form.Control
@@ -169,25 +213,25 @@ const ListadoFacturacion = () => {
           checked={selectedOption === "numeroFactura"}
           onChange={handleOptionChange}
         />
-        {selectedOption === 'numeroFactura' && (
+        {selectedOption === "numeroFactura" && (
           <div className="mt-3 d-flex align-items-center">
             <Form.Label className="me-2"></Form.Label>
             <Form.Control
               type="text"
-              value={fechaInicio}
-              onChange={(e) => setFechaInicio(e.target.value)}
+              value={numeroFactura}
+              onChange={(e) => setNumeroFactura(e.target.value)}
               className="me-3"
             />
           </div>
         )}
-        <Form.Check
+        {/* <Form.Check
           type="radio"
           label="Tiquete"
           value="tiquete"
           checked={selectedOption === "tiquete"}
           onChange={handleOptionChange}
-        />
-        {selectedOption === 'tiquete' && (
+        /> */}
+        {/* {selectedOption === "tiquete" && (
           <div className="mt-3 d-flex align-items-center">
             <Form.Label className="me-2"> </Form.Label>
             <Form.Control
@@ -202,8 +246,8 @@ const ListadoFacturacion = () => {
               value={fechaFin}
               onChange={(e) => setFechaFin(e.target.value)}
             />
-          </div>)}
-
+          </div>
+        )} */}
       </Form.Group>
     </Form>
   );
@@ -223,7 +267,13 @@ const ListadoFacturacion = () => {
           responsive
         />
 
-        <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "20px",
+          }}
+        >
           <Pagination
             count={Math.ceil(facturas.length / rowsPerPage)}
             page={currentPage}

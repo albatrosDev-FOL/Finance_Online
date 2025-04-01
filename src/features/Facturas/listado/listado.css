@@ -17,7 +17,7 @@
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Sombra */
   overflow: hidden; /* Evita que el contenido se desborde */
 }
-.custom-table .sc-cMqPwU .chaYgW .rdt_TableRow{
+.custom-table .sc-cMqPwU .chaYgW .rdt_TableRow {
   background-color: blue;
 }
 /* Estilos para las filas */
@@ -44,8 +44,44 @@
 .custom-table .rdt_TableCell {
   padding: 12px;
   white-space: nowrap; /* Evita que el texto se divida en varias líneas */
-  
+
   border-radius: 20px;
+}
+
+.ModalButton {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  outline: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo para el botón "Cerrar" */
+.ModalButton.cerrar {
+  background: linear-gradient(135deg, #ff4b5c, #d90429);
+  color: white;
+}
+
+.ModalButton.cerrar:hover {
+  background: linear-gradient(135deg, #d90429, #9d0208);
+  box-shadow: 0 6px 14px rgba(217, 4, 41, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Estilo para el botón "Buscar" */
+.ModalButton.buscar {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+}
+
+.ModalButton.buscar:hover {
+  background: linear-gradient(135deg, #2575fc, #6a11cb);
+  box-shadow: 0 6px 14px rgba(37, 117, 252, 0.5);
+  transform: translateY(-2px);
 }
 
 /* Media Queries para responsividad */
@@ -53,35 +89,35 @@
 /* Para teléfonos móviles (max-width: 576px) */
 @media (max-width: 576px) {
   .custom-table {
-      font-size: 12px; 
+    font-size: 12px;
   }
 
   .custom-table .rdt_TableCell {
-      padding: 8px; 
+    padding: 8px;
   }
 }
 
 /* Para tabletas (max-width: 768px) */
 @media (max-width: 768px) {
   .custom-table {
-      font-size: 14px;
+    font-size: 14px;
   }
 
   .custom-table .rdt_TableCell {
-      padding: 10px; 
+    padding: 10px;
   }
 }
 
 /* Para portátiles (max-width: 992px) */
 @media (max-width: 992px) {
   .custom-table {
-      font-size: 16px;
+    font-size: 16px;
   }
 }
 
 /* Para grandes dispositivos (min-width: 1200px) */
 @media (min-width: 1200px) {
   .custom-table {
-      font-size: 16px;
+    font-size: 16px;
   }
 }
