@@ -12,6 +12,7 @@ import RepresentacionGrafica from "../../features/Facturas/grafica/grafica"
 function App() {
   
   return (
+    
     <AppLayout>
       <Router>
         <Routes>
@@ -25,6 +26,7 @@ function App() {
       </Router>
 
     </AppLayout>
+    
   )
 }
 

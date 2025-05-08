@@ -1,122 +1,235 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import "./detalles.css";
+import DataTable from "react-data-table-component";
+import { Form, InputGroup } from "react-bootstrap";
 import NavBar from "../../../shared/components/NavBar/Navbar";
 import MenuFacturas from "../menufacturas/menuFacturas";
+import ModalGenerico from '../../../shared/components/ModalGenerico/ModalGenerico';
+import FacturaService from '../../../services/FacturaService';
+import FacNavbar from "../../../shared/components/FacNavbar/FacNavbar";
 
-import DataTable from "react-data-table-component";
 
-
-function detalles() {
+function Detalles() {
   const [facturas, setFacturas] = useState([]);
+  const [selectedOption, setSelectedOption] = useState("");
+  const [searchValue, setSearchValue] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [searchFilters, setSearchFilters] = useState({ documentNumber: "", firstName: "", lastName: "" });
 
-  useEffect(()=>{
-    const facturasDummy =[
-      {InvoiceNumber: "F001", CustomerName: "Juan Pérez", InvoiceDate: "2024-03-30"}
-    ];
-    setFacturas(facturasDummy)
-  },[])
-
-  const[currentPage,setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
-
 
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = facturas.slice(indexOfFirstRow, indexOfLastRow);
 
-  const columns = [
+  // Componente React
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = localStorage.getItem("Token");
+      const idTravelBranch = localStorage.getItem("SucursalId");
+  
+      try {
+        const response = await FacturaService.getDetalles(
+          idTravelBranch,
+          token,
+          searchFilters
+        );
+        
+        // Verificar y forzar array
+        const dataArray = Array.isArray(response) ? response : [];
+        setFacturas(dataArray);
+        
+        console.log("Datos formateados:", dataArray);
+  
+      } catch (error) {
+        console.error("Error:", error);
+        setFacturas([]); // Resetear a array vacío en errores
+      }
+    };
+  
+    fetchData();
+  }, [searchFilters]);
+  
+  // 3. Modificar el slice con verificación
+  
 
-    {
-      name: "Nombre del Cliente",
-      selector: (row) => row.InvoiceNumber,
-      sortable: true,
-      width: "143px",
-    },
-    {
-      name: "Direccion",
-      selector: (row) => row.CustomerName,
-      sortable: true,
-      width: "273px",
-    },
-    {
-      name: "Ciudad",
-      selector: (row) => row.InvoiceDate,
-      sortable: true,
-      width: "163px",
-    },
-    {
-      name: "Telefono",
-      selector: (row) => row.InvoiceDate,
-      sortable: true,
-      width: "163px",
+
+  const handleOptionChange = (e) => {
+    setSelectedOption(e.target.value);
+    setSearchValue("");
+  };
+
+  const handleSearchSubmit = () => {
+    // Crea un nuevo objeto limpio cada vez
+    const newFilters = {};
+
+    // Asigna solo el filtro seleccionado
+    if (selectedOption === "identificacion") {
+      newFilters.documentNumber = searchValue.trim();
     }
-  ]
+    else if (selectedOption === "nombre") {
+      newFilters.firstName = searchValue.trim();
+    }
+    else if (selectedOption === "apellido") {
+      newFilters.lastName = searchValue.trim();
+    }
+
+    // Fuerza la actualización incluso si se repiten valores
+    setSearchFilters({ ...newFilters, timestamp: Date.now() });
+    setCurrentPage(1);
+    setShowModal(false);
+  };
 
   const columnas = [
+    {
+      name: "Identificación",
+      selector: (row) => row.documentNumber,
+      sortable: true,
+      width: "200px",
+      style: {
+        fontWeight: "bold",
+        textAlign: "center"
+      }
+    },
+    {
+      name: "Nombre",
+      selector: (row) => row.firstName,
+      sortable: true,
+      width: "150px",
+      style: {
+        backgroundColor: "#f8f9fa"
+      }
+    },
+    {
+      name: "Apellido",
+      selector: (row) => row.lastName,
+      sortable: true,
+      width: "150px",
+      style: {
+        backgroundColor: "#f8f9fa"
+      }
+    }
+  ];
 
-    {
-      name: "Número Factura",
-      selector: (row) => row.InvoiceNumber,
-      sortable: true,
-      width: "143px",
-    },
-    {
-      name: "Cliente",
-      selector: (row) => row.CustomerName,
-      sortable: true,
-      width: "273px",
-    },
-    {
-      name: "Fecha Expedición",
-      selector: (row) => row.InvoiceDate,
-      sortable: true,
-      width: "163px",
-    },
-  ]
 
   const conditionalRowStyles = [
     {
       when: (row, index) => index % 2 === 0,
       style: {
-        backgroundColor: "#f1e1dc !important",
+        backgroundColor: "#f4f4f4",
+        color: "#333",
       },
     },
     {
       when: (row, index) => index % 2 !== 0,
       style: {
-        backgroundColor: "#dce8f1 !important",
+        backgroundColor: "#b01421",
+        color: "#fff",
       },
     },
   ];
 
-  console.log("Facturas cargadas:", facturas);
-  console.log("Filas actuales:", currentRows);
+  const cuerpoModal = (
+    <Form>
+      <Form.Group>
+        {["identificacion", "nombre", "apellido"].map((option) => (
+          <div key={option} className="d-flex align-items-center mb-3">
+            <Form.Check
+              type="radio"
+              label={option === "identificacion" ? "Documento identificación" : option === "nombre" ? "Nombre" : "Apellido"}
+              value={option}
+              checked={selectedOption === option}
+              onChange={handleOptionChange}
+              className="me-3"
+            />
+            {selectedOption === option && (
+              <InputGroup style={{ width: "300px" }}>
+                <Form.Control
+                  type="text"
+                  placeholder={`Buscar por ${option}...`}
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                />
+              </InputGroup>
+            )}
+          </div>
+        ))}
+      </Form.Group>
+    </Form>
+  );
 
+  const datos = [
+    {
+      documentNumber: "001-1234567",
+      firstName: "María",
+      lastName: "García"
+    },
+    {
+      documentNumber: "002-7654321",
+      firstName: "Carlos",
+      lastName: "Rodríguez"
+    }
+  ];
 
   return (
     <div>
-
       <NavBar />
       <MenuFacturas />
-      <div className='table-container'>
+
+
+      <div className='table-containner'>
         <DataTable
-          columns={columns} // Usar las columnas definidas
-          data={currentRows}
+          columns={[
+            ...columnas,
+            {
+              name: (
+                <button
+                  style={{
+                    width: "45px",
+                    height: "45px",
+                    backgroundColor: "#336bff",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                  }}
+                  onClick={() => setShowModal(true)}
+                >
+                  Buscar
+                </button>
+              ),
+              width: "100px",
+              cell: () => null, // celda vacía
+              ignoreRowClick: true,
+              allowOverflow: true,
+              button: true,
+            },
+          ]}
+          data={facturas.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)}
           className="custom-table"
           conditionalRowStyles={conditionalRowStyles}
-          responsive />
+          responsive
+          pagination
+          paginationPerPage={rowsPerPage}
+          paginationRowsPerPageOptions={[10, 20, 30]}
+          onChangePage={page => setCurrentPage(page)}
+        />
       </div>
 
-      <div className='table-container'>
-        <DataTable
-          columns={columnas} // Usar las columnas definidas
-          data={currentRows}
-          className="custom-table"
-          conditionalRowStyles={conditionalRowStyles}
-          responsive />
-      </div>
 
+
+      <ModalGenerico
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        titulo="Buscar"
+        cuerpo={cuerpoModal}
+        onGuardar={handleSearchSubmit}
+      />
     </div>
-  )
+  );
 }
 
-export default detalles
+export default Detalles;

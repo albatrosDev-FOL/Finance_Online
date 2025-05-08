@@ -49,6 +49,8 @@ const Sucursales = () => {
         strLogin,
         token
       );
+
+    
       setSucursales(response.TravelAgencyBranches || []);
       const selectedBranch = response.TravelAgencyBranches.find(
         (branch) => branch.Id === selectedSucursal.Id
@@ -79,7 +81,7 @@ const Sucursales = () => {
     const loadSucursales = async () => {
       const token = localStorage.getItem("Token");
       const strLogin = decodeToken(token);
-
+    
       try {
         const response = await UsuarioService.getSucursalesByUsuario(
           strLogin,

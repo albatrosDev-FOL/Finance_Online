@@ -1,6 +1,10 @@
 import React, { useState } from "react";
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { 
+  Dropdown, 
+  DropdownToggle, 
+  DropdownMenu, 
+  DropdownItem 
+} from "react-bootstrap";import "bootstrap/dist/css/bootstrap.min.css";
 import "./MenuDes.css"; // Archivo CSS para estilos personalizados
 
 const MenuDes = ({ sucursales, value, onSelectSucursal }) => {

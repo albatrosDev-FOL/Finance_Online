@@ -252,7 +252,7 @@ const ListadoFacturacion = () => {
     </Form>
   );
 
-  return (
+  return ( 
     <>
       <NavBar />
       <MenuFacturas />

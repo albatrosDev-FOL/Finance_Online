@@ -1,17 +1,38 @@
+.table-containner {
+  width: 300px;
+  border-radius: 5%;
+  margin-left: 200px;
+}
+
+/* Elimina todos los display: flex de la estructura de la tabla */
+.table-containner .rdt_TableHeadRow,
+.table-container .rdt_TableHeadRow {
+  background-color: #003366;
+  color: white;
+  /* Removido display: flex y justify-content */
+}
 
 .table-container {
-    width: 100%; /* Ocupa el 100% del ancho disponible */
-    max-width: 100%; /* No exceder el ancho de la página */
-    overflow-x: auto; /* Permite el desplazamiento horizontal si es necesario */
-    margin: 0 auto; /* Centra el contenedor */
-    padding: 10px; /* Espaciado interno */
-    box-sizing: border-box; /* Incluye el padding en el ancho total */
-  }
-.custom-table {
-    width: 80%; /* La tabla ocupa el 100% del contenedor */
-    min-width: 1000px; /* Ancho mínimo para evitar que se comprima demasiado */
-    background-color: rgba(224, 241, 255, 0.61);
-    border-radius: 10px; /* Bordes redondeados */
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Sombra */
-    overflow: hidden; /* Evita que el contenido se desborde */
-  }
+  width: 1000px;
+  padding: 70px;
+  margin-left: 200px;
+}
+
+/* Asegúrate de que las celdas tengan el mismo ancho */
+.table-container .rdt_TableCell {
+  font-size: 15px;
+  padding: 10px;
+  display: table-cell; /* Mantener comportamiento de tabla */
+  vertical-align: middle;
+}
+
+/* Elimina esto o ajústalo */
+.table-container .rdt_TableRow:hover {
+  background-color: #f0f0f0; /* Color válido */
+}
+
+/* Agrega esto para dar prioridad a los estilos condicionales */
+.rdt_TableRow {
+  background-color: inherit !important;
+  color: inherit !important;
+}
