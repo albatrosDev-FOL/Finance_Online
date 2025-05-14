@@ -7,6 +7,12 @@ import FacturaService from "../../../services/FacturaService";
 import "./listado.css";
 import FacNavbar from "../../../shared/components/FacNavbar/FacNavbar";
 import { Form } from "react-bootstrap";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { registerLocale, setDefaultLocale } from "react-datepicker";
+import es from "date-fns/locale/es"; // Para español
+
+registerLocale("es", es); // Registrar locale en español
 
 const ListadoFacturacion = () => {
   const [facturas, setFacturas] = useState([]);
@@ -15,50 +21,55 @@ const ListadoFacturacion = () => {
   const [selectedOption, setSelectedOption] = useState("");
   const rowsPerPage = 10;
 
-  const [fechaInicio, setFechaInicio] = useState("");
-  const [fechaFin, setFechaFin] = useState("");
-
+  // Cambiamos a tipo Date para los pickers
+  const [fechaInicio, setFechaInicio] = useState(null);
+  const [fechaFin, setFechaFin] = useState(null);
   const [numeroFactura, setNumeroFactura] = useState("");
-
 
   useEffect(() => {
     const fetchFacturas = async () => {
       const token = localStorage.getItem("Token");
-  
-      // Formatear fechas si es necesario
-      const formatDate = (dateString) => {
-        if (!dateString) return "";
-        const date = new Date(dateString);
-        return date.toISOString().split("T")[0]; // Formato YYYY-MM-DD
+
+      // Función para formatear fechas
+      const formatDate = (date) => {
+        if (!date) return "";
+        // Si es un objeto Date, lo formateamos
+        if (date instanceof Date) {
+          return date.toISOString().split("T")[0]; // Formato YYYY-MM-DD
+        }
+        // Si es un string, lo parseamos primero
+        const parsedDate = new Date(date);
+        return parsedDate.toISOString().split("T")[0];
       };
-  
+
       const data = {
-        FinalDate: selectedOption === "rangoFecha" || selectedOption === "tiquete" ? formatDate(fechaFin) : "",
-        InitialDate: selectedOption === "rangoFecha" || selectedOption === "tiquete" ? formatDate(fechaInicio) : "",
+        FinalDate:
+          selectedOption === "rangoFecha" || selectedOption === "tiquete"
+            ? formatDate(fechaFin)
+            : "",
+        InitialDate:
+          selectedOption === "rangoFecha" || selectedOption === "tiquete"
+            ? formatDate(fechaInicio)
+            : "",
         Invoicenumber: selectedOption === "numeroFactura" ? numeroFactura : "",
         Querytype: queryType,
         ThirdPartyId: 1,
         Travelagyid: localStorage.getItem("SucursalId"),
       };
-  
+
       try {
         const response = await FacturaService.postListarFactura(data, token);
-        console.log("Respuesta del servidor:", response); // Depuración
         if (response && response.InvoiceResult) {
           setFacturas(response.InvoiceResult);
         } else {
-          console.error("Respuesta inesperada del servidor:", response);
-          setFacturas([]); // Limpiar la lista de facturas
+          setFacturas([]);
         }
       } catch (error) {
         console.error("Error al obtener facturas:", error);
-        if (error.response) {
-          console.error("Detalles del error:", error.response.data); // Depuración
-        }
-        setFacturas([]); // Limpiar la lista de facturas
+        setFacturas([]);
       }
     };
-  
+
     fetchFacturas();
   }, [queryType, numeroFactura, fechaInicio, fechaFin, selectedOption]);
 
@@ -190,20 +201,42 @@ const ListadoFacturacion = () => {
           onChange={handleOptionChange}
         />
         {selectedOption === "rangoFecha" && (
-          <div className="mt-3 d-flex align-items-center">
-            <Form.Label className="me-2">Fecha Inicio:</Form.Label>
-            <Form.Control
-              type="text"
-              value={fechaInicio}
-              onChange={(e) => setFechaInicio(e.target.value)}
-              className="me-3"
-            />
-            <Form.Label className="me-2">Fecha Fin:</Form.Label>
-            <Form.Control
-              type="text"
-              value={fechaFin}
-              onChange={(e) => setFechaFin(e.target.value)}
-            />
+          <div className="mt-3">
+            <div className="mb-3 d-flex align-items-center">
+              <Form.Label className="me-2" style={{ minWidth: "100px" }}>
+                Fecha Inicio:
+              </Form.Label>
+              <DatePicker
+                selected={fechaInicio}
+                onChange={(date) => setFechaInicio(date)}
+                selectsStart
+                startDate={fechaInicio}
+                endDate={fechaFin}
+                locale="es"
+                dateFormat="dd/MM/yyyy"
+                className="form-control"
+                placeholderText="Seleccione fecha inicio"
+                isClearable
+              />
+            </div>
+            <div className="d-flex align-items-center">
+              <Form.Label className="me-2" style={{ minWidth: "100px" }}>
+                Fecha Fin:
+              </Form.Label>
+              <DatePicker
+                selected={fechaFin}
+                onChange={(date) => setFechaFin(date)}
+                selectsEnd
+                startDate={fechaInicio}
+                endDate={fechaFin}
+                minDate={fechaInicio}
+                locale="es"
+                dateFormat="dd/MM/yyyy"
+                className="form-control"
+                placeholderText="Seleccione fecha fin"
+                isClearable
+              />
+            </div>
           </div>
         )}
         <Form.Check
@@ -215,44 +248,21 @@ const ListadoFacturacion = () => {
         />
         {selectedOption === "numeroFactura" && (
           <div className="mt-3 d-flex align-items-center">
-            <Form.Label className="me-2"></Form.Label>
+            <Form.Label className="me-2">Número:</Form.Label>
             <Form.Control
               type="text"
               value={numeroFactura}
               onChange={(e) => setNumeroFactura(e.target.value)}
               className="me-3"
+              placeholder="Ingrese número de factura"
             />
           </div>
         )}
-        {/* <Form.Check
-          type="radio"
-          label="Tiquete"
-          value="tiquete"
-          checked={selectedOption === "tiquete"}
-          onChange={handleOptionChange}
-        /> */}
-        {/* {selectedOption === "tiquete" && (
-          <div className="mt-3 d-flex align-items-center">
-            <Form.Label className="me-2"> </Form.Label>
-            <Form.Control
-              type="text"
-              value={fechaInicio}
-              onChange={(e) => setFechaInicio(e.target.value)}
-              className="me-3"
-            />
-            <Form.Label className="me-2"></Form.Label>
-            <Form.Control
-              type="text"
-              value={fechaFin}
-              onChange={(e) => setFechaFin(e.target.value)}
-            />
-          </div>
-        )} */}
       </Form.Group>
     </Form>
   );
 
-  return ( 
+  return (
     <>
       <NavBar />
       <MenuFacturas />
