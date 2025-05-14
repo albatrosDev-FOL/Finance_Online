@@ -6,7 +6,6 @@ import NavBar from "../../../shared/components/NavBar/Navbar";
 import MenuFacturas from "../menufacturas/menuFacturas";
 import ModalGenerico from '../../../shared/components/ModalGenerico/ModalGenerico';
 import FacturaService from '../../../services/FacturaService';
-import FacNavbar from "../../../shared/components/FacNavbar/FacNavbar";
 
 
 function Detalles() {
@@ -28,23 +27,39 @@ function Detalles() {
     const fetchData = async () => {
       const token = localStorage.getItem("Token");
       const idTravelBranch = localStorage.getItem("SucursalId");
-  
+      
       try {
         const response = await FacturaService.getDetalles(
           idTravelBranch,
           token,
           searchFilters
         );
+        console.log("Respuesta servidor", response.CustomerList )
+
         
         // Verificar y forzar array
-        const dataArray = Array.isArray(response) ? response : [];
-        setFacturas(dataArray);
+        const dataArray = Array.isArray( response.CustomerList) ?  response.CustomerList : [];
+
+        if(dataArray.length > 0){
+          const firstResult = dataArray[0];
+        }
+
+        const mappedFilters ={
+          documentNumber: firstResult.DocumentNumber || "",
+          firstName: firstResult.FirstName || "",
+          lastName: firstResult.LastName || ""
+        }
+
+              setSearchFilters(mappedFilters);
+
+
+        // setFacturas(dataArray);
         
-        console.log("Datos formateados:", dataArray);
+
   
       } catch (error) {
         console.error("Error:", error);
-        setFacturas([]); // Resetear a array vacío en errores
+        // setFacturas([]); // Resetear a array vacío en errores
       }
     };
   
@@ -176,15 +191,14 @@ function Detalles() {
     <div>
       <NavBar />
       <MenuFacturas />
-
-
+{/* 
       <div className='table-containner'>
         <DataTable
           columns={[
             ...columnas,
             {
               name: (
-                <button
+                <buttonñ
                   style={{
                     width: "45px",
                     height: "45px",
@@ -217,7 +231,10 @@ function Detalles() {
           paginationRowsPerPageOptions={[10, 20, 30]}
           onChangePage={page => setCurrentPage(page)}
         />
-      </div>
+      </div> */}
+
+
+      
 
 
 
