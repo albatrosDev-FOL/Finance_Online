@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import "./detalles.css";
 import DataTable from "react-data-table-component";
-import { Pagination } from "@mui/material";
 import { Form, InputGroup } from "react-bootstrap";
 import NavBar from "../../../shared/components/NavBar/Navbar";
 import MenuFacturas from "../menufacturas/menuFacturas";
@@ -11,30 +10,29 @@ import FacturaService from '../../../services/FacturaService';
 
 function Detalles() {
   const [facturas, setFacturas] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const [selectedOption, setSelectedOption] = useState("mostrar_todos");
+  const [selectedOption, setSelectedOption] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [searchFilters, setSearchFilters] = useState({
-    documentNumber: "",
-    firstName: "",
-    lastName: "",
-  });
+  const [searchFilters, setSearchFilters] = useState({ documentNumber: "", firstName: "", lastName: "" });
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const rowsPerPage = 10;
 
-  // Carga inicial de datos
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const currentRows = facturas.slice(indexOfFirstRow, indexOfLastRow);
+
+  // Componente React
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("Token");
       const idTravelBranch = localStorage.getItem("SucursalId");
-
+      
       try {
         const response = await FacturaService.getDetalles(
           idTravelBranch,
           token,
-          {}
+          searchFilters
         );
         console.log("Respuesta servidor", response.CustomerList )
 
@@ -61,11 +59,10 @@ function Detalles() {
   
       } catch (error) {
         console.error("Error:", error);
-        setFacturas([]);
-        setFilteredData([]);
+        // setFacturas([]); // Resetear a array vacío en errores
       }
     };
-
+  
     fetchData();
   }, [searchFilters]);
   
@@ -74,55 +71,28 @@ function Detalles() {
 
 
   const handleOptionChange = (e) => {
-    const option = e.target.value;
-    setSelectedOption(option);
+    setSelectedOption(e.target.value);
     setSearchValue("");
-
-    // Si selecciona "mostrar todos", limpiar filtros inmediatamente
-    if (option === "mostrar_todos") {
-      setSearchFilters({
-        documentNumber: "",
-        firstName: "",
-        lastName: "",
-      });
-    }
   };
-
-  // Filtrado en tiempo real mientras escribe en el modal
-  useEffect(() => {
-    if (selectedOption === "identificacion") {
-      setSearchFilters({
-        documentNumber: searchValue,
-        firstName: "",
-        lastName: "",
-      });
-    } else if (selectedOption === "nombre") {
-      setSearchFilters({
-        documentNumber: "",
-        firstName: searchValue,
-        lastName: "",
-      });
-    } else if (selectedOption === "apellido") {
-      setSearchFilters({
-        documentNumber: "",
-        firstName: "",
-        lastName: searchValue,
-      });
-    }
-  }, [searchValue, selectedOption]);
 
   const handleSearchSubmit = () => {
-    setShowModal(false);
-  };
+    // Crea un nuevo objeto limpio cada vez
+    const newFilters = {};
 
-  const handleClearFilters = () => {
-    setSelectedOption("mostrar_todos");
-    setSearchValue("");
-    setSearchFilters({
-      documentNumber: "",
-      firstName: "",
-      lastName: "",
-    });
+    // Asigna solo el filtro seleccionado
+    if (selectedOption === "identificacion") {
+      newFilters.documentNumber = searchValue.trim();
+    }
+    else if (selectedOption === "nombre") {
+      newFilters.firstName = searchValue.trim();
+    }
+    else if (selectedOption === "apellido") {
+      newFilters.lastName = searchValue.trim();
+    }
+
+    // Fuerza la actualización incluso si se repiten valores
+    setSearchFilters({ ...newFilters, timestamp: Date.now() });
+    setCurrentPage(1);
     setShowModal(false);
   };
 
@@ -131,116 +101,128 @@ function Detalles() {
       name: "Identificación",
       selector: (row) => row.documentNumber,
       sortable: true,
-      width: "250px",
+      width: "200px",
       style: {
         fontWeight: "bold",
-        textAlign: "center",
-      },
+        textAlign: "center"
+      }
     },
     {
-      name: "Nombres",
+      name: "Nombre",
       selector: (row) => row.firstName,
       sortable: true,
-      width: "420px",
+      width: "150px",
+      style: {
+        backgroundColor: "#f8f9fa"
+      }
     },
     {
-      name: "Apellidos",
+      name: "Apellido",
       selector: (row) => row.lastName,
       sortable: true,
-      width: "420px",
-    },
-    {
-      width: "100px",
-      cell: () => null,
-      ignoreRowClick: true,
-    },
+      width: "150px",
+      style: {
+        backgroundColor: "#f8f9fa"
+      }
+    }
   ];
+
 
   const conditionalRowStyles = [
     {
       when: (row, index) => index % 2 === 0,
       style: {
-        backgroundColor: "#f1e1dc !important",
+        backgroundColor: "#f4f4f4",
+        color: "#333",
       },
     },
     {
       when: (row, index) => index % 2 !== 0,
       style: {
-        backgroundColor: "#dce8f1 !important",
+        backgroundColor: "#b01421",
+        color: "#fff",
       },
     },
   ];
 
-  const indexOfLastRow = currentPage * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = filteredData.slice(indexOfFirstRow, indexOfLastRow);
-
-  const handlePageChange = (event, page) => {
-    setCurrentPage(page);
-  };
-
   const cuerpoModal = (
     <Form>
       <Form.Group>
-        {["mostrar_todos", "identificacion", "nombre", "apellido"].map(
-          (option) => (
-            <div key={option} className="modal-option">
-              <Form.Check
-                type="radio"
-                label={
-                  option === "mostrar_todos"
-                    ? "Mostrar todos"
-                    : option === "identificacion"
-                    ? "Documento identificación"
-                    : option === "nombre"
-                    ? "Nombre"
-                    : "Apellido"
-                }
-                value={option}
-                checked={selectedOption === option}
-                onChange={handleOptionChange}
-                className="me-2"
-              />
-              {selectedOption === option && option !== "mostrar_todos" && (
-                <InputGroup className="modal-input-group">
-                  <Form.Control
-                    type="text"
-                    placeholder={`Buscar por ${
-                      option === "identificacion"
-                        ? "documento"
-                        : option === "nombre"
-                        ? "nombre"
-                        : "apellido"
-                    }...`}
-                    value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                    autoFocus
-                  />
-                </InputGroup>
-              )}
-            </div>
-          )
-        )}
+        {["identificacion", "nombre", "apellido"].map((option) => (
+          <div key={option} className="d-flex align-items-center mb-3">
+            <Form.Check
+              type="radio"
+              label={option === "identificacion" ? "Documento identificación" : option === "nombre" ? "Nombre" : "Apellido"}
+              value={option}
+              checked={selectedOption === option}
+              onChange={handleOptionChange}
+              className="me-3"
+            />
+            {selectedOption === option && (
+              <InputGroup style={{ width: "300px" }}>
+                <Form.Control
+                  type="text"
+                  placeholder={`Buscar por ${option}...`}
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                />
+              </InputGroup>
+            )}
+          </div>
+        ))}
       </Form.Group>
-      <div className="button-group">
-        <button className="btn btn-secondary" onClick={handleClearFilters}>
-          Limpiar
-        </button>
-      </div>
     </Form>
   );
 
+  const datos = [
+    {
+      documentNumber: "001-1234567",
+      firstName: "María",
+      lastName: "García"
+    },
+    {
+      documentNumber: "002-7654321",
+      firstName: "Carlos",
+      lastName: "Rodríguez"
+    }
+  ];
+
   return (
-    <div style={{ width: "100%", padding: "0 20px" }}>
-      {" "}
-      {/* Contenedor principal */}
+    <div>
       <NavBar />
       <MenuFacturas />
 {/* 
       <div className='table-containner'>
         <DataTable
-          columns={columnas}
-          data={currentRows}
+          columns={[
+            ...columnas,
+            {
+              name: (
+                <buttonñ
+                  style={{
+                    width: "45px",
+                    height: "45px",
+                    backgroundColor: "#336bff",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                  }}
+                  onClick={() => setShowModal(true)}
+                >
+                  Buscar
+                </button>
+              ),
+              width: "100px",
+              cell: () => null, // celda vacía
+              ignoreRowClick: true,
+              allowOverflow: true,
+              button: true,
+            },
+          ]}
+          data={facturas.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage)}
           className="custom-table"
           conditionalRowStyles={conditionalRowStyles}
           responsive

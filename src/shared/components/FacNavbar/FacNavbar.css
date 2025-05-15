@@ -1,18 +1,18 @@
 .SearchContainer {
-  width: 620px;
-  height: 50px;
-  display: flex;
-  justify-content: space-around;
-  background-color: rgba(20, 31, 52, 1);
-  border-radius: 33px;
-  margin-left: 460px;
-  margin: 0 auto; /* Esto centra horizontalmente el contenedor */
-  position: relative; /* Para posicionamiento relativo si es necesario */
-}
-
-@media (max-width: 768px) {
-  .SearchContainer {
-    width: 95%; /* Más ancho en pantallas pequeñas */
-    height: 45px;
+    width: 620px;
+    height: 50px;
+    display: flex;
+    justify-content: space-around;
+    background-color:rgba(20, 31, 52, 1);
+    border-radius: 33px;
+    margin-left: 460px;
   }
-}
+
+  
+
+
+
+  
+ 
+
+  

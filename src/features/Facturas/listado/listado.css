@@ -20,54 +20,32 @@
 .custom-table .sc-cMqPwU .chaYgW .rdt_TableRow {
   background-color: blue;
 }
+/* Estilos para las filas */
+/* .custom-table{
+.
+ 
+  border-bottom: 1px solid #ddd;
+  background: red;
+} */
+
+/* .custom-table:hover {
+  background-color: rgba(224, 241, 255, 0.61);
+  background: red;
+} */
+
+/* Estilos para los encabezados */
+/* .custom-table .rdt_TableHead {
+  font-weight: bold;
+  text-align: left;
+  background: red;
+} */
 
 /* Estilos para las celdas */
 .custom-table .rdt_TableCell {
   padding: 12px;
   white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+
   border-radius: 20px;
-}
-
-/* Estilos para el DatePicker */
-.react-datepicker {
-  font-family: inherit;
-  border-radius: 8px;
-  border: 1px solid #ced4da;
-}
-
-.react-datepicker__header {
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.react-datepicker__current-month {
-  color: #336bff;
-  font-weight: bold;
-}
-
-.react-datepicker__day--selected {
-  background-color: #336bff;
-  color: white;
-}
-
-.react-datepicker__day--keyboard-selected {
-  background-color: #336bff;
-  color: white;
-}
-
-.react-datepicker__day:hover {
-  background-color: #e9ecef;
-}
-
-.react-datepicker__navigation {
-  top: 10px;
-}
-
-.react-datepicker__input-container input {
-  width: 100%;
-  padding: 0.375rem 0.75rem;
-  border: 1px solid #ced4da;
-  border-radius: 0.25rem;
 }
 
 .ModalButton {
