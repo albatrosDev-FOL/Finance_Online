@@ -6,7 +6,7 @@ import NavBar from "../../../shared/components/NavBar/Navbar";
 import MenuFacturas from "../menufacturas/menuFacturas";
 import ModalGenerico from '../../../shared/components/ModalGenerico/ModalGenerico';
 import FacturaService from '../../../services/FacturaService';
-
+import FacNavbar from '../../../shared/components/FacNavbar/FacNavbar';
 
 function Detalles() {
   const [facturas, setFacturas] = useState([]);
@@ -27,47 +27,47 @@ function Detalles() {
     const fetchData = async () => {
       const token = localStorage.getItem("Token");
       const idTravelBranch = localStorage.getItem("SucursalId");
-      
+
       try {
         const response = await FacturaService.getDetalles(
           idTravelBranch,
           token,
           searchFilters
         );
-        console.log("Respuesta servidor", response.CustomerList )
+        console.log("Respuesta servidor", response.CustomerList)
 
-        
+
         // Verificar y forzar array
-        const dataArray = Array.isArray( response.CustomerList) ?  response.CustomerList : [];
+        const dataArray = Array.isArray(response.CustomerList) ? response.CustomerList : [];
 
-        if(dataArray.length > 0){
+        if (dataArray.length > 0) {
           const firstResult = dataArray[0];
         }
 
-        const mappedFilters ={
+        const mappedFilters = {
           documentNumber: firstResult.DocumentNumber || "",
           firstName: firstResult.FirstName || "",
           lastName: firstResult.LastName || ""
         }
 
-              setSearchFilters(mappedFilters);
+        setSearchFilters(mappedFilters);
 
 
         // setFacturas(dataArray);
-        
 
-  
+
+
       } catch (error) {
         console.error("Error:", error);
         // setFacturas([]); // Resetear a array vacío en errores
       }
     };
-  
+
     fetchData();
   }, [searchFilters]);
-  
+
   // 3. Modificar el slice con verificación
-  
+
 
 
   const handleOptionChange = (e) => {
@@ -191,7 +191,9 @@ function Detalles() {
     <div>
       <NavBar />
       <MenuFacturas />
-{/* 
+      <FacNavbar cuerpoModal={cuerpoModal} />
+
+      {/* 
       <div className='table-containner'>
         <DataTable
           columns={[
@@ -234,7 +236,7 @@ function Detalles() {
       </div> */}
 
 
-      
+
 
 
 
