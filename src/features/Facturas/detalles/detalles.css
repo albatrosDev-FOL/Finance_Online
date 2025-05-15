@@ -1,38 +1,88 @@
-.table-containner {
-  width: 300px;
-  border-radius: 5%;
-  margin-left: 200px;
-}
-
-/* Elimina todos los display: flex de la estructura de la tabla */
-.table-containner .rdt_TableHeadRow,
-.table-container .rdt_TableHeadRow {
-  background-color: #003366;
-  color: white;
-  /* Removido display: flex y justify-content */
-}
-
+/* Estilos para el contenedor principal */
 .table-container {
-  width: 1000px;
-  padding: 70px;
-  margin-left: 200px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-/* Asegúrate de que las celdas tengan el mismo ancho */
-.table-container .rdt_TableCell {
-  font-size: 15px;
-  padding: 10px;
-  display: table-cell; /* Mantener comportamiento de tabla */
+/* Estilos para la tabla */
+.custom-table {
+  width: 100%;
+  min-width: 1000px;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-bottom: 20px;
+}
+
+.custom-table .rdt_TableCell {
+  padding: 12px 15px;
+  white-space: nowrap;
   vertical-align: middle;
+  border-bottom: 1px solid #e0e0e0;
 }
 
-/* Elimina esto o ajústalo */
-.table-container .rdt_TableRow:hover {
-  background-color: #f0f0f0; /* Color válido */
+/* Estilos para el modal */
+.modal-content {
+  padding: 20px;
+  border-radius: 10px;
 }
 
-/* Agrega esto para dar prioridad a los estilos condicionales */
-.rdt_TableRow {
-  background-color: inherit !important;
-  color: inherit !important;
+.modal-option {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.modal-option label {
+  min-width: 150px;
+  margin-bottom: 0;
+}
+
+.modal-input-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* Estilos para los botones */
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Media Queries para responsividad */
+@media (max-width: 768px) {
+  .modal-option {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .modal-option label {
+    margin-bottom: 5px;
+  }
+
+  .modal-input-group {
+    width: 100%;
+  }
+
+  .custom-table .rdt_TableCell {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 576px) {
+  .table-container {
+    padding: 10px;
+  }
+
+  .custom-table {
+    min-width: auto;
+  }
 }
