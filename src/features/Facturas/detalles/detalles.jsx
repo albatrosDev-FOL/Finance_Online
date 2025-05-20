@@ -5,10 +5,11 @@ import { Pagination } from "@mui/material";
 import { Form, InputGroup } from "react-bootstrap";
 import NavBar from "../../../shared/components/NavBar/Navbar";
 import MenuFacturas from "../menufacturas/menuFacturas";
-import ModalGenerico from '../../../shared/components/ModalGenerico/ModalGenerico';
 import FacturaService from '../../../services/FacturaService';
 import FormDetalles from '../../../shared/FormDetalles/FormDetalles'
 
+import ModalGenerico from "../../../shared/components/ModalGenerico/ModalGenerico";
+import FacNavbar from "../../../shared/components/FacNavbar/FacNavbar";
 
 function Detalles() {
   const [facturas, setFacturas] = useState([]);
@@ -37,29 +38,17 @@ function Detalles() {
           token,
           {}
         );
-        console.log("Respuesta servidor", response.CustomerList )
 
-        
-        // Verificar y forzar array
-        const dataArray = Array.isArray( response.CustomerList) ?  response.CustomerList : [];
-
-        if(dataArray.length > 0){
-          const firstResult = dataArray[0];
+        if (response?.CustomerList) {
+          const mappedData = response.CustomerList.map((item) => ({
+            documentNumber: item.DocumentNumber,
+            firstName: item.FirstName,
+            lastName: item.LastName,
+            rawData: item,
+          }));
+          setFacturas(mappedData);
+          setFilteredData(mappedData);
         }
-
-        const mappedFilters ={
-          documentNumber: firstResult.DocumentNumber || "",
-          firstName: firstResult.FirstName || "",
-          lastName: firstResult.LastName || ""
-        }
-
-              setSearchFilters(mappedFilters);
-
-
-        // setFacturas(dataArray);
-        
-
-  
       } catch (error) {
         console.error("Error:", error);
         setFacturas([]);
@@ -68,11 +57,32 @@ function Detalles() {
     };
 
     fetchData();
-  }, [searchFilters]);
-  
-  // 3. Modificar el slice con verificación
-  
+  }, []);
 
+  // Filtrado cuando cambian los filtros
+  useEffect(() => {
+    if (Object.values(searchFilters).every((val) => val === "")) {
+      setFilteredData(facturas);
+    } else {
+      const filtered = facturas.filter(
+        (item) =>
+          (searchFilters.documentNumber === "" ||
+            item.documentNumber
+              .toLowerCase()
+              .includes(searchFilters.documentNumber.toLowerCase())) &&
+          (searchFilters.firstName === "" ||
+            item.firstName
+              .toLowerCase()
+              .includes(searchFilters.firstName.toLowerCase())) &&
+          (searchFilters.lastName === "" ||
+            item.lastName
+              .toLowerCase()
+              .includes(searchFilters.lastName.toLowerCase()))
+      );
+      setFilteredData(filtered);
+      setCurrentPage(1);
+    }
+  }, [searchFilters, facturas]);
 
   const handleOptionChange = (e) => {
     const option = e.target.value;
@@ -240,31 +250,35 @@ function Detalles() {
       <FormDetalles/>
 {/* 
       <div className='table-containner'>
+      <FacNavbar cuerpoModal={cuerpoModal} />
+      <div className="table-container">
         <DataTable
           columns={columnas}
           data={currentRows}
           className="custom-table"
           conditionalRowStyles={conditionalRowStyles}
-          responsive
-          pagination
-          paginationPerPage={rowsPerPage}
-          paginationRowsPerPageOptions={[10, 20, 30]}
-          onChangePage={page => setCurrentPage(page)}
+          noDataComponent={
+            <div className="py-4 text-center">No se encontraron resultados</div>
+          }
         />
-      </div> */}
-
-
-      
-
-
-
-      <ModalGenerico
-        show={showModal}
-        onHide={() => setShowModal(false)}
-        titulo="Buscar"
-        cuerpo={cuerpoModal}
-        onGuardar={handleSearchSubmit}
-      />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "20px",
+          }}
+        >
+          <Pagination
+            count={Math.ceil(filteredData.length / rowsPerPage)}
+            page={currentPage}
+            onChange={handlePageChange}
+            color="primary"
+            showFirstButton
+            showLastButton
+          />
+        </div>
+      </div>
+      {/* Modal */}
     </div>
   );
 }

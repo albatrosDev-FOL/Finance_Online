@@ -25,6 +25,7 @@
 .custom-table .rdt_TableCell {
   padding: 12px;
   white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+
   border-radius: 20px;
 }
 

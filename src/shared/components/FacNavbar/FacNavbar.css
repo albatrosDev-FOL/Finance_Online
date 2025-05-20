@@ -9,10 +9,18 @@
   margin: 0 auto; /* Esto centra horizontalmente el contenedor */
   position: relative; /* Para posicionamiento relativo si es necesario */
 }
-
+  
 @media (max-width: 768px) {
   .SearchContainer {
     width: 95%; /* Más ancho en pantallas pequeñas */
     height: 45px;
   }
 }
+  
+
+
+
+  
+ 
+
+  
