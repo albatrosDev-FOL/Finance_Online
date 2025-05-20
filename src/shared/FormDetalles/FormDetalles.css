@@ -1,0 +1,35 @@
+ .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-fecha-factura,
+  .form-tipo-viaje,
+  .form-tipo-moneda,
+  .form-tipo-trm,
+  .form-tipo-oservice,
+  .form-tipo-destino,
+  .form-tipo-gds,
+  .form-tipo-pnr {
+    flex: 1;
+    min-width: 150px;
+  }
+
+  .form-vendedor,
+  .form-tipo-tiqueteador {
+    flex: 2;
+    min-width: 200px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+  }
+
+  .form-group .form-control,
+  .form-group .form-select {
+    width: 100%;
+  }

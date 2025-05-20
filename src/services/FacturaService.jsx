@@ -51,10 +51,42 @@ class FacturaService {
     }
 
 
-    
 
 
-    async getAgent(travelId,token) {
+    //sERVICIO para obtener los Vendedrores
+
+    async getAgent(travelId, token) {
+        try {
+            const params = {
+                travelId
+            };
+
+            const response = await axios.get(
+                `${this.url}Seller/Sellers`,
+                {
+                    params: params,
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            return response
+        }
+
+
+
+
+        catch (error) {
+            const errorMessage = error.response?.data?.message || error.message;
+            console.error("Error al obtener Agentes:", errorMessage);
+            throw new Error("No se pudieron obtener los agentes");
+        }
+    }
+
+    //sERVICIO para obtener los tiqueteadores
+
+    async getSeller(travelId, token) {
         try {
             const params = {
                 travelId
@@ -70,10 +102,41 @@ class FacturaService {
                     },
                 }
             );
-            return response.data
+            return response
         }
 
-        
+
+
+
+        catch (error) {
+            const errorMessage = error.response?.data?.message || error.message;
+            console.error("Error al obtener Agentes:", errorMessage);
+            throw new Error("No se pudieron obtener los agentes");
+        }
+    }
+
+    //sERVICIO para obtener los tiqueteadores
+
+    async getTravelType(travelId, token) {
+        try {
+            const params = {
+                travelId
+            };
+
+            const response = await axios.get(
+                `${this.url}BasicTable/TravelTypes`,
+                {
+                    params: params,
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            return response
+        }
+
+
 
 
         catch (error) {
@@ -84,7 +147,9 @@ class FacturaService {
     }
 
 
-
 }
+
+
+
 
 export default new FacturaService();

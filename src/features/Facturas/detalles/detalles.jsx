@@ -7,6 +7,7 @@ import NavBar from "../../../shared/components/NavBar/Navbar";
 import MenuFacturas from "../menufacturas/menuFacturas";
 import ModalGenerico from '../../../shared/components/ModalGenerico/ModalGenerico';
 import FacturaService from '../../../services/FacturaService';
+import FormDetalles from '../../../shared/FormDetalles/FormDetalles'
 
 
 function Detalles() {
@@ -236,6 +237,7 @@ function Detalles() {
       {/* Contenedor principal */}
       <NavBar />
       <MenuFacturas />
+      <FormDetalles/>
 {/* 
       <div className='table-containner'>
         <DataTable
