@@ -258,6 +258,26 @@ const ListadoFacturacion = () => {
             />
           </div>
         )}
+
+        <Form.Check
+          type="radio"
+          label="Cliente"
+          value="numeroFactura"
+          checked={selectedOption === "numeroFactura"}
+          onChange={handleOptionChange}
+        />
+        {selectedOption === "numeroFactura" && (
+          <div className="mt-3 d-flex align-items-center">
+            <Form.Label className="me-2">Cliente:</Form.Label>
+            <Form.Control
+              type="text"
+              value={numeroFactura}
+              onChange={(e) => setNumeroFactura(e.target.value)}
+              className="me-3"
+              placeholder="Ingrese número de factura"
+            />
+          </div>
+        )}
       </Form.Group>
     </Form>
   );

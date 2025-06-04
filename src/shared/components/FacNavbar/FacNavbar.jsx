@@ -10,6 +10,7 @@ import imgSave from "/search/save.png";
 import imgImprimir from "/search/imprimir.png";
 import imgReturn from "/search/return.png";
 import ModalGenerico from '../ModalGenerico/ModalGenerico'; // Importar el modal genérico
+import { useNavigate } from 'react-router-dom'
 
 const FacNavbar = ({ cuerpoModal, piePagina, onSearchClick }) => {
   const [showModal, setShowModal] = React.useState(false);
@@ -23,6 +24,8 @@ const FacNavbar = ({ cuerpoModal, piePagina, onSearchClick }) => {
     setShowModal(false);
   };
 
+  const navegate = useNavigate();
+
   return (
     <div className="SearchContainer">
       <div
@@ -35,7 +38,7 @@ const FacNavbar = ({ cuerpoModal, piePagina, onSearchClick }) => {
         }}
       >
         {[
-          { src: imgFile, alt: "File", label: "" },
+          { src: imgFile, alt: "File",  label: "", onClick:() => navegate("/DetallesFacturacion")},
           { src: imgArchivar, alt: "Archivar", label: "" },
           { src: imgCancel, alt: "Cancelar", label: "" },
           { src: imgExit, alt: "Exit", label: "" },

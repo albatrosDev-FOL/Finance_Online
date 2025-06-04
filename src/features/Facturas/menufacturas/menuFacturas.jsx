@@ -12,7 +12,7 @@ const menuFacturas = () => {
         <button onClick={() => navegate("/ListadoFacturacion")}>Listado</button>
       </div>
       <div className="box">
-        <button onClick={() => navegate("/DetallesFacturacion")}>Detalles</button>
+        <button >Detalles</button>
       </div>
       <div className="box">
         <button onClick={() => navegate("/RepresentacionGrafica")}>Representación Grafica </button>

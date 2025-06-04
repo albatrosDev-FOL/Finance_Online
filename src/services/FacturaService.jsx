@@ -53,9 +53,9 @@ class FacturaService {
 
 
 
-    //sERVICIO para obtener los Vendedrores
+    //sERVICIO para obtener los Vendedores
 
-    async getAgent(travelId, token) {
+    async getSeller (travelId, token) {
         try {
             const params = {
                 travelId
@@ -86,7 +86,7 @@ class FacturaService {
 
     //sERVICIO para obtener los tiqueteadores
 
-    async getSeller(travelId, token) {
+    async getAgent (travelId, token) {
         try {
             const params = {
                 travelId
@@ -115,7 +115,7 @@ class FacturaService {
         }
     }
 
-    //sERVICIO para obtener los tiqueteadores
+    //sERVICIO para obtener los tipos de  viajes
 
     async getTravelType(travelId, token) {
         try {
@@ -146,7 +146,61 @@ class FacturaService {
         }
     }
 
+    //Servicio para obtener los tipos de moneda
+    
+    async getCoints(travelId, token) {
+        try {
+            const params = {
+                travelId
+            };
 
+            const response = await axios.get(
+                `${this.url}BasicTable/Coins`,
+                {
+                    params: params,
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            return response
+        }
+
+
+
+
+        catch (error) {
+            const errorMessage = error.response?.data?.message || error.message;
+            console.error("Error al obtener Agentes:", errorMessage);
+            throw new Error("No se pudieron obtener los agentes");
+        }
+    }
+
+    async getDestination(travelId,token){
+        try {
+            const params = {
+                travelId
+            };
+
+            const response = await axios.get(
+                `${this.url}BasicTable/Destination`,
+                {
+                    params: params,
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            return response
+        }
+           catch (error) {
+            const errorMessage = error.response?.data?.message || error.message;
+            console.error("Error al obtener Agentes:", errorMessage);
+            throw new Error("No se pudieron obtener los agentes");
+        }
+    }
 }
 
 

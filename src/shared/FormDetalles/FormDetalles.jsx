@@ -12,7 +12,10 @@ import './FormDetalles.css'
 
 
 function FormDetalles() {
-    const [TravelType,setTravelType] = useState([])
+
+    const [Destination,setDestination] = useState([])
+    const [Coins, setCoins] = useState([])
+    const [TravelType, setTravelType] = useState([])
     const [Agent, setAgent] = useState([])
     const [Seller, setSeller] = useState([])
     const [validated, setValidated] = useState(false);
@@ -30,6 +33,7 @@ function FormDetalles() {
 
 
     useEffect(() => {
+        //obtener vendedor
         const fetchData = async () => {
             const token = localStorage.getItem("Token");
             const idTravelBranch = localStorage.getItem("SucursalId");
@@ -40,7 +44,7 @@ function FormDetalles() {
                     token,
                     {}
                 );
-                console.log("Respuesta servidor", response)
+                console.log('Vendedores', response)
                 const thirdparties = response.data.Thirdparties
                 setSeller(thirdparties)
             }
@@ -57,13 +61,15 @@ function FormDetalles() {
             const idTravelBranch = localStorage.getItem("SucursalId");
 
             try {
-                const response = await FacturaService.getTravelType(idTravelBranch, token, {});
-                const basicTab = response.data.BasicTab
-                setTravelType(basicTab)
+                const response = await FacturaService.getAgent(idTravelBranch, token, {});
+                console.log("Respuesta Tiqueteadores:", response);
 
-                console.log("Respuesta Tiqueteador", response);
+                const Thirdparties = response.data.Thirdparties
+                setAgent(Thirdparties)
 
-            
+
+
+
 
             } catch (error) {
                 console.error("Error en fetchAgent:", error);
@@ -76,23 +82,74 @@ function FormDetalles() {
             const token = localStorage.getItem("Token");
             const idTravelBranch = localStorage.getItem("SucursalId");
 
-            try{
+            try {
                 const response = await FacturaService.getTravelType(idTravelBranch, token, {});
-                console.log("Respuesta Viajes",response)
+                console.log("Tipo viaje", response)
+                const BasicTab = response.data.BasicTab
+                setTravelType(BasicTab)
 
-            }catch(error){
+            } catch (error) {
                 console.log("Error en fechtTravelType: ", error)
             }
+        }
+
+        //obtener moneda
+        const fechtCoins = async () => {
+            const token = localStorage.getItem("Token");
+            const idTravelBranch = localStorage.getItem("SucursalId");
+
+            try {
+                const response = await FacturaService.getCoints(idTravelBranch, token, {});
+
+                
+                const Coins = response.data.Coins
+                setCoins(Coins)
+
+            } catch (error) {
+                console.log("Error en fechtTravelType: ", error)
+            }
+
+        }
+
+        //obtener Destino
+
+        const fecthDestination = async () => {
+            const token = localStorage.getItem("Token");
+            const idTravelBranch = localStorage.getItem("SucursalId");
+
+            try{
+                const response = await FacturaService.getDestination(idTravelBranch,token, {})
+
+                console.log("Tipo destinos:", response)
+                const BasicTab= response.data.BasicTab
+                setDestination(BasicTab)
+            }
+            catch (error) {
+                console.log("Error en fechtTravelType: ", error)
+            }
+
         }
 
         fetchData();
         fetchAgent();
         fechtTravelType();
+        fechtCoins();
+        fecthDestination();
     }, []);
 
     return (
         <Form validated={validated} onSubmit={handleSubmit}>
             <Row className="mb-3">
+                 <Form.Group className='form-fecha-factura' as={Col} md="4" controlId="validationCustom01">
+                    <Form.Label  >Cliente  </Form.Label>
+                     <Form.Select aria-label="Default select example">
+                      
+
+
+                    </Form.Select>
+        
+                </Form.Group>
+
                 <Form.Group className='form-fecha-factura' as={Col} md="4" controlId="validationCustom01">
                     <Form.Label  >Fecha Factura  </Form.Label>
 
@@ -119,9 +176,9 @@ function FormDetalles() {
                     <Form.Label>Vendedor</Form.Label>
                     <Form.Select aria-label="Default select example">
                         <option value="">Selecciona un trabajador</option>
-                        {Agent.map((worker) => (
-                            <option key={worker.EmployeeID} value={worker.EmployeeID}>
-                                {worker.Name}
+                        {Agent.map((vendedor) => (
+                            <option key={`agent-${vendedor.EmployeeID}`} value={vendedor.EmployeeID}>
+                                {vendedor.Name}
                             </option>
                         ))}
 
@@ -134,12 +191,12 @@ function FormDetalles() {
                     <Form.Label>Tipo de viaje</Form.Label>
 
                     <Form.Select aria-label="Default select example">
-                        <option>Open this select menu</option>
-                        {TravelType.map((worker)=>(
-                            <option key={worker.id} value={worker.id}>
-                                {worker.Name}
+                        {TravelType.map((travel) => (
+                            <option key={`travel-${travel.id}`} value={travel.id}>
+                                {travel.Name}
                             </option>
                         ))}
+
                     </Form.Select>
                 </Form.Group>
             </Row>
@@ -148,11 +205,13 @@ function FormDetalles() {
                     <Form.Label>Moneda</Form.Label>
 
                     <Form.Select aria-label="Default select example">
+                        {Coins.map((coin) => (
+                            <option key={`coin-${coin.IataCode}`} value={coin.IataCode}>
+                                {coin.Name}
+                            </option>
+                        ))}
 
-                        <option>Moneda</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+
                     </Form.Select>
                 </Form.Group>
                 <Form.Group className='form-tipo-trm' as={Col} md="3" controlId="validationCustom04">
@@ -162,6 +221,7 @@ function FormDetalles() {
                         Please provide a valid state.
                     </Form.Control.Feedback>
                 </Form.Group>
+
                 <Form.Group className='form-tipo-oservice' as={Col} md="3" controlId="validationCustom05">
                     <Form.Label>Orden de servicio</Form.Label>
                     <Form.Control type="text" placeholder="Zip" required />
@@ -169,51 +229,42 @@ function FormDetalles() {
                         Please provide a valid zip.
                     </Form.Control.Feedback>
                 </Form.Group>
+
                 <Form.Group className='form-tipo-tiqueteador' as={Col} md="6" controlId="validationCustom03">
                     <Form.Label>Tiqueteador</Form.Label>
 
                     <Form.Select aria-label="Default select example">
-                        <option value="">Selecciona un trabajador</option>
-                        {Seller.map((worker) => (
-                            <option key={worker.EmployeeID} value={worker.EmployeeID}>
-                                {worker.Name}
+                        {Seller.map((vendedor) => (
+                            <option key={`agent-${vendedor.EmployeeID}`} value={vendedor.EmployeeID}>
+                                {vendedor.Name}
                             </option>
                         ))}
+
 
                     </Form.Select>
                 </Form.Group>
                 <Form.Group className='form-tipo-destino' as={Col} md="6" controlId="validationCustom03">
                     <Form.Label>Destino</Form.Label>
-
+                    
                     <Form.Select aria-label="Default select example">
+                               {Destination.map((Destino) => (
+                            <option key={`agent-${Destino.Id}`} value={Destino.Id}>
+                                {Destino.Name}
+                            </option>
+                        ))}
 
-                        <option>Tiqueteador</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+
                     </Form.Select>
                 </Form.Group>
                 <Form.Group className='form-tipo-gds' as={Col} md="6" controlId="validationCustom03">
-                    <Form.Label>GDS</Form.Label>
-
-                    <Form.Select aria-label="Default select example">
-
-                        <option>Tiqueteador</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                    </Form.Select>
+                    
                     <Form.Group className='form-tipo-pnr' as={Col} md="3" controlId="validationCustom04">
-                        <Form.Label>PNR</Form.Label>
-                        <Form.Control type="text" placeholder="State" required />
-                        <Form.Control.Feedback type="invalid">
-                            Please provide a valid state.
-                        </Form.Control.Feedback>
+                        
                     </Form.Group>
                     <Button type="submit">Submit form</Button>
                 </Form.Group>
             </Row>
-         
+
         </Form>
     )
 }
