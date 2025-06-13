@@ -7,11 +7,12 @@ import NavBar from "../../../shared/components/NavBar/Navbar";
 import MenuFacturas from "../menufacturas/menuFacturas";
 import FacturaService from '../../../services/FacturaService';
 import FormDetalles from '../../../shared/FormDetalles/FormDetalles'
-import Col from 'react-bootstrap/Col'; import ButtonDetails from "../../../shared/components/ButtonDetails/ButtonDetails";
+import Col from 'react-bootstrap/Col'; 
+import ButtonDetails from "../../../shared/components/ButtonDetails/ButtonDetails";
 
 
 
-import ModalGenerico from "../../../shared/components/ModalGenerico/ModalGenerico";
+// import ModalGenerico from "../../../shared/components/ModalGenerico/ModalGenerico";
 import FacNavbar from "../../../shared/components/FacNavbar/FacNavbar";
 
 function Detalles() {
