@@ -45,6 +45,8 @@ const ListadoFacturacion = () => {
   const [customerSearchOption, setCustomerSearchOption] = useState("mostrar_todos");
   const [customerSearchValue, setCustomerSearchValue] = useState("");
   const [showCustomerModal, setShowCustomerModal] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
+
 
   // Obtener datos iniciales de facturas
   useEffect(() => {
@@ -97,7 +99,7 @@ const ListadoFacturacion = () => {
 
     try {
       const response = await FacturaService.getDetalles(branchId, token, {});
-      
+
       if (response?.CustomerList) {
         const customersData = response.CustomerList.map(customer => ({
           documentNumber: customer.DocumentNumber,
@@ -105,7 +107,7 @@ const ListadoFacturacion = () => {
           lastName: customer.LastName,
           rawData: customer,
         }));
-        
+
         setCustomers(customersData);
         setFilteredCustomers(customersData);
       }
@@ -124,7 +126,7 @@ const ListadoFacturacion = () => {
 
     const filtered = customers.filter(customer => {
       const searchTerm = customerSearchValue.toLowerCase();
-      
+
       switch (customerSearchOption) {
         case "identificacion":
           return customer.documentNumber.toLowerCase().includes(searchTerm);
@@ -181,6 +183,7 @@ const ListadoFacturacion = () => {
     setCustomerSearchValue("");
     setShowCustomerModal(false);
   };
+
 
   // PAGINACIÓN
   const handlePageChange = (event, page) => {
@@ -311,8 +314,8 @@ const ListadoFacturacion = () => {
               type="radio"
               label={
                 option === "mostrar_todos" ? "Mostrar todos" :
-                option === "identificacion" ? "Documento identificación" :
-                option === "nombre" ? "Nombre" : "Apellido"
+                  option === "identificacion" ? "Documento identificación" :
+                    option === "nombre" ? "Nombre" : "Apellido"
               }
               value={option}
               checked={customerSearchOption === option}
@@ -322,10 +325,9 @@ const ListadoFacturacion = () => {
             {customerSearchOption === option && option !== "mostrar_todos" && (
               <Form.Control
                 type="text"
-                placeholder={`Buscar por ${
-                  option === "identificacion" ? "documento" :
+                placeholder={`Buscar por ${option === "identificacion" ? "documento" :
                   option === "nombre" ? "nombre" : "apellido"
-                }...`}
+                  }...`}
                 value={customerSearchValue}
                 onChange={(e) => setCustomerSearchValue(e.target.value)}
                 autoFocus
@@ -351,6 +353,7 @@ const ListadoFacturacion = () => {
           noDataComponent={
             <div className="py-4 text-center">No se encontraron resultados</div>
           }
+           style={{ cursor: "pointer", color: "blue" }}
         />
       </div>
 
@@ -372,7 +375,7 @@ const ListadoFacturacion = () => {
           checked={searchOption === "ultimas10"}
           onChange={handleSearchOptionChange}
         />
-        
+
         <Form.Check
           type="radio"
           label="Rango de fecha"
@@ -380,7 +383,7 @@ const ListadoFacturacion = () => {
           checked={searchOption === "rangoFecha"}
           onChange={handleSearchOptionChange}
         />
-        
+
         {searchOption === "rangoFecha" && (
           <div className="mt-3">
             <div className="mb-3 d-flex align-items-center">
@@ -389,7 +392,7 @@ const ListadoFacturacion = () => {
               </Form.Label>
               <DatePicker
                 selected={searchFilters.startDate}
-                onChange={date => setSearchFilters({...searchFilters, startDate: date})}
+                onChange={date => setSearchFilters({ ...searchFilters, startDate: date })}
                 selectsStart
                 startDate={searchFilters.startDate}
                 endDate={searchFilters.endDate}
@@ -400,14 +403,14 @@ const ListadoFacturacion = () => {
                 isClearable
               />
             </div>
-            
+
             <div className="d-flex align-items-center">
               <Form.Label className="me-2" style={{ minWidth: "100px" }}>
                 Fecha Fin:
               </Form.Label>
               <DatePicker
                 selected={searchFilters.endDate}
-                onChange={date => setSearchFilters({...searchFilters, endDate: date})}
+                onChange={date => setSearchFilters({ ...searchFilters, endDate: date })}
                 selectsEnd
                 startDate={searchFilters.startDate}
                 endDate={searchFilters.endDate}
@@ -421,7 +424,7 @@ const ListadoFacturacion = () => {
             </div>
           </div>
         )}
-        
+
         <Form.Check
           type="radio"
           label="Número de factura"
@@ -429,14 +432,14 @@ const ListadoFacturacion = () => {
           checked={searchOption === "numeroFactura"}
           onChange={handleSearchOptionChange}
         />
-        
+
         {searchOption === "numeroFactura" && (
           <div className="mt-3 d-flex align-items-center">
             <Form.Label className="me-2">Número:</Form.Label>
             <Form.Control
               type="text"
               value={searchFilters.invoiceNumber}
-              onChange={e => setSearchFilters({...searchFilters, invoiceNumber: e.target.value})}
+              onChange={e => setSearchFilters({ ...searchFilters, invoiceNumber: e.target.value })}
               className="me-3"
               placeholder="Ingrese número de factura"
             />
@@ -450,14 +453,14 @@ const ListadoFacturacion = () => {
           checked={searchOption === "numeroIdentificacion"}
           onChange={handleSearchOptionChange}
         />
-        
+
         {searchOption === "numeroIdentificacion" && (
           <div className="mt-3 d-flex align-items-center">
             <Form.Label className="me-2">Identificación:</Form.Label>
             <Form.Control
               type="text"
               value={searchFilters.customerId}
-              onChange={e => setSearchFilters({...searchFilters, customerId: e.target.value})}
+              onChange={e => setSearchFilters({ ...searchFilters, customerId: e.target.value })}
               className="me-3"
               placeholder="Ingrese número de identificación"
             />

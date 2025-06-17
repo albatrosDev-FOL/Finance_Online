@@ -7,7 +7,7 @@ import NavBar from "../../../shared/components/NavBar/Navbar";
 import MenuFacturas from "../menufacturas/menuFacturas";
 import FacturaService from '../../../services/FacturaService';
 import FormDetalles from '../../../shared/FormDetalles/FormDetalles'
-import Col from 'react-bootstrap/Col'; 
+import Col from 'react-bootstrap/Col';
 import ButtonDetails from "../../../shared/components/ButtonDetails/ButtonDetails";
 
 
@@ -27,6 +27,8 @@ function Detalles() {
     lastName: "",
   });
 
+  const [identificacion, setIdentificacion] = useState("");
+  const [nombreCliente, setNombreCliente] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -141,6 +143,14 @@ function Detalles() {
     setShowModal(false);
   };
 
+
+
+
+  const handleRowClick = (row) => {
+    setIdentificacion(row.documentNumber);
+    setNombreCliente(row.firstName);
+  }
+
   const columnas = [
     {
       name: "Identificación",
@@ -185,6 +195,14 @@ function Detalles() {
       },
     },
   ];
+
+  const customStyles = {
+    rows: {
+      style: {
+        cursor: "pointer", // Esto sí afecta las filas
+      },
+    },
+  };
 
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -252,6 +270,9 @@ function Detalles() {
           data={currentRows}
           className="custom-table"
           conditionalRowStyles={conditionalRowStyles}
+          onRowClicked={handleRowClick}
+          customStyles={customStyles}
+
           noDataComponent={
             <div className="py-4 text-center">No se encontraron resultados</div>
           }
@@ -269,7 +290,7 @@ function Detalles() {
 
 
   return (
-    <div style={{ width: "100%", padding: "0 20px" }}>
+    <div style={{ width: "100%", padding: " 20px", }}>
       {" "}
       {/* Contenedor principal */}
       <NavBar />
@@ -277,18 +298,44 @@ function Detalles() {
       <FacNavbar />
 
       <div className="form-tipo-trm"
-        style={{ width: '400px', height: '30px',marginBottom : '60px'}}
+        style={{ width: '800px', height: '30px', marginBottom: '100px', display: 'flex', paddingTop: "40px" }}
         as={Col}
         md="3"
         controlId="validationCustom04">
-        <Form.Label style={{}}  >Identificacion  </Form.Label>
-        
-        <div   className="form-tipo-trn" style={{display:'flex' }}   >
-          <Form.Control style={{ width: '200px', height :'40px' }} type="text" required />
-          <ButtonDetails style={{ margin: '0px' }} cuerpoModal={cuerpoModal} />
+
+
+
+        <div className="form-tipo-trn" style={{ display: 'flex', flexDirection: 'column' }}   >
+          <Form.Label>Identificación</Form.Label>
+
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <Form.Control
+              style={{ width: '200px', height: '40px' }}
+              type="text"
+              required
+              value={identificacion}
+              onChange={(e) => setIdentificacion(e.target.value)}
+            />
+            <ButtonDetails style={{ margin: '0px' }} cuerpoModal={cuerpoModal} />
+          </div>
+
+        </div>
+
+        <div className="form-tipo-trn" style={{ display: 'flex', marginLeft: '20px', marginTop: '8px', flexDirection: 'column' }}   >
+          <Form.Label>Nombre Cliente </Form.Label>
+
+          <Form.Control
+            style={{ width: '200px', height: '40px' }}
+            type="text"
+            value={nombreCliente}
+            onChange={(e) => setNombreCliente(e.target.value)} required />
         </div>
 
       </div>
+
+
+
+
 
 
 

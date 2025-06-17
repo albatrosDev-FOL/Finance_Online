@@ -13,14 +13,16 @@ import './FormDetalles.css'
 
 function FormDetalles() {
 
-    const [Destination,setDestination] = useState([])
+    const [Destination, setDestination] = useState([])
     const [Coins, setCoins] = useState([])
     const [TravelType, setTravelType] = useState([])
     const [Agent, setAgent] = useState([])
     const [Seller, setSeller] = useState([])
     const [validated, setValidated] = useState(false);
-    const [fecha, setFecha] = useState(null);
-    const [fecha2, setFecha2] = useState(null);
+    const [fecha] = useState(new Date());
+    const today = new Date();
+
+    const [fecha2, setFecha2] = useState(today);
     const handleSubmit = (event) => {
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
@@ -101,7 +103,7 @@ function FormDetalles() {
             try {
                 const response = await FacturaService.getCoints(idTravelBranch, token, {});
 
-                
+
                 const Coins = response.data.Coins
                 setCoins(Coins)
 
@@ -117,11 +119,11 @@ function FormDetalles() {
             const token = localStorage.getItem("Token");
             const idTravelBranch = localStorage.getItem("SucursalId");
 
-            try{
-                const response = await FacturaService.getDestination(idTravelBranch,token, {})
+            try {
+                const response = await FacturaService.getDestination(idTravelBranch, token, {})
 
                 console.log("Tipo destinos:", response)
-                const BasicTab= response.data.BasicTab
+                const BasicTab = response.data.BasicTab
                 setDestination(BasicTab)
             }
             catch (error) {
@@ -137,28 +139,21 @@ function FormDetalles() {
         fecthDestination();
     }, []);
 
+    const maxFecha = new Date();
+    maxFecha.setMonth(maxFecha.getMonth() + 1);
+
     return (
         <Form validated={validated} onSubmit={handleSubmit}>
             <Row className="mb-3">
-                 <Form.Group className='form-fecha-factura' as={Col} md="4" controlId="validationCustom01">
-                    <Form.Label  >Cliente  </Form.Label>
-                     <Form.Select aria-label="Default select example">
-                      
-
-
-                    </Form.Select>
-        
-                </Form.Group>
 
                 <Form.Group className='form-fecha-factura' as={Col} md="4" controlId="validationCustom01">
                     <Form.Label  >Fecha Factura  </Form.Label>
 
                     <DatePicker
-                        required
                         selected={fecha}
-                        onChange={(date) => setFecha(date)}
-                        placeholder="Fecha"
-                        defaultValue="Mark"
+                        dateFormat="dd-MM-yyyy"
+                        readOnly
+                        placeholderText="Fecha"
                     />
                 </Form.Group>
                 <Form.Group className='form-fecha-factura' as={Col} md="4" controlId="validationCustom02">
@@ -167,6 +162,8 @@ function FormDetalles() {
                         required
                         selected={fecha2}
                         onChange={(date) => setFecha2(date)}
+                        maxDate={maxFecha}
+
                         placeholder="Fecha"
                         defaultValue="Otto"
                     />
@@ -191,6 +188,7 @@ function FormDetalles() {
                     <Form.Label>Tipo de viaje</Form.Label>
 
                     <Form.Select aria-label="Default select example">
+                        <option value="">Selecciona un viaje</option>
                         {TravelType.map((travel) => (
                             <option key={`travel-${travel.id}`} value={travel.id}>
                                 {travel.Name}
@@ -234,6 +232,8 @@ function FormDetalles() {
                     <Form.Label>Tiqueteador</Form.Label>
 
                     <Form.Select aria-label="Default select example">
+                        <option value="">Selecciona un Tiqueteador</option>
+
                         {Seller.map((vendedor) => (
                             <option key={`agent-${vendedor.EmployeeID}`} value={vendedor.EmployeeID}>
                                 {vendedor.Name}
@@ -245,9 +245,11 @@ function FormDetalles() {
                 </Form.Group>
                 <Form.Group className='form-tipo-destino' as={Col} md="6" controlId="validationCustom03">
                     <Form.Label>Destino</Form.Label>
-                    
+
                     <Form.Select aria-label="Default select example">
-                               {Destination.map((Destino) => (
+                        <option value="">Selecciona un Destino</option>
+
+                        {Destination.map((Destino) => (
                             <option key={`agent-${Destino.Id}`} value={Destino.Id}>
                                 {Destino.Name}
                             </option>
@@ -255,15 +257,25 @@ function FormDetalles() {
 
 
                     </Form.Select>
+
                 </Form.Group>
-                <Form.Group className='form-tipo-gds' as={Col} md="6" controlId="validationCustom03">
-                    
-                    <Form.Group className='form-tipo-pnr' as={Col} md="3" controlId="validationCustom04">
-                        
-                    </Form.Group>
-                    <Button type="submit">Submit form</Button>
-                </Form.Group>
+
+
             </Row>
+
+            <Form.Group 
+            className='form-tipo-destino' as={Col} md="6"
+            controlId="validationCustom03"
+            style={{width:"1300px", height:"300px"}}
+            >
+                 
+
+                <Form.Label >Observaciones </Form.Label>
+                <Form.Control type="text" placeholder="" style = {{ height:"100px" }}/>
+
+
+            </Form.Group>
+
 
         </Form>
     )
