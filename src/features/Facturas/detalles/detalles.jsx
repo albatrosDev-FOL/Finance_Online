@@ -1,16 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import "./detalles.css";
 import DataTable from "react-data-table-component";
-import { Pagination } from "@mui/material";
 import { Form, InputGroup } from "react-bootstrap";
 import NavBar from "../../../shared/components/NavBar/Navbar";
 import MenuFacturas from "../menufacturas/menuFacturas";
 import FacturaService from "../../../services/FacturaService";
 import FormDetalles from "../../../shared/FormDetalles/FormDetalles";
-import Col from "react-bootstrap/Col";
 import ButtonDetails from "../../../shared/components/ButtonDetails/ButtonDetails";
-
-// import ModalGenerico from "../../../shared/components/ModalGenerico/ModalGenerico";
 import FacNavbar from "../../../shared/components/FacNavbar/FacNavbar";
 
 function Detalles() {
@@ -18,7 +14,6 @@ function Detalles() {
   const [filteredData, setFilteredData] = useState([]);
   const [selectedOption, setSelectedOption] = useState("mostrar_todos");
   const [searchValue, setSearchValue] = useState("");
-  const [showModal, setShowModal] = useState(false);
   const [searchFilters, setSearchFilters] = useState({
     documentNumber: "",
     firstName: "",
@@ -27,8 +22,6 @@ function Detalles() {
 
   const [identificacion, setIdentificacion] = useState("");
   const [nombreCliente, setNombreCliente] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   // Carga inicial de datos
   useEffect(() => {
@@ -48,6 +41,7 @@ function Detalles() {
             documentNumber: item.DocumentNumber,
             firstName: item.FirstName,
             lastName: item.LastName,
+            isEnabled: item.IsEnabled,
             rawData: item,
           }));
           setFacturas(mappedData);
@@ -63,8 +57,8 @@ function Detalles() {
     fetchData();
   }, []);
 
-  // Filtrado cuando cambian los filtros
-  useEffect(() => {
+  // Filtrado optimizado con useMemo
+  useMemo(() => {
     if (Object.values(searchFilters).every((val) => val === "")) {
       setFilteredData(facturas);
     } else {
@@ -84,7 +78,6 @@ function Detalles() {
               .includes(searchFilters.lastName.toLowerCase()))
       );
       setFilteredData(filtered);
-      setCurrentPage(1);
     }
   }, [searchFilters, facturas]);
 
@@ -93,7 +86,6 @@ function Detalles() {
     setSelectedOption(option);
     setSearchValue("");
 
-    // Si selecciona "mostrar todos", limpiar filtros inmediatamente
     if (option === "mostrar_todos") {
       setSearchFilters({
         documentNumber: "",
@@ -103,7 +95,6 @@ function Detalles() {
     }
   };
 
-  // Filtrado en tiempo real mientras escribe en el modal
   useEffect(() => {
     if (selectedOption === "identificacion") {
       setSearchFilters({
@@ -126,10 +117,6 @@ function Detalles() {
     }
   }, [searchValue, selectedOption]);
 
-  const handleSearchSubmit = () => {
-    setShowModal(false);
-  };
-
   const handleClearFilters = () => {
     setSelectedOption("mostrar_todos");
     setSearchValue("");
@@ -138,20 +125,22 @@ function Detalles() {
       firstName: "",
       lastName: "",
     });
-    setShowModal(false);
   };
 
   const handleRowClick = (row) => {
-    setIdentificacion(row.documentNumber);
-    setNombreCliente(row.firstName);
+    if (row.isEnabled) {
+      setIdentificacion(row.documentNumber);
+      setNombreCliente(row.firstName);
+    }
   };
 
-  const columnas = [
+  // Columnas optimizadas con memoización
+  const columnas = useMemo(() => [
     {
       name: "Identificación",
       selector: (row) => row.documentNumber,
       sortable: true,
-      width: "115px",
+      width: "120px",
       style: {
         fontWeight: "bold",
         textAlign: "center",
@@ -170,44 +159,52 @@ function Detalles() {
       width: "150px",
     },
     {
-      width: "100px",
-      cell: () => null,
+      name: "Estado",
+      cell: (row) => (
+        <span style={{
+          color: row.isEnabled ? "green" : "red",
+          fontWeight: "bold"
+        }}>
+          {row.isEnabled ? "✓" : "✗"}
+        </span>
+      ),
+      width: "80px",
       ignoreRowClick: true,
     },
-  ];
+  ], []);
 
-  const conditionalRowStyles = [
+  // Estilos condicionales optimizados
+  const conditionalRowStyles = useMemo(() => [
     {
-      when: (row, index) => index % 2 === 0,
+      when: (row) => !row.isEnabled,
       style: {
-        backgroundColor: "#f1e1dc !important",
+        backgroundColor: "#f8f9fa",
+        color: "#6c757d",
+        cursor: "not-allowed",
       },
     },
     {
-      when: (row, index) => index % 2 !== 0,
+      when: (row) => row.isEnabled,
       style: {
-        backgroundColor: "#dce8f1 !important",
+        cursor: "pointer",
+        '&:hover': {
+          backgroundColor: 'rgba(0,0,0,0.04) !important',
+        },
       },
     },
-  ];
+  ], []);
 
-  const customStyles = {
+  // Custom styles optimizado
+  const customStyles = useMemo(() => ({
     rows: {
       style: {
-        cursor: "pointer", // Esto sí afecta las filas
+        minHeight: '48px',
       },
     },
-  };
+  }), []);
 
-  const indexOfLastRow = currentPage * rowsPerPage;
-  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = filteredData.slice(indexOfFirstRow, indexOfLastRow);
-
-  const handlePageChange = (event, page) => {
-    setCurrentPage(page);
-  };
-
-  const cuerpoModal = (
+  // Cuerpo del modal optimizado
+  const cuerpoModal = useMemo(() => (
     <Form>
       <Form.Group>
         {["mostrar_todos", "identificacion", "nombre", "apellido"].map(
@@ -251,11 +248,10 @@ function Detalles() {
         )}
       </Form.Group>
 
-      {/* Aquí ajustamos el tamaño de la tabla */}
       <div
         className="grid-container"
         style={{
-          maxHeight: "300px", // ajusta según lo que necesites
+          maxHeight: "300px",
           overflowY: "auto",
           marginTop: "10px",
           border: "1px solid #ccc",
@@ -265,7 +261,7 @@ function Detalles() {
       >
         <DataTable
           columns={columnas}
-          data={currentRows}
+          data={filteredData}
           className="custom-table"
           conditionalRowStyles={conditionalRowStyles}
           onRowClicked={handleRowClick}
@@ -273,6 +269,9 @@ function Detalles() {
           noDataComponent={
             <div className="py-4 text-center">No se encontraron resultados</div>
           }
+          pagination
+          paginationPerPage={10}
+          paginationRowsPerPageOptions={[10, 20, 30]}
         />
       </div>
 
@@ -285,9 +284,7 @@ function Detalles() {
         </button>
       </div>
     </Form>
-  );
-
- 
+  ), [selectedOption, searchValue, filteredData, columnas, conditionalRowStyles, customStyles]);
 
   return (
     <div style={{ width: "100%", padding: "20px" }}>
@@ -295,7 +292,6 @@ function Detalles() {
       <MenuFacturas />
       <FacNavbar />
 
-      {/* Contenedor principal ampliado */}
       <div
         style={{
           display: "flex",
@@ -305,7 +301,6 @@ function Detalles() {
           marginTop: "20px",
         }}
       >
-        {/* Sección Datos del Cliente - Ahora más ancha */}
         <div
           style={{
             border: "1px solid #e0e0e0",
@@ -336,9 +331,7 @@ function Detalles() {
           >
             <div style={{ flex: "1", minWidth: "250px" }}>
               <Form.Label>Identificación</Form.Label>
-              <div
-                style={{ display: "flex", gap: "8px", alignItems: "center" }}
-              >
+              <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                 <Form.Control
                   style={{ width: "100%", height: "40px" }}
                   type="text"
@@ -346,10 +339,7 @@ function Detalles() {
                   value={identificacion}
                   onChange={(e) => setIdentificacion(e.target.value)}
                 />
-                <ButtonDetails
-                  style={{ margin: "0px" }}
-                  cuerpoModal={cuerpoModal}
-                />
+                <ButtonDetails cuerpoModal={cuerpoModal} />
               </div>
             </div>
 
@@ -366,7 +356,6 @@ function Detalles() {
           </div>
         </div>
 
-        {/* Sección Datos de Factura - Ahora más ancha */}
         <div
           style={{
             border: "1px solid #e0e0e0",
@@ -387,37 +376,6 @@ function Detalles() {
             Datos de Factura
           </h3>
           <FormDetalles />
-        </div>
-      </div>
-
-      
-
-
-
-      <div className="table-container">
-        <DataTable
-          columns={columnas}
-          className="custom-table"
-          conditionalRowStyles={conditionalRowStyles}
-          noDataComponent={
-            <div className="py-4 text-center">No se encontraron resultados</div>
-          }
-        />
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "20px",
-          }}
-        >
-          <Pagination
-            count={Math.ceil(filteredData.length / rowsPerPage)}
-            page={currentPage}
-            onChange={handlePageChange}
-            color="primary"
-            showFirstButton
-            showLastButton
-          />
         </div>
       </div>
     </div>
