@@ -9,6 +9,7 @@ import FacturaService from "../../../services/FacturaService";
 import FormDetalles from "../../../shared/FormDetalles/FormDetalles";
 import Col from "react-bootstrap/Col";
 import ButtonDetails from "../../../shared/components/ButtonDetails/ButtonDetails";
+import ButtonAgregarItem from "../../../shared/components/ButtonAgregarItem/ButtonAgregarItem";
 
 // import ModalGenerico from "../../../shared/components/ModalGenerico/ModalGenerico";
 import FacNavbar from "../../../shared/components/FacNavbar/FacNavbar";
@@ -287,6 +288,20 @@ function Detalles() {
     </Form>
   );
 
+  const cuerpoModalItem = (
+    <Form>
+      <Form.Group>
+        <Form.Select
+        >
+          <option value="Aereo Nacional">Aereo Nacional</option>
+          <option value="Aereo Internacional">Aereo Internacional</option>
+          <option value="Plan Terceros">Plan Terceros</option>
+          <option value="Otros Productos">Otros Productos</option>
+        </Form.Select>
+      </Form.Group>
+    </Form>
+  );
+
   return (
     <div style={{ width: "100%", padding: "20px" }}>
       <NavBar />
@@ -386,6 +401,10 @@ function Detalles() {
           </h3>
           <FormDetalles />
         </div>
+      </div>
+
+      <div>
+        <ButtonAgregarItem cuerpoModalItem={cuerpoModalItem} />
       </div>
 
       {/* Tabla con más espacio superior */}
