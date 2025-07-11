@@ -201,6 +201,34 @@ class FacturaService {
             throw new Error("No se pudieron obtener los agentes");
         }
     }
+    async getTmrValue(travelId,token,){
+        try {
+            const params = {
+                travelId
+            };
+
+            const response = await axios.get(
+                `${this.url}BasicTable/GetTrm`,
+                {
+                    params: params,
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            return response
+            console.log( response);
+            
+
+        }
+           catch (error) {
+            const errorMessage = error.response?.data?.message || error.message;
+            console.error("Error al obtener Agentes:", errorMessage);
+            throw new Error("No se pudieron obtener los agentes");
+        }
+    }
+
 }
 
 

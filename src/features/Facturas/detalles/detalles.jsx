@@ -334,11 +334,6 @@ function Detalles() {
       </div>
 
 
-
-
-
-
-
       < FormDetalles />
 
       <div className="table-container">

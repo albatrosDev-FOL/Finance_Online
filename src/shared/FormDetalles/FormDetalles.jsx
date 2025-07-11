@@ -8,6 +8,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 import DatePicker from "react-datepicker";
 import './FormDetalles.css'
+import { format } from 'date-fns';
 
 
 
@@ -19,9 +20,12 @@ function FormDetalles() {
     const [Agent, setAgent] = useState([])
     const [Seller, setSeller] = useState([])
     const [validated, setValidated] = useState(false);
+    const [TrmValue, setTrmValue] = useState([])
     const [fecha] = useState(new Date());
     const today = new Date();
+    
 
+   
     const [fecha2, setFecha2] = useState(today);
     const handleSubmit = (event) => {
         const form = event.currentTarget;
@@ -132,12 +136,37 @@ function FormDetalles() {
 
         }
 
+        const fecthTmr = async () => {
+            const token = localStorage.getItem("Token");
+            const travelId = localStorage.getItem("SucursalId")
+            const fechaFormateada  = format(fecha, 'dd-MM-yyyy')
+            
+
+            const data ={
+                fechaFactura : fechaFormateada
+            }
+
+            try {
+                const response = await FacturaService.getTmrValue(travelId, token, data)
+
+                console.log("TRM  Value:", response)
+                const TrmValue = response.data.TrmValue
+                setTrmValue(TrmValue)
+            }
+
+            catch (error) {
+                console.log("Error en fechtTrmValue: ", error)
+
+            }
+        }
+
         fetchData();
         fetchAgent();
         fechtTravelType();
         fechtCoins();
         fecthDestination();
-    }, []);
+        fecthTmr();
+    }, [fecha]);
 
     const maxFecha = new Date();
     maxFecha.setMonth(maxFecha.getMonth() + 1);
@@ -169,7 +198,7 @@ function FormDetalles() {
                     />
                 </Form.Group>
 
-                <Form.Group className='form-vendedor' as={Col} md="4" controlId="validationCustomUsername">
+                <Form.Group s className='form-vendedor' as={Col} md="4" controlId="validationCustomUsername">
                     <Form.Label>Vendedor</Form.Label>
                     <Form.Select aria-label="Default select example">
                         <option value="">Selecciona un trabajador</option>
@@ -212,12 +241,18 @@ function FormDetalles() {
 
                     </Form.Select>
                 </Form.Group>
+
                 <Form.Group className='form-tipo-trm' as={Col} md="3" controlId="validationCustom04">
-                    <Form.Label>TRM</Form.Label>
-                    <Form.Control type="text" required />
-                    <Form.Control.Feedback type="invalid">
-                        Please provide a valid state.
-                    </Form.Control.Feedback>
+                    <Form.Label>TMR</Form.Label>
+                    <Form.Select aria-label="Default select example">
+                        {Coins.map((coin) => (
+                            <option key={`coin-${coin.IataCode}`} value={coin.IataCode}>
+                                {coin.Name}
+                            </option>
+                        ))}
+
+
+                    </Form.Select>
                 </Form.Group>
 
                 <Form.Group className='form-tipo-oservice' as={Col} md="3" controlId="validationCustom05">
@@ -263,18 +298,38 @@ function FormDetalles() {
 
             </Row>
 
-            <Form.Group 
-            className='form-tipo-destino' as={Col} md="6"
-            controlId="validationCustom03"
-            style={{width:"1300px", height:"300px"}}
+            <Form.Group
+                className='form-tipo-destino' as={Col} md="6"
+                controlId="validationCustom03"
+                style={{ width: "1300px", height: "140px" }}
             >
-                 
+
 
                 <Form.Label >Observaciones </Form.Label>
-                <Form.Control type="text" placeholder="" style = {{ height:"100px" }}/>
+                <Form.Control type="text" placeholder="" style={{ height: "100px", width:"1480px" }} />
 
 
             </Form.Group>
+
+            <nav className="navigation-container">
+                <button
+                    className="navigation-button"
+                    onClick={() => navigate("")}
+                >
+                    Ver Expedientes 
+                </button>
+
+                <button className="navigation-button active">
+                    Agregar Item
+                </button>
+
+                <button
+                    className="navigation-button"
+                    onClick={() => navigate("")}
+                >
+                    Eliminar Item
+                </button>
+            </nav>
 
 
         </Form>

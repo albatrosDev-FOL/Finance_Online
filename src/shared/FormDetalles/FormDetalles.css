@@ -33,3 +33,30 @@
   .form-group .form-select {
     width: 100%;
   }
+
+.navigation-container {
+  display: flex;
+  justify-content:flex-end;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.navigation-button {
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.navigation-button:hover {
+  background-color: #0056b3;
+}
+
+.navigation-button.active {
+  background-color: #6c757d;
+  cursor: default;
+}
