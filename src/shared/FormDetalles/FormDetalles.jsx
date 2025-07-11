@@ -1,11 +1,13 @@
-import React, { useEffect } from 'react'
-import { useState } from 'react';
-import FacturaService from '../../services/FacturaService';
-import Button from 'react-bootstrap/Button';
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Row from 'react-bootstrap/Row';
+import React, { useEffect } from "react";
+import { useState } from "react";
+import FacturaService from "../../services/FacturaService";
+import Button from "react-bootstrap/Button";
+import ButtonAgregarItem from "../../shared/components/ButtonAgregarItem/ButtonAgregarItem";
+
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+import InputGroup from "react-bootstrap/InputGroup";
+import Row from "react-bootstrap/Row";
 import DatePicker from "react-datepicker";
 import './FormDetalles.css'
 import { format } from 'date-fns';
@@ -23,9 +25,9 @@ function FormDetalles() {
     const [TrmValue, setTrmValue] = useState([])
     const [fecha] = useState(new Date());
     const today = new Date();
-    
 
-   
+
+
     const [fecha2, setFecha2] = useState(today);
     const handleSubmit = (event) => {
         const form = event.currentTarget;
@@ -36,7 +38,6 @@ function FormDetalles() {
 
         setValidated(true);
     };
-
 
     useEffect(() => {
         //obtener vendedor
@@ -50,14 +51,11 @@ function FormDetalles() {
                     token,
                     {}
                 );
-                console.log('Vendedores', response)
-                const thirdparties = response.data.Thirdparties
-                setSeller(thirdparties)
-            }
-            catch (error) {
+                console.log("Vendedores", response);
+                const thirdparties = response.data.Thirdparties;
+                setSeller(thirdparties);
+            } catch (error) {
                 console.error("Error:", error);
-
-
             }
         };
 
@@ -67,16 +65,15 @@ function FormDetalles() {
             const idTravelBranch = localStorage.getItem("SucursalId");
 
             try {
-                const response = await FacturaService.getAgent(idTravelBranch, token, {});
+                const response = await FacturaService.getAgent(
+                    idTravelBranch,
+                    token,
+                    {}
+                );
                 console.log("Respuesta Tiqueteadores:", response);
 
-                const Thirdparties = response.data.Thirdparties
-                setAgent(Thirdparties)
-
-
-
-
-
+                const Thirdparties = response.data.Thirdparties;
+                setAgent(Thirdparties);
             } catch (error) {
                 console.error("Error en fetchAgent:", error);
             }
@@ -89,15 +86,18 @@ function FormDetalles() {
             const idTravelBranch = localStorage.getItem("SucursalId");
 
             try {
-                const response = await FacturaService.getTravelType(idTravelBranch, token, {});
-                console.log("Tipo viaje", response)
-                const BasicTab = response.data.BasicTab
-                setTravelType(BasicTab)
-
+                const response = await FacturaService.getTravelType(
+                    idTravelBranch,
+                    token,
+                    {}
+                );
+                console.log("Tipo viaje", response);
+                const BasicTab = response.data.BasicTab;
+                setTravelType(BasicTab);
             } catch (error) {
-                console.log("Error en fechtTravelType: ", error)
+                console.log("Error en fechtTravelType: ", error);
             }
-        }
+        };
 
         //obtener moneda
         const fechtCoins = async () => {
@@ -105,17 +105,18 @@ function FormDetalles() {
             const idTravelBranch = localStorage.getItem("SucursalId");
 
             try {
-                const response = await FacturaService.getCoints(idTravelBranch, token, {});
+                const response = await FacturaService.getCoints(
+                    idTravelBranch,
+                    token,
+                    {}
+                );
 
-
-                const Coins = response.data.Coins
-                setCoins(Coins)
-
+                const Coins = response.data.Coins;
+                setCoins(Coins);
             } catch (error) {
-                console.log("Error en fechtTravelType: ", error)
+                console.log("Error en fechtTravelType: ", error);
             }
-
-        }
+        };
 
         //obtener Destino
 
@@ -139,11 +140,11 @@ function FormDetalles() {
         const fecthTmr = async () => {
             const token = localStorage.getItem("Token");
             const travelId = localStorage.getItem("SucursalId")
-            const fechaFormateada  = format(fecha, 'dd-MM-yyyy')
-            
+            const fechaFormateada = format(fecha, 'dd-MM-yyyy')
 
-            const data ={
-                fechaFactura : fechaFormateada
+
+            const data = {
+                fechaFactura: fechaFormateada
             }
 
             try {
@@ -171,12 +172,30 @@ function FormDetalles() {
     const maxFecha = new Date();
     maxFecha.setMonth(maxFecha.getMonth() + 1);
 
+    const cuerpoModalItem = (
+        <Form>
+            <Form.Group>
+                <Form.Select
+                >
+                    <option value="Aereo Nacional">Aereo Nacional</option>
+                    <option value="Aereo Internacional">Aereo Internacional</option>
+                    <option value="Plan Terceros">Plan Terceros</option>
+                    <option value="Otros Productos">Otros Productos</option>
+                </Form.Select>
+            </Form.Group>
+        </Form>
+    );
+
     return (
         <Form validated={validated} onSubmit={handleSubmit}>
             <Row className="mb-3">
-
-                <Form.Group className='form-fecha-factura' as={Col} md="4" controlId="validationCustom01">
-                    <Form.Label  >Fecha Factura  </Form.Label>
+                <Form.Group
+                    className="form-fecha-factura"
+                    as={Col}
+                    md="4"
+                    controlId="validationCustom01"
+                >
+                    <Form.Label>Fecha Factura </Form.Label>
 
                     <DatePicker
                         selected={fecha}
@@ -185,14 +204,18 @@ function FormDetalles() {
                         placeholderText="Fecha"
                     />
                 </Form.Group>
-                <Form.Group className='form-fecha-factura' as={Col} md="4" controlId="validationCustom02">
+                <Form.Group
+                    className="form-fecha-factura"
+                    as={Col}
+                    md="4"
+                    controlId="validationCustom02"
+                >
                     <Form.Label>Fecha Vencimiento</Form.Label>
                     <DatePicker
                         required
                         selected={fecha2}
                         onChange={(date) => setFecha2(date)}
                         maxDate={maxFecha}
-
                         placeholder="Fecha"
                         defaultValue="Otto"
                     />
@@ -212,8 +235,12 @@ function FormDetalles() {
                     </Form.Select>
                 </Form.Group>
 
-
-                <Form.Group className='form-tipo-viaje' as={Col} md="4" controlId="validationCustomUsername">
+                <Form.Group
+                    className="form-tipo-viaje"
+                    as={Col}
+                    md="4"
+                    controlId="validationCustomUsername"
+                >
                     <Form.Label>Tipo de viaje</Form.Label>
 
                     <Form.Select aria-label="Default select example">
@@ -223,12 +250,16 @@ function FormDetalles() {
                                 {travel.Name}
                             </option>
                         ))}
-
                     </Form.Select>
                 </Form.Group>
             </Row>
             <Row className="mb-4">
-                <Form.Group className='form-tipo-moneda' as={Col} md="6" controlId="validationCustom03">
+                <Form.Group
+                    className="form-tipo-moneda"
+                    as={Col}
+                    md="6"
+                    controlId="validationCustom03"
+                >
                     <Form.Label>Moneda</Form.Label>
 
                     <Form.Select aria-label="Default select example">
@@ -255,7 +286,12 @@ function FormDetalles() {
                     </Form.Select>
                 </Form.Group>
 
-                <Form.Group className='form-tipo-oservice' as={Col} md="3" controlId="validationCustom05">
+                <Form.Group
+                    className="form-tipo-oservice"
+                    as={Col}
+                    md="3"
+                    controlId="validationCustom05"
+                >
                     <Form.Label>Orden de servicio</Form.Label>
                     <Form.Control type="text" placeholder="Zip" required />
                     <Form.Control.Feedback type="invalid">
@@ -263,22 +299,33 @@ function FormDetalles() {
                     </Form.Control.Feedback>
                 </Form.Group>
 
-                <Form.Group className='form-tipo-tiqueteador' as={Col} md="6" controlId="validationCustom03">
+                <Form.Group
+                    className="form-tipo-tiqueteador"
+                    as={Col}
+                    md="6"
+                    controlId="validationCustom03"
+                >
                     <Form.Label>Tiqueteador</Form.Label>
 
                     <Form.Select aria-label="Default select example">
                         <option value="">Selecciona un Tiqueteador</option>
 
                         {Seller.map((vendedor) => (
-                            <option key={`agent-${vendedor.EmployeeID}`} value={vendedor.EmployeeID}>
+                            <option
+                                key={`agent-${vendedor.EmployeeID}`}
+                                value={vendedor.EmployeeID}
+                            >
                                 {vendedor.Name}
                             </option>
                         ))}
-
-
                     </Form.Select>
                 </Form.Group>
-                <Form.Group className='form-tipo-destino' as={Col} md="6" controlId="validationCustom03">
+                <Form.Group
+                    className="form-tipo-destino"
+                    as={Col}
+                    md="6"
+                    controlId="validationCustom03"
+                >
                     <Form.Label>Destino</Form.Label>
 
                     <Form.Select aria-label="Default select example">
@@ -289,13 +336,8 @@ function FormDetalles() {
                                 {Destino.Name}
                             </option>
                         ))}
-
-
                     </Form.Select>
-
                 </Form.Group>
-
-
             </Row>
 
             <Form.Group
@@ -306,7 +348,7 @@ function FormDetalles() {
 
 
                 <Form.Label >Observaciones </Form.Label>
-                <Form.Control type="text" placeholder="" style={{ height: "100px", width:"1480px" }} />
+                <Form.Control type="text" placeholder="" style={{ height: "100px", width: "1480px" }} />
 
 
             </Form.Group>
@@ -316,12 +358,9 @@ function FormDetalles() {
                     className="navigation-button"
                     onClick={() => navigate("")}
                 >
-                    Ver Expedientes 
+                    Ver Expedientes
                 </button>
-
-                <button className="navigation-button active">
-                    Agregar Item
-                </button>
+                <ButtonAgregarItem  cuerpoModalItem={cuerpoModalItem} />
 
                 <button
                     className="navigation-button"
@@ -332,8 +371,10 @@ function FormDetalles() {
             </nav>
 
 
+
+
         </Form>
     )
 }
 
-export default FormDetalles
+export default FormDetalles;

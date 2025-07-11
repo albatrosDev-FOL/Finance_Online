@@ -5,12 +5,10 @@ import { Pagination } from "@mui/material";
 import { Form, InputGroup } from "react-bootstrap";
 import NavBar from "../../../shared/components/NavBar/Navbar";
 import MenuFacturas from "../menufacturas/menuFacturas";
-import FacturaService from '../../../services/FacturaService';
-import FormDetalles from '../../../shared/FormDetalles/FormDetalles'
-import Col from 'react-bootstrap/Col';
+import FacturaService from "../../../services/FacturaService";
+import FormDetalles from "../../../shared/FormDetalles/FormDetalles";
+import Col from "react-bootstrap/Col";
 import ButtonDetails from "../../../shared/components/ButtonDetails/ButtonDetails";
-
-
 
 // import ModalGenerico from "../../../shared/components/ModalGenerico/ModalGenerico";
 import FacNavbar from "../../../shared/components/FacNavbar/FacNavbar";
@@ -143,13 +141,10 @@ function Detalles() {
     setShowModal(false);
   };
 
-
-
-
   const handleRowClick = (row) => {
     setIdentificacion(row.documentNumber);
     setNombreCliente(row.firstName);
-  }
+  };
 
   const columnas = [
     {
@@ -215,42 +210,45 @@ function Detalles() {
   const cuerpoModal = (
     <Form>
       <Form.Group>
-        {["mostrar_todos", "identificacion", "nombre", "apellido"].map((option) => (
-          <div key={option} className="modal-option">
-            <Form.Check
-              type="radio"
-              label={
-                option === "mostrar_todos"
-                  ? "Mostrar todos"
-                  : option === "identificacion"
+        {["mostrar_todos", "identificacion", "nombre", "apellido"].map(
+          (option) => (
+            <div key={option} className="modal-option">
+              <Form.Check
+                type="radio"
+                label={
+                  option === "mostrar_todos"
+                    ? "Mostrar todos"
+                    : option === "identificacion"
                     ? "Documento identificación"
                     : option === "nombre"
-                      ? "Nombre"
-                      : "Apellido"
-              }
-              value={option}
-              checked={selectedOption === option}
-              onChange={handleOptionChange}
-              className="me-2"
-            />
-            {selectedOption === option && option !== "mostrar_todos" && (
-              <InputGroup className="modal-input-group">
-                <Form.Control
-                  type="text"
-                  placeholder={`Buscar por ${option === "identificacion"
-                    ? "documento"
-                    : option === "nombre"
-                      ? "nombre"
-                      : "apellido"
+                    ? "Nombre"
+                    : "Apellido"
+                }
+                value={option}
+                checked={selectedOption === option}
+                onChange={handleOptionChange}
+                className="me-2"
+              />
+              {selectedOption === option && option !== "mostrar_todos" && (
+                <InputGroup className="modal-input-group">
+                  <Form.Control
+                    type="text"
+                    placeholder={`Buscar por ${
+                      option === "identificacion"
+                        ? "documento"
+                        : option === "nombre"
+                        ? "nombre"
+                        : "apellido"
                     }...`}
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  autoFocus
-                />
-              </InputGroup>
-            )}
-          </div>
-        ))}
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                    autoFocus
+                  />
+                </InputGroup>
+              )}
+            </div>
+          )
+        )}
       </Form.Group>
 
       {/* Aquí ajustamos el tamaño de la tabla */}
@@ -272,14 +270,16 @@ function Detalles() {
           conditionalRowStyles={conditionalRowStyles}
           onRowClicked={handleRowClick}
           customStyles={customStyles}
-
           noDataComponent={
             <div className="py-4 text-center">No se encontraron resultados</div>
           }
         />
       </div>
 
-      <div className="button-group" style={{ marginTop: "15px", textAlign: "right" }}>
+      <div
+        className="button-group"
+        style={{ marginTop: "15px", textAlign: "right" }}
+      >
         <button className="btn btn-secondary" onClick={handleClearFilters}>
           Limpiar
         </button>
@@ -287,54 +287,112 @@ function Detalles() {
     </Form>
   );
 
-
+ 
 
   return (
-    <div style={{ width: "100%", padding: " 20px", }}>
-      {" "}
-      {/* Contenedor principal */}
+    <div style={{ width: "100%", padding: "20px" }}>
       <NavBar />
       <MenuFacturas />
       <FacNavbar />
 
-      <div className="form-tipo-trm"
-        style={{ width: '800px', height: '30px', marginBottom: '100px', display: 'flex', paddingTop: "40px" }}
-        as={Col}
-        md="3"
-        controlId="validationCustom04">
+      {/* Contenedor principal ampliado */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "40px",
+          width: "100%",
+          marginTop: "20px",
+        }}
+      >
+        {/* Sección Datos del Cliente - Ahora más ancha */}
+        <div
+          style={{
+            border: "1px solid #e0e0e0",
+            borderRadius: "8px",
+            padding: "20px",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            width: "100%",
+          }}
+        >
+          <h3
+            style={{
+              marginBottom: "20px",
+              color: "#333",
+              borderBottom: "1px solid #eee",
+              paddingBottom: "10px",
+            }}
+          >
+            Datos del Cliente
+          </h3>
 
+          <div
+            style={{
+              display: "flex",
+              gap: "20px",
+              flexWrap: "wrap",
+              width: "100%",
+            }}
+          >
+            <div style={{ flex: "1", minWidth: "250px" }}>
+              <Form.Label>Identificación</Form.Label>
+              <div
+                style={{ display: "flex", gap: "8px", alignItems: "center" }}
+              >
+                <Form.Control
+                  style={{ width: "100%", height: "40px" }}
+                  type="text"
+                  required
+                  value={identificacion}
+                  onChange={(e) => setIdentificacion(e.target.value)}
+                />
+                <ButtonDetails
+                  style={{ margin: "0px" }}
+                  cuerpoModal={cuerpoModal}
+                />
+              </div>
+            </div>
 
-
-        <div className="form-tipo-trn" style={{ display: 'flex', flexDirection: 'column' }}   >
-          <Form.Label>Identificación</Form.Label>
-
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <Form.Control
-              style={{ width: '200px', height: '40px' }}
-              type="text"
-              required
-              value={identificacion}
-              onChange={(e) => setIdentificacion(e.target.value)}
-            />
-            <ButtonDetails style={{ margin: '0px' }} cuerpoModal={cuerpoModal} />
+            <div style={{ flex: "1", minWidth: "250px" }}>
+              <Form.Label>Nombre Cliente</Form.Label>
+              <Form.Control
+                style={{ width: "100%", height: "40px" }}
+                type="text"
+                value={nombreCliente}
+                onChange={(e) => setNombreCliente(e.target.value)}
+                required
+              />
+            </div>
           </div>
-
         </div>
 
-        <div className="form-tipo-trn" style={{ display: 'flex', marginLeft: '20px', marginTop: '8px', flexDirection: 'column' }}   >
-          <Form.Label>Nombre Cliente </Form.Label>
-
-          <Form.Control
-            style={{ width: '200px', height: '40px' }}
-            type="text"
-            value={nombreCliente}
-            onChange={(e) => setNombreCliente(e.target.value)} required />
+        {/* Sección Datos de Factura - Ahora más ancha */}
+        <div
+          style={{
+            border: "1px solid #e0e0e0",
+            borderRadius: "8px",
+            padding: "20px",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            width: "100%",
+          }}
+        >
+          <h3
+            style={{
+              marginBottom: "20px",
+              color: "#333",
+              borderBottom: "1px solid #eee",
+              paddingBottom: "10px",
+            }}
+          >
+            Datos de Factura
+          </h3>
+          <FormDetalles />
         </div>
-
       </div>
 
+      
 
-      < FormDetalles />
+
 
       <div className="table-container">
         <DataTable
@@ -344,7 +402,6 @@ function Detalles() {
           noDataComponent={
             <div className="py-4 text-center">No se encontraron resultados</div>
           }
-
         />
         <div
           style={{
@@ -363,7 +420,6 @@ function Detalles() {
           />
         </div>
       </div>
-      {/* Modal */}
     </div>
   );
 }
