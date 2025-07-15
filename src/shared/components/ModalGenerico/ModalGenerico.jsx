@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
-const ModalGenerico = ({ show, onHide, titulo, cuerpo, onGuardar }) => {
+const ModalGenerico = ({ show, onHide, titulo, cuerpo, onGuardar, botonBuscar }) => {
   return (
     <Modal show={show} onHide={onHide}>
       <Modal.Header closeButton>
@@ -15,7 +15,7 @@ const ModalGenerico = ({ show, onHide, titulo, cuerpo, onGuardar }) => {
           Cerrar
         </Button>
         <Button variant="primary" onClick={onGuardar}>
-          Ver
+          {botonBuscar}
         </Button>
       </Modal.Footer>
     </Modal>

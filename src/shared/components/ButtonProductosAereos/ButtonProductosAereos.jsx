@@ -2,7 +2,7 @@ import React from 'react'
 // import "./ButtonDetails.css"
 import ModalGenerico from '../ModalGenerico/ModalGenerico'; // Importar el modal genérico
 
-function ButtonAgregarItem({ cuerpoModalItem, piePagina, onSearchClick }) {
+function ButtonProductosAereos({ cuerpoModalProducto, piePagina, onSearchClick }) {
   const [showModal, setShowModal] = React.useState(false);
 
   const handleSearchClick = () => {
@@ -25,18 +25,18 @@ function ButtonAgregarItem({ cuerpoModalItem, piePagina, onSearchClick }) {
         show={showModal}
         onHide={handleCloseModal}
         titulo="Tipos de productos"
-        cuerpo={cuerpoModalItem}
+        cuerpo={cuerpoModalProducto}
         onGuardar={handleCloseModal}
         botonBuscar="Ver"
       />
 
         <button 
         className="navigation-button active" onClick={handleSearchClick}>
-            Agregar Item
+            Ver
         </button>
     </div>
 
   )
 }
 
-export default ButtonAgregarItem
+export default ButtonProductosAereos
