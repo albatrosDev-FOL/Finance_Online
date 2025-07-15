@@ -6,8 +6,7 @@ import MenuFacturas from "../menufacturas/menuFacturas";
 function grafica() {
   return (
     <div>
-      <NavBar />
-        <MenuFacturas />
+    
 
     </div>
   )

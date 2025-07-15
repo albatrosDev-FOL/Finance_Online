@@ -11,6 +11,7 @@ import imgImprimir from "/search/imprimir.png";
 import imgReturn from "/search/return.png";
 import ModalGenerico from '../ModalGenerico/ModalGenerico'; // Importar el modal genérico
 import { useNavigate } from 'react-router-dom'
+import ProductosAereos from "../Productos Aereos/productosAereos"
 
 const FacNavbar = ({ cuerpoModal, piePagina, onSearchClick }) => {
   const [showModal, setShowModal] = React.useState(false);

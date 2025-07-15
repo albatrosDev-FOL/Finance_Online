@@ -297,7 +297,7 @@ function FormDetalles() {
         <Form.Control
           type="text"
           placeholder=""
-          style={{ height: "100px", width: "1480px" }}
+          style={{ height: "100px", width: "1280px" }}
         />
       </Form.Group>
 

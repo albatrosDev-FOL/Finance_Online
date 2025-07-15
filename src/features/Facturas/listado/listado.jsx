@@ -11,6 +11,7 @@ import MenuFacturas from "../menufacturas/menuFacturas";
 import FacturaService from "../../../services/FacturaService";
 import FacNavbar from "../../../shared/components/FacNavbar/FacNavbar";
 import ButtonDetails from "../../../shared/components/ButtonDetails/ButtonDetails";
+import ProductosAereos from "../../../shared/components/Productos Aereos/productosAereos"
 import "./listado.css";
 
 registerLocale("es", es);
@@ -353,7 +354,7 @@ const ListadoFacturacion = () => {
           noDataComponent={
             <div className="py-4 text-center">No se encontraron resultados</div>
           }
-           style={{ cursor: "pointer", color: "blue" }}
+          style={{ cursor: "pointer", color: "blue" }}
         />
       </div>
 
@@ -474,6 +475,7 @@ const ListadoFacturacion = () => {
   return (
     <>
       <NavBar />
+
       <MenuFacturas />
       <FacNavbar cuerpoModal={searchModalContent} />
 
@@ -493,8 +495,10 @@ const ListadoFacturacion = () => {
             onChange={handlePageChange}
             color="primary"
           />
+
         </div>
       </div>
+
     </>
   );
 };
