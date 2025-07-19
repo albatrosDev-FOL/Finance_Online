@@ -1,39 +1,47 @@
-import React from 'react'
+import React, { useState } from 'react';
 // import "./ButtonDetails.css"
 import ModalGenerico from '../ModalGenerico/ModalGenerico'; // Importar el modal genérico
+import ProductosAereos from '../Productos Aereos/productosAereos';
 
-function ButtonAgregarItem({ cuerpoModalItem, piePagina, onSearchClick }) {
+function ButtonAgregarItem({ cuerpoModalItem, piePagina,  }) {
   const [showModal, setShowModal] = React.useState(false);
+ const [mostrarBuscador, setMostrarBuscador] = useState(false); // <- NUEVO
 
-  const handleSearchClick = () => {
-
+  const handleOpenModal = () =>{
     setShowModal(true);
-    if (onSearchClick) onSearchClick(); // Notificar al componente padre que se hizo clic en busca
+    setMostrarProductosAereos(false); // Siempre empieza mostrando cuerpoModalItem
   };
-
   const handleCloseModal = () => {
     setShowModal(false);
+    setMostrarBuscador(false); // Opcional: ocultar el buscador al cerrar el modal
   };
 
+  // Esta función se ejecuta cuando se hace clic en "Buscar" dentro del modal
+  const handleBuscarClick = () => {
+    setMostrarBuscador(true); // Mostrar el componente buscador dentro del modal
+  };
 
   return (
-    <div className="form-tipo-dre" >
-
-
-
+     <div className="form-tipo-dre">
       <ModalGenerico
         show={showModal}
         onHide={handleCloseModal}
         titulo="Tipos de productos"
-        cuerpo={cuerpoModalItem}
+        cuerpo={
+          <>
+            
+            {mostrarBuscador ? <ProductosAereos  />: cuerpoModalItem} 
+          </>
+        }
         onGuardar={handleCloseModal}
-        botonBuscar="Ver"
+        botonBuscar="Buscar"
+        cancelar="Cancelar"
+        onSearchClick={handleBuscarClick} // <- Esta función se pasa al modal
       />
 
-        <button 
-        className="navigation-button active" onClick={handleSearchClick}>
-            Agregar Item
-        </button>
+      <button className="navigation-button active" onClick={handleOpenModal}>
+        Agregar Item
+      </button>
     </div>
 
   )
