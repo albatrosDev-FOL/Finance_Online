@@ -203,7 +203,40 @@ class FacturaService {
     }
   }
 
-  
+  //Servicio para tipos de tiquetes
+
+  async getSubProductsByType(token, { idSucursal, idProductType }) {
+    try {
+      if (!idSucursal || !idProductType) {
+        throw new Error("Se requieren ambos IDs: idSucursal e idProductType");
+      }
+
+      const response = await axios.get(
+        `${this.url}SubProduct/SubProductxProduct/${idSucursal}/${idProductType}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.data || !response.data.SubProducts) {
+        throw new Error("Formato de respuesta inesperado");
+      }
+
+      return response.data;
+    } catch (error) {
+      console.error("Error al obtener los subproductos:", error);
+
+      let errorMessage = "Error al cargar los productos";
+      if (error.response) {
+        errorMessage = error.response.data.Message || errorMessage;
+      }
+
+      throw new Error(errorMessage);
+    }
+  }
 }
 
 export default new FacturaService();

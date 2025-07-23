@@ -14,6 +14,7 @@ import "./FormDetalles.css";
 import { format } from "date-fns";
 
 function FormDetalles() {
+  const [selectedProductType, setSelectedProductType] = useState(1);
   const [Destination, setDestination] = useState([]);
   const [Coins, setCoins] = useState([]);
   const [selectedCoin, setSelectedCoin] = useState("");
@@ -174,17 +175,18 @@ function FormDetalles() {
     }
   };
 
-
   const cuerpoModalItem = (
     <Form>
       <Form.Group>
-        <Form.Select>
-          <option value="Aereo Nacional">Aereo Nacional</option>
-          <option value="Aereo Internacional">Aereo Internacional</option>
-          <option value="Plan Terceros">Plan Terceros</option>
-          <option value="Otros Productos">Otros Productos</option>
+        <Form.Select
+          value={selectedProductType}
+          onChange={(e) => setSelectedProductType(Number(e.target.value))}
+        >
+          <option value={1}>Aéreo Nacional</option>
+          <option value={2}>Aéreo Internacional</option>
+          <option value={4}>Plan Terceros</option>
+          <option value={5}>Otros Productos</option>
         </Form.Select>
-            
       </Form.Group>
     </Form>
   );
@@ -367,7 +369,7 @@ function FormDetalles() {
         md="6"
         controlId="validationCustom03"
         style={{ width: "1300px", height: "140px" }}
-      > 
+      >
         <Form.Label>Observaciones</Form.Label>
         <Form.Control
           type="text"
@@ -380,7 +382,10 @@ function FormDetalles() {
         <button className="navigation-button">Ver Expedientes</button>
 
         {trmEditValue > 0 ? (
-          <ButtonAgregarItem cuerpoModalItem={cuerpoModalItem} />
+          <ButtonAgregarItem
+            cuerpoModalItem={cuerpoModalItem}
+            selectedProductType={selectedProductType}
+          />
         ) : (
           <Button variant="secondary" disabled>
             Agregar Item (Porfavor digite la TRM)
