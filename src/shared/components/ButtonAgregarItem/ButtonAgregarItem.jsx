@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 // import "./ButtonDetails.css"
-import ModalGenerico from '../ModalGenerico/ModalGenerico'; // Importar el modal genérico
-import ProductosAereos from '../Productos Aereos/productosAereos';
+import ModalGenerico from "../ModalGenerico/ModalGenerico"; // Importar el modal genérico
+import ProductosAereos from "../Productos Aereos/productosAereos";
+import "./ButtonAgregarItem.css";
 
-function ButtonAgregarItem({ cuerpoModalItem, piePagina,  }) {
+function ButtonAgregarItem({ cuerpoModalItem, selectedProductType }) {
   const [showModal, setShowModal] = React.useState(false);
- const [mostrarBuscador, setMostrarBuscador] = useState(false); // <- NUEVO
+  const [mostrarBuscador, setMostrarBuscador] = useState(false); // <- NUEVO
 
-  const handleOpenModal = () =>{
+  const handleOpenModal = () => {
     setShowModal(true);
     setMostrarProductosAereos(false); // Siempre empieza mostrando cuerpoModalItem
   };
@@ -22,29 +23,32 @@ function ButtonAgregarItem({ cuerpoModalItem, piePagina,  }) {
   };
 
   return (
-     <div className="form-tipo-dre">
+    <div className="form-tipo-dre">
       <ModalGenerico
         show={showModal}
         onHide={handleCloseModal}
         titulo="Tipos de productos"
         cuerpo={
-          <>
-            
-            {mostrarBuscador ? <ProductosAereos  />: cuerpoModalItem} 
-          </>
+          <div className={mostrarBuscador ? "cuerpo-modal-grande" : ""}>
+            {mostrarBuscador ? (
+              <ProductosAereos selectedProductType={selectedProductType} />
+            ) : (
+              cuerpoModalItem
+            )}
+          </div>
         }
         onGuardar={handleCloseModal}
         botonBuscar="Buscar"
         cancelar="Cancelar"
         onSearchClick={handleBuscarClick} // <- Esta función se pasa al modal
+        modalClass="modal-productos-aereos"
       />
 
       <button className="navigation-button active" onClick={handleOpenModal}>
         Agregar Item
       </button>
     </div>
-
-  )
+  );
 }
 
-export default ButtonAgregarItem
+export default ButtonAgregarItem;
