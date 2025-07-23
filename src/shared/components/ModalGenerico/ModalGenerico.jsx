@@ -3,7 +3,7 @@ import { Modal, Button } from 'react-bootstrap';
 
 const ModalGenerico = ({ show, onHide, titulo, cuerpo, onGuardar, botonBuscar,cancelar,  onSearchClick }) => {
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal  show={show}>
       <Modal.Header closeButton>
         <Modal.Title>{titulo}</Modal.Title>
       </Modal.Header>
