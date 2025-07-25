@@ -3,11 +3,7 @@ import { Modal, Button } from 'react-bootstrap';
 
 const ModalGenerico = ({ show, onHide, titulo, cuerpo, onGuardar, botonBuscar,cancelar,  onSearchClick, modalClass }) => {
   return (
-<<<<<<< HEAD
-    <Modal  show={show}>
-=======
     <Modal show={show} onHide={onHide} dialogClassName={`modal-90w ${modalClass || ''}`}>
->>>>>>> f298e1d10e4ac2abeb03653752294b8c31766712
       <Modal.Header closeButton>
         <Modal.Title>{titulo}</Modal.Title>
       </Modal.Header>

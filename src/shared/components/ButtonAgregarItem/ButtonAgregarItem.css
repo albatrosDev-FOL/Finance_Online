@@ -16,3 +16,20 @@
   min-width: 100%;
   padding: 10px;
 }
+
+/* productosAereos.css */
+.modal-productos-aereos .modal-dialog {
+  max-width: 900px; /* O el ancho que necesites */
+  
+  width: 80%;
+}
+
+.modal-productos-aereos .modal-content {
+  min-height: 85vh;
+}
+
+/* Opcional: ajustar el cuerpo del modal */
+.modal-productos-aereos .modal-body {
+  max-height: 80vh;
+  overflow-y: auto;
+}

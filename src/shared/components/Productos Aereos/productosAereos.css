@@ -1,0 +1,104 @@
+/* Contenedor general del formulario */
+.form-tipo-dre {
+  padding: 10px;
+  border-style: inset;
+  font-size: 14px;
+
+}
+
+/* Contenedor con bordes y separación entre secciones */
+.form-tipo-dre .seccion {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-style: inset;
+}
+
+/* Etiquetas del formulario */
+.form-tipo-dre label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Columnas con inputs */
+.form-tipo-dre .col-producto {
+  font-size: 10px;
+}
+
+.form-tipo-dre .col-checkboxes {
+  padding-top: 60px;
+  padding-left: 60px;
+  font-size: 12px;
+}
+
+.form-tipo-dre .col-tiquete {
+  padding-top: 60px;
+  font-size: 12px;
+}
+
+/* Inputs select */
+.form-tipo-dre select,
+.form-tipo-dre input,
+.form-tipo-dre .form-control {
+  font-size: 14px;
+}
+
+/* Spinner de carga */
+.form-tipo-dre .spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Contenedor de vuelo e impuesto */
+.form-tipo-dre .vuelo-impuesto {
+ 
+  width: 700px;
+  display: flex;
+  justify-content: space-around;
+  gap: 12px;
+  
+  
+}
+
+.form-tipo-dre .vuelo-impuesto .form-tipo-vuelo{
+    border-style: inset;
+ padding-left: 5px;
+}
+
+
+/* Botones de acción */
+.form-tipo-dre .botones-accion {
+  text-align: end;
+  margin-top: 20px;
+}
+
+/* Botón de agregar vuelo */
+.form-tipo-dre .btn-agregar-vuelo {
+  margin-left: 10px;
+  
+  
+}
+
+.form-tipo-impuesto{
+
+      border-style: inset;
+
+}
+
+
+/* Botones de impuesto */
+.form-tipo-dre .btn-impuesto {
+
+  display: flex;
+  gap: 10px;
+  
+
+
+}
+.form-tipo-dre .btn-impuesto
+
+/* Inputs de forma de pago */
+.form-tipo-dre .form-pago input {
+  width: 100%;
+  font-size: 14px;
+}
