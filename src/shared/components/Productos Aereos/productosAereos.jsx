@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from "react";
+import DataTable from "react-data-table-component";
+import DatePicker from "react-datepicker";
+
+
 import { Button, Form, Row, Col, Spinner, Alert } from "react-bootstrap";
 import FacturaService from "../../../services/FacturaService";
 import "./productosAereos.css"
@@ -84,6 +88,39 @@ function ProductosAereos({ selectedProductType, onClose }) {
   };
 
 
+  const tableComponets = [
+    { id: 1, origen: "ESP", destino: "BGT", fecha: "19/03/2025" },
+    { id: 2, origen: "MDE", destino: "CLO", fecha: "05/04/2025" },
+    { id: 3, origen: "CTG", destino: "SMR", fecha: "12/05/2025" },
+    { id: 4, origen: "PEI", destino: "BGA", fecha: "28/06/2025" },
+    { id: 5, origen: "LET", destino: "BOG", fecha: "10/07/2025" },
+    { id: 6, origen: "BUN", destino: "CUC", fecha: "22/08/2025" }
+
+  ]
+  const invoiceColumns = [
+    {
+      name: "ID",
+      selector: row => row.id,
+      sortable: true
+    },
+    {
+      name: "Origen",
+      selector: row => row.origen,
+      sortable: true
+    },
+    {
+      name: "Destino",
+      selector: row => row.destino,
+      sortable: true
+    },
+    {
+      name: "Fecha",
+      selector: row => row.fecha,
+      sortable: true
+    }
+  ];
+
+  
 
 
   return (
@@ -91,7 +128,7 @@ function ProductosAereos({ selectedProductType, onClose }) {
       <Form>
         <div className="seccion">
           <Row className="mb-3">
-            <Col md={3} className="col-producto">
+            <Col md={5} className="col-producto">
               <Form.Label>Producto</Form.Label>
               {loading ? (
                 <div className="text-center">
@@ -142,7 +179,7 @@ function ProductosAereos({ selectedProductType, onClose }) {
           </Row>
         </div>
 
-        <div className="form-tipo-dre seccion">
+        <div className="form-tipo-dre-seccion">
           <Row className="mb-3">
             <Col md={1}>
               <Form.Label>Serie</Form.Label>
@@ -234,8 +271,8 @@ function ProductosAereos({ selectedProductType, onClose }) {
               </Row>
 
               <Row className="mb-3">
-                <Col md={3}>
-                  <Form.Control placeholder="" />
+                <Col md={4}>
+                  <Form.Label>Numero de Vuelo</Form.Label>
                 </Col>
                 <Col md={4}>
                   <Form.Control />
@@ -244,22 +281,45 @@ function ProductosAereos({ selectedProductType, onClose }) {
                   <Button >Agregar</Button>
                 </Col>
               </Row>
+
+              <DataTable
+                columns={invoiceColumns}
+                data={tableComponets}
+        
+              />
             </div>
 
             <div className="form-tipo-impuesto">
               <Row className="mb-3">
-                <Col md={4}>
+                <Col md={2}>
                   <Form.Label>Impuesto</Form.Label>
+
+                </Col>
+                <Col md={9}><Form.Control /></Col>
+
+                <Col md={2}>
+                  <Form.Label>Neto</Form.Label>
                   <Form.Control />
                 </Col>
-                <Col md={6}>
-                  <Form.Label>Valor Neto</Form.Label>
-                  <Form.Control type="number" />
+                <Col md={2}>
+                  <Form.Label>%</Form.Label>
+                  <Form.Control />
+
                 </Col>
-                <Col md={3} className="btn-impuesto">
+                <Col md={3}>
+                  <Form.Label>     valor</Form.Label>
+                  <Form.Control type="text" />
+                </Col>
+
+
+                <Col md={2} className="btn-impuesto">
+
                   <Button variant="outline-success" className="me-2">Agregar</Button>
                   <Button variant="outline-danger">Eliminar</Button>
                 </Col>
+
+
+
               </Row>
             </div>
           </div>
