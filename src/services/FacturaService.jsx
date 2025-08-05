@@ -139,7 +139,6 @@ class FacturaService {
     }
   }
 
-  //Servicio para consumir TRM
   async getTrm(token, { trmDate, TravelAgencyBranchID, CoinIATACode }) {
     try {
       const params = {
@@ -221,11 +220,10 @@ class FacturaService {
         }
       );
 
-      if (!response.data || !response.data.SubProducts) {
-        throw new Error("Formato de respuesta inesperado");
-      }
+     
 
-      return response.data;
+      return response.data || { SubProducts: [] };
+
     } catch (error) {
       console.error("Error al obtener los subproductos:", error);
 

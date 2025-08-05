@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import DatePicker from "react-datepicker";
 
+import ProductosAereosService from "../../../services/ProductosAereosService"
+
 
 import { Button, Form, Row, Col, Spinner, Alert } from "react-bootstrap";
 import FacturaService from "../../../services/FacturaService";
@@ -11,7 +13,10 @@ function ProductosAereos({ selectedProductType, onClose }) {
   const [subProducts, setSubProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [selectedProduct, setSelectedProduct] = useState("");
+  const [selectedSubProduct, setSelectedSubProduct] = useState("");
+  const [suplier, SetSuplier] = useState("")
+
+  const [suppliers, setSuppliers] = useState([]);
 
   // Estado para todos los campos del formulario
   const [formData, setFormData] = useState({
@@ -40,8 +45,14 @@ function ProductosAereos({ selectedProductType, onClose }) {
     valorPago: "",
   });
 
+
+
+
+
+
   // Cargar los subproductos cuando cambie el tipo de producto seleccionado
   useEffect(() => {
+
     const fetchSubProducts = async () => {
       try {
         setLoading(true);
@@ -59,7 +70,12 @@ function ProductosAereos({ selectedProductType, onClose }) {
           idProductType: selectedProductType,
         });
 
+        console.log("proveedores", data.SubProducts)
+
         setSubProducts(data.SubProducts || []);
+        if (data.SubProducts.length > 0) {
+          setSelectedSubProduct(data.SubProducts[0].IdSubProduct);
+        }
       } catch (err) {
         setError(err.message || "Error al cargar los productos");
         setSubProducts([]);
@@ -71,13 +87,70 @@ function ProductosAereos({ selectedProductType, onClose }) {
     if (selectedProductType) {
       fetchSubProducts();
     }
-  }, [selectedProductType]);
 
-  // Manejar cambios en los inputs
+
+  }, [selectedProductType])
+
+
+
+
+  useEffect(() => {
+
+    const fetchSupplier = async () => {
+      if (!selectedSubProduct) return;
+      setLoading(true);
+      setError(null);
+
+      const token = localStorage.getItem("Token");
+      const idSucursal = localStorage.getItem("SucursalId");
+
+      if (!token || !idSucursal || !IdSubProduct) {
+        setError("Faltan datos necesarios");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const data = await ProductosAereosService.getSupplier(token, {
+          idSucursal,
+          IdSubProduct: selectedSubProduct
+        });
+        setSuppliers(data.Suppliers || []);
+        const fetchedSuppliers = Array.isArray(data.Suppliers) ? data.Suppliers : [];
+        setSuppliers(fetchedSuppliers);
+
+        console.log("Productos :", data);
+
+        setSuppliers(data.Suppliers || []);
+      } catch (error) {
+        setError(error.message || "Error al cargar proveedores");
+        setSuppliers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (selectedSubProduct) {
+      fetchSupplier();
+    }
+
+    setSuppliers([]); // Limpiar proveedores anteriores
+    setFormData(prev => ({ ...prev, proveedor: "" })); // Resetear selección
+  }, [selectedSubProduct]);
+
+
+
+
+
+
+  // 2. Luego define handleInputChange
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+
   };
+
 
   // Manejar envío del formulario
   const handleSubmit = (e) => {
@@ -89,17 +162,31 @@ function ProductosAereos({ selectedProductType, onClose }) {
 
 
   const tableComponets = [
-    { id: 1, origen: "ESP", destino: "BGT", fecha: "19/03/2025" },
-    { id: 2, origen: "MDE", destino: "CLO", fecha: "05/04/2025" },
-    { id: 3, origen: "CTG", destino: "SMR", fecha: "12/05/2025" },
-    { id: 4, origen: "PEI", destino: "BGA", fecha: "28/06/2025" },
-    { id: 5, origen: "LET", destino: "BOG", fecha: "10/07/2025" },
-    { id: 6, origen: "BUN", destino: "CUC", fecha: "22/08/2025" }
+    { id: "", origen: "ESP", destino: "BGT", fecha: "19/03/2025" },
+
+  ]
+
+  const invoiceColumnstow = [
+    {
+      name: "",
+      selector: row => row.id,
+      sortable: true
+    },
+    {
+      name: "Impuesto",
+      selector: row => row.id,
+      sortable: true
+    },
+    {
+      name: "Valor",
+      selector: row => row.id,
+      sortable: true
+    },
 
   ]
   const invoiceColumns = [
     {
-      name: "ID",
+      name: "",
       selector: row => row.id,
       sortable: true
     },
@@ -120,7 +207,7 @@ function ProductosAereos({ selectedProductType, onClose }) {
     }
   ];
 
-  
+
 
 
   return (
@@ -143,16 +230,13 @@ function ProductosAereos({ selectedProductType, onClose }) {
                 <Form.Control
                   as="select"
                   name="producto"
-                  value={formData.producto}
-                  onChange={handleInputChange}
+                  value={selectedSubProduct ?? ""}
+                  onChange={(e) => setSelectedSubProduct(e.target.value)}
                   required
                 >
                   <option value="">Seleccione un producto</option>
                   {subProducts.map((product) => (
-                    <option
-                      key={`product-${product.IdSubProduct}`}
-                      value={product.IdSubProduct}
-                    >
+                    <option key={product.IdSubProduct} value={product.IdSubProduct.toString()}>
                       {product.Name}
                     </option>
                   ))}
@@ -160,7 +244,35 @@ function ProductosAereos({ selectedProductType, onClose }) {
               )}
 
               <Form.Label>Proveedor</Form.Label>
-              <Form.Control />
+              {loading ? (
+                <div className="text-center">
+                  <Spinner animation="border" size="sm" />
+                  <span className="ms-2">Cargando proveedores...</span>
+                </div>
+              ) : error ? (
+                <Alert variant="danger" className="py-2">
+                  {error}
+                </Alert>
+              ) : (
+                <Form.Control
+                  as="select"
+                  name="proveedor"
+                  value={formData.proveedor}
+                  onChange={handleInputChange}
+                  required
+                  disabled // Deshabilitar si no hay producto seleccionado
+                >
+                  <option value="">Seleccione un proveedor</option>
+                  {suppliers.map((supplier) => (
+                    <option key={supplier.IdSupplier} value={supplier.IdSupplier}>
+                      {supplier.Name}
+                    </option>
+                  ))}
+                </Form.Control>
+              )}
+
+
+
 
               <Form.Label>Proveedor del servicio</Form.Label>
               <Form.Control />
@@ -264,7 +376,7 @@ function ProductosAereos({ selectedProductType, onClose }) {
                   <Form.Label>Clase</Form.Label>
                   <Form.Control placeholder="" />
                 </Col>
-                <Col md={4}>
+                <Col md={3}>
                   <Form.Label>Fecha</Form.Label>
                   <Form.Control type="date" />
                 </Col>
@@ -285,7 +397,7 @@ function ProductosAereos({ selectedProductType, onClose }) {
               <DataTable
                 columns={invoiceColumns}
                 data={tableComponets}
-        
+
               />
             </div>
 
@@ -317,6 +429,12 @@ function ProductosAereos({ selectedProductType, onClose }) {
                   <Button variant="outline-success" className="me-2">Agregar</Button>
                   <Button variant="outline-danger">Eliminar</Button>
                 </Col>
+
+                <DataTable
+                  columns={invoiceColumnstow}
+                  data={tableComponets}
+
+                />
 
 
 
