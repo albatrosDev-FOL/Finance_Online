@@ -58,12 +58,29 @@ async getSupplier(token, {idSucursal, IdSubProduct}) {
     
   }
 
+  
+async getPaymentMethods (token){
+   try {
+    
+      const response = await axios.get(`${this.url}BasicTable/PaymentMethods`,
+         {
+        
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      console.error("Error al obtener Metodos de pago:", errorMessage);
+      throw new Error("No se pudieron obtener los metodos de pago");
+    }
+    
+  }
+
+
 }
-
-
-
-
-
 
 
 

@@ -16,6 +16,7 @@ function ProductosAereos({ selectedProductType, onClose }) {
   const [selectedSubProduct, setSelectedSubProduct] = useState(1);
   const [suplier, SetSuplier] = useState("")
   const [classes, setclasses] = useState([]);
+  const [paymentMethods,setpaymentMethods] = ([])
 
   const [suppliers, setSuppliers] = useState([]);
 
@@ -158,6 +159,30 @@ function ProductosAereos({ selectedProductType, onClose }) {
       }
     }
     fetchAirportClasses()
+  }, [])
+
+  useEffect(() => {
+
+    const fetchPaymentMethods = async () => {
+      const token = localStorage.getItem("Token");
+      try {
+
+        const response = await ProductosAereosService.getPaymentMethods(
+          token,
+
+        );
+
+        const payMethods = response.data.BasicTab;
+        // setclasses(Classes);
+        console.log("Metodos de pago", payMethods)
+
+      } catch (error) {
+        console.log("Error en fetchPaymentMethods: ", error);
+      }
+    }
+
+
+    fetchPaymentMethods()
   },[])
 
 
@@ -289,6 +314,7 @@ function ProductosAereos({ selectedProductType, onClose }) {
                   ))}
                 </Form.Control>
               )}
+
 
 
 
