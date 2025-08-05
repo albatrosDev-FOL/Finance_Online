@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
-import DatePicker from "react-datepicker";
-
-import ProductosAereosService from "../../../services/ProductosAereosService"
-
-
 import { Button, Form, Row, Col, Spinner, Alert } from "react-bootstrap";
 import FacturaService from "../../../services/FacturaService";
-import "./productosAereos.css"
+import ProductosAereosService from "../../../services/ProductosAereosService";
+import "./productosAereos.css";
 
 function ProductosAereos({ selectedProductType, onClose }) {
+  // Estados para productos y proveedores
   const [subProducts, setSubProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [selectedSubProduct, setSelectedSubProduct] = useState(1);
-  const [suplier, SetSuplier] = useState("")
-  const [classes, setclasses] = useState([]);
-  const [paymentMethods,setpaymentMethods] = ([])
-
   const [suppliers, setSuppliers] = useState([]);
+  const [loading, setLoading] = useState({
+    products: false,
+    suppliers: false,
+  });
+  const [error, setError] = useState({
+    products: null,
+    suppliers: null,
+  });
+  const [selectedSubProduct, setSelectedSubProduct] = useState("");
+  const [selectedProductId, setSelectedProductId] = useState("");
 
   // Estado para todos los campos del formulario
   const [formData, setFormData] = useState({
@@ -47,18 +47,30 @@ function ProductosAereos({ selectedProductType, onClose }) {
     valorPago: "",
   });
 
+  // Datos de ejemplo para las tablas
+  const tableComponents = [
+    { id: "", origen: "ESP", destino: "BGT", fecha: "19/03/2025" },
+  ];
 
+  const invoiceColumns = [
+    { name: "", selector: (row) => row.id, sortable: true },
+    { name: "Origen", selector: (row) => row.origen, sortable: true },
+    { name: "Destino", selector: (row) => row.destino, sortable: true },
+    { name: "Fecha", selector: (row) => row.fecha, sortable: true },
+  ];
 
+  const invoiceColumnsTax = [
+    { name: "", selector: (row) => row.id, sortable: true },
+    { name: "Impuesto", selector: (row) => row.id, sortable: true },
+    { name: "Valor", selector: (row) => row.id, sortable: true },
+  ];
 
-
-
-  // Cargar los subproductos cuando cambie el tipo de producto seleccionado
+  // Cargar subproductos cuando cambie el tipo de producto
   useEffect(() => {
-
     const fetchSubProducts = async () => {
       try {
-        setLoading(true);
-        setError(null);
+        setLoading((prev) => ({ ...prev, products: true }));
+        setError((prev) => ({ ...prev, products: null }));
 
         const token = localStorage.getItem("Token");
         const idSucursal = localStorage.getItem("SucursalId");
@@ -72,215 +84,153 @@ function ProductosAereos({ selectedProductType, onClose }) {
           idProductType: selectedProductType,
         });
 
-        console.log("proveedores", data.SubProducts)
-
         setSubProducts(data.SubProducts || []);
-        if (data.SubProducts.length > 0) {
-          setSelectedSubProduct(data.SubProducts[0].IdSubProduct.IdProduct);
-        }
+        
+        // Resetear selecciones sin asignar automáticamente el primer producto
+        setSelectedSubProduct("");
+        setSelectedProductId("");
+        setFormData((prev) => ({
+          ...prev,
+          producto: "",
+          proveedor: "",
+        }));
       } catch (err) {
-        setError(err.message || "Error al cargar los productos");
+        setError((prev) => ({
+          ...prev,
+          products: err.message || "Error al cargar los productos",
+        }));
         setSubProducts([]);
       } finally {
-        setLoading(false);
+        setLoading((prev) => ({ ...prev, products: false }));
       }
     };
 
     if (selectedProductType) {
       fetchSubProducts();
     }
+  }, [selectedProductType]);
 
-
-  }, [selectedProductType])
-
-
-
-
+  // Cargar proveedores cuando cambie el producto seleccionado
   useEffect(() => {
-
-    const fetchSupplier = async () => {
-      if (!selectedSubProduct) return;
-      setLoading(true);
-      setError(null);
-
-      const token = localStorage.getItem("Token");
-      const idSucursal = localStorage.getItem("SucursalId");
-
-      if (!token || !idSucursal || !IdSubProduct) {
-        setError("Faltan datos necesarios");
-        setLoading(false);
+    const fetchSuppliers = async () => {
+      if (!selectedProductId) {
+        setSuppliers([]);
         return;
       }
 
       try {
+        setLoading((prev) => ({ ...prev, suppliers: true }));
+        setError((prev) => ({ ...prev, suppliers: null }));
+
+        const token = localStorage.getItem("Token");
+        const idSucursal = localStorage.getItem("SucursalId");
+
         const data = await ProductosAereosService.getSupplier(token, {
           idSucursal,
-          IdSubProduct: selectedSubProduct
+          IdSubProduct: selectedProductId,
         });
-        setSuppliers(data || []);
-        const fetchedSuppliers = Array.isArray(data.Suppliers) ? data.Suppliers : [];
-        setSuppliers(fetchedSuppliers);
-
-        console.log("Productos :", data);
 
         setSuppliers(data.Suppliers || []);
-      } catch (error) {
-        setError(error.message || "Error al cargar proveedores");
+
+        if (data.Suppliers?.length > 0) {
+          setFormData((prev) => ({
+            ...prev,
+            proveedor: data.Suppliers[0].Id.toString(),
+          }));
+        } else {
+          setFormData((prev) => ({
+            ...prev,
+            proveedor: "",
+          }));
+        }
+      } catch (err) {
+        setError((prev) => ({
+          ...prev,
+          suppliers: err.message || "Error al cargar proveedores",
+        }));
         setSuppliers([]);
       } finally {
-        setLoading(false);
+        setLoading((prev) => ({ ...prev, suppliers: false }));
       }
     };
-    if (selectedSubProduct) {
-      fetchSupplier();
-    }
 
-    setSuppliers([]); // Limpiar proveedores anteriores
-    setFormData(prev => ({ ...prev, proveedor: "" })); // Resetear selección
-  }, [selectedSubProduct]);
+    fetchSuppliers();
+  }, [selectedProductId]);
 
-
-  useEffect(() => {
-    const fetchAirportClasses = async () => {
-      const token = localStorage.getItem("Token");
-      try {
-
-        const response = await ProductosAereosService.AirportClasses(
-          token,
-
-        );
-
-        const Classes = response.data.BasicTab;
-        setclasses(Classes);
-        console.log("clases", Classes)
-
-      } catch (error) {
-        console.log("Error en fetchAirportClasses: ", error);
-      }
-    }
-    fetchAirportClasses()
-  }, [])
-
-  useEffect(() => {
-
-    const fetchPaymentMethods = async () => {
-      const token = localStorage.getItem("Token");
-      try {
-
-        const response = await ProductosAereosService.getPaymentMethods(
-          token,
-
-        );
-
-        const payMethods = response.data.BasicTab;
-        // setclasses(Classes);
-        console.log("Metodos de pago", payMethods)
-
-      } catch (error) {
-        console.log("Error en fetchPaymentMethods: ", error);
-      }
-    }
-
-
-    fetchPaymentMethods()
-  },[])
-
-
-
-  // 2. Luego define handleInputChange
+  // Manejar cambios en los inputs
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
     setFormData((prev) => ({ ...prev, [name]: value }));
-
-
   };
 
+  // Manejar cambio de producto
+  const handleProductChange = (e) => {
+    const selectedId = e.target.value;
+    
+    if (!selectedId) {
+      // Si selecciona la opción vacía
+      setSelectedSubProduct("");
+      setSelectedProductId("");
+      setFormData((prev) => ({
+        ...prev,
+        producto: "",
+        proveedor: "",
+      }));
+      return;
+    }
+
+    const selectedProduct = subProducts.find(
+      (product) => product.IdSubProduct.toString() === selectedId
+    );
+
+    if (selectedProduct) {
+      setSelectedSubProduct(selectedId);
+      setSelectedProductId(selectedProduct.IdProduct.toString());
+      setFormData((prev) => ({
+        ...prev,
+        producto: selectedId,
+        proveedor: "",
+      }));
+    }
+  };
 
   // Manejar envío del formulario
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Datos enviados:", formData);
-    // Aquí puedes agregar la lógica para enviar los datos al servidor
-    onClose(); // Cerrar el modal después de enviar
+    onClose();
   };
-
-
-  const tableComponets = [
-    { id: "", origen: "ESP", destino: "BGT", fecha: "19/03/2025" },
-
-  ]
-
-  const invoiceColumnstow = [
-    {
-      name: "",
-      selector: row => row.id,
-      sortable: true
-    },
-    {
-      name: "Impuesto",
-      selector: row => row.id,
-      sortable: true
-    },
-    {
-      name: "Valor",
-      selector: row => row.id,
-      sortable: true
-    },
-
-  ]
-  const invoiceColumns = [
-    {
-      name: "",
-      selector: row => row.id,
-      sortable: true
-    },
-    {
-      name: "Origen",
-      selector: row => row.origen,
-      sortable: true
-    },
-    {
-      name: "Destino",
-      selector: row => row.destino,
-      sortable: true
-    },
-    {
-      name: "Fecha",
-      selector: row => row.fecha,
-      sortable: true
-    }
-  ];
-
-
-
 
   return (
     <div className="form-tipo-dre">
-      <Form>
+      <Form onSubmit={handleSubmit}>
         <div className="seccion">
           <Row className="mb-3">
             <Col md={5} className="col-producto">
               <Form.Label>Producto</Form.Label>
-              {loading ? (
+              {loading.products ? (
                 <div className="text-center">
                   <Spinner animation="border" size="sm" />
                   <span className="ms-2">Cargando productos...</span>
                 </div>
-              ) : error ? (
+              ) : error.products ? (
                 <Alert variant="danger" className="py-2">
-                  {error}
+                  {error.products}
                 </Alert>
               ) : (
                 <Form.Select
                   as="select"
                   name="producto"
                   value={selectedSubProduct}
-                  onChange={(e) => setSelectedSubProduct(e.target.value)}
+                  onChange={handleProductChange}
+                  required
                 >
                   <option value="">Seleccione un producto</option>
                   {subProducts.map((product) => (
-                    <option key={product.IdSubProduct} value={product.IdSubProduct}>
+                    <option
+                      key={product.IdSubProduct}
+                      value={product.IdSubProduct.toString()}
+                    >
                       {product.Name}
                     </option>
                   ))}
@@ -288,14 +238,14 @@ function ProductosAereos({ selectedProductType, onClose }) {
               )}
 
               <Form.Label>Proveedor</Form.Label>
-              {loading ? (
+              {loading.suppliers ? (
                 <div className="text-center">
                   <Spinner animation="border" size="sm" />
                   <span className="ms-2">Cargando proveedores...</span>
                 </div>
-              ) : error ? (
+              ) : error.suppliers ? (
                 <Alert variant="danger" className="py-2">
-                  {error}
+                  {error.suppliers}
                 </Alert>
               ) : (
                 <Form.Control
@@ -304,34 +254,53 @@ function ProductosAereos({ selectedProductType, onClose }) {
                   value={formData.proveedor}
                   onChange={handleInputChange}
                   required
-                  disabled // Deshabilitar si no hay producto seleccionado
+                  disabled={!selectedProductId || suppliers.length === 0}
                 >
                   <option value="">Seleccione un proveedor</option>
                   {suppliers.map((supplier) => (
-                    <option key={supplier.IdSupplier} value={supplier.IdSupplier}>
-                      {supplier.Name}
+                    <option key={supplier.Id} value={supplier.Id}>
+                      {supplier.FullName || "Proveedor sin nombre"}
                     </option>
                   ))}
                 </Form.Control>
               )}
 
-
-
-
-
               <Form.Label>Proveedor del servicio</Form.Label>
-              <Form.Control />
+              <Form.Control
+                name="proveedorServicio"
+                value={formData.proveedorServicio}
+                onChange={handleInputChange}
+              />
             </Col>
 
             <Col md={4} className="col-checkboxes">
-              <Form.Check type="checkbox" label="Revisión" />
-              <Form.Check type="checkbox" label="Conjunción" />
-              <Form.Check type="checkbox" label="Eléctrico" />
+              <Form.Check
+                type="checkbox"
+                label="Revisión"
+                name="revision"
+                onChange={handleInputChange}
+              />
+              <Form.Check
+                type="checkbox"
+                label="Conjunción"
+                name="conjuncion"
+                onChange={handleInputChange}
+              />
+              <Form.Check
+                type="checkbox"
+                label="Eléctrico"
+                name="electrico"
+                onChange={handleInputChange}
+              />
             </Col>
 
             <Col md={3} className="col-tiquete">
               <Form.Label>Tiquete conjuncion</Form.Label>
-              <Form.Control />
+              <Form.Control
+                name="tiqueteConjuncion"
+                value={formData.tiqueteConjuncion}
+                onChange={handleInputChange}
+              />
             </Col>
           </Row>
         </div>
@@ -340,69 +309,135 @@ function ProductosAereos({ selectedProductType, onClose }) {
           <Row className="mb-3">
             <Col md={1}>
               <Form.Label>Serie</Form.Label>
-              <Form.Control />
+              <Form.Control
+                name="serie"
+                value={formData.serie}
+                onChange={handleInputChange}
+              />
             </Col>
             <Col md={1}>
               <Form.Label>Número</Form.Label>
-              <Form.Control />
+              <Form.Control
+                name="numero"
+                value={formData.numero}
+                onChange={handleInputChange}
+              />
             </Col>
             <Col md={2}>
               <Form.Label>Tarifa</Form.Label>
-              <Form.Control />
+              <Form.Control
+                name="tarifa"
+                value={formData.tarifa}
+                onChange={handleInputChange}
+                type="number"
+              />
             </Col>
             <Col md={2}>
               <Form.Label>Total</Form.Label>
-              <Form.Control />
+              <Form.Control
+                name="total"
+                value={formData.total}
+                onChange={handleInputChange}
+                type="number"
+              />
             </Col>
             <Col md={2}>
               <Form.Label>Tarifa extranjera</Form.Label>
-              <Form.Control />
+              <Form.Control
+                name="tarifaExtranjera"
+                value={formData.tarifaExtranjera}
+                onChange={handleInputChange}
+                type="number"
+              />
             </Col>
             <Col md={2}>
               <Form.Label>Precio Referencia</Form.Label>
-              <Form.Control />
+              <Form.Control
+                name="refPrecio"
+                value={formData.refPrecio}
+                onChange={handleInputChange}
+                type="number"
+              />
             </Col>
             <Col md={2}>
               <Form.Label>Tiq. Promoción</Form.Label>
-              <Form.Control />
+              <Form.Control
+                name="promocion"
+                value={formData.promocion}
+                onChange={handleInputChange}
+              />
             </Col>
           </Row>
 
           <Row className="mb-3">
             <Col md={3}>
               <Form.Label>Apellidos</Form.Label>
-              <Form.Control />
+              <Form.Control
+                name="apellidos"
+                value={formData.apellidos}
+                onChange={handleInputChange}
+              />
             </Col>
             <Col md={3}>
               <Form.Label>Nombres</Form.Label>
-              <Form.Control />
+              <Form.Control
+                name="nombres"
+                value={formData.nombres}
+                onChange={handleInputChange}
+              />
             </Col>
             <Col md={3}>
               <Form.Label>Razón de viaje</Form.Label>
-              <Form.Control />
+              <Form.Control
+                name="razonViaje"
+                value={formData.razonViaje}
+                onChange={handleInputChange}
+              />
             </Col>
             <Col md={3}>
               <Form.Label>Tarifa de referencia</Form.Label>
-              <Form.Control />
+              <Form.Control
+                name="tarifaReferencia"
+                value={formData.tarifaReferencia}
+                onChange={handleInputChange}
+                type="number"
+              />
             </Col>
           </Row>
 
           <Row className="mb-3">
             <Col md={3}>
               <Form.Label>Fecha Reserva</Form.Label>
-              <Form.Control type="date" />
+              <Form.Control
+                type="date"
+                name="fechaReserva"
+                value={formData.fechaReserva}
+                onChange={handleInputChange}
+              />
             </Col>
             <Col md={3}>
               <Form.Label>ID Empleado</Form.Label>
-              <Form.Control />
+              <Form.Control
+                name="idEmpleado"
+                value={formData.idEmpleado}
+                onChange={handleInputChange}
+              />
             </Col>
             <Col md={3}>
               <Form.Label>Centro de Costo</Form.Label>
-              <Form.Control />
+              <Form.Control
+                name="centroCosto"
+                value={formData.centroCosto}
+                onChange={handleInputChange}
+              />
             </Col>
             <Col md={3}>
               <Form.Label>Convenio</Form.Label>
-              <Form.Control />
+              <Form.Control
+                name="convenio"
+                value={formData.convenio}
+                onChange={handleInputChange}
+              />
             </Col>
           </Row>
 
@@ -411,11 +446,19 @@ function ProductosAereos({ selectedProductType, onClose }) {
               <Row className="mb-3">
                 <Col md={3}>
                   <Form.Label>Origen</Form.Label>
-                  <Form.Control placeholder="" />
+                  <Form.Control
+                    name="origen"
+                    value={formData.origen}
+                    onChange={handleInputChange}
+                  />
                 </Col>
                 <Col md={3}>
                   <Form.Label>Destino</Form.Label>
-                  <Form.Control placeholder="" />
+                  <Form.Control
+                    name="destino"
+                    value={formData.destino}
+                    onChange={handleInputChange}
+                  />
                 </Col>
                 <Col md={2}>
                   <Form.Label>Clase</Form.Label>
@@ -430,7 +473,12 @@ function ProductosAereos({ selectedProductType, onClose }) {
                 </Col>
                 <Col md={3}>
                   <Form.Label>Fecha</Form.Label>
-                  <Form.Control type="date" />
+                  <Form.Control
+                    type="date"
+                    name="fechaVuelo"
+                    value={formData.fechaVuelo}
+                    onChange={handleInputChange}
+                  />
                 </Col>
               </Row>
 
@@ -439,57 +487,75 @@ function ProductosAereos({ selectedProductType, onClose }) {
                   <Form.Label>Numero de Vuelo</Form.Label>
                 </Col>
                 <Col md={4}>
-                  <Form.Control />
+                  <Form.Control
+                    name="numeroVuelo"
+                    value={formData.numeroVuelo}
+                    onChange={handleInputChange}
+                  />
                 </Col>
                 <Col md={3}>
-                  <Button >Agregar</Button>
+                  <Button type="button">Agregar</Button>
                 </Col>
               </Row>
 
-              <DataTable
-                columns={invoiceColumns}
-                data={tableComponets}
-
-              />
+              <DataTable columns={invoiceColumns} data={tableComponents} />
             </div>
 
             <div className="form-tipo-impuesto">
               <Row className="mb-3">
                 <Col md={2}>
                   <Form.Label>Impuesto</Form.Label>
-
                 </Col>
-                <Col md={9}><Form.Control /></Col>
+                <Col md={9}>
+                  <Form.Control
+                    name="impuesto"
+                    value={formData.impuesto}
+                    onChange={handleInputChange}
+                  />
+                </Col>
 
                 <Col md={2}>
                   <Form.Label>Neto</Form.Label>
-                  <Form.Control />
+                  <Form.Control
+                    name="valorNeto"
+                    value={formData.valorNeto}
+                    onChange={handleInputChange}
+                    type="number"
+                  />
                 </Col>
                 <Col md={2}>
                   <Form.Label>%</Form.Label>
-                  <Form.Control />
-
+                  <Form.Control
+                    name="porcentajeImpuesto"
+                    value={formData.porcentajeImpuesto}
+                    onChange={handleInputChange}
+                    type="number"
+                  />
                 </Col>
                 <Col md={3}>
-                  <Form.Label>     valor</Form.Label>
-                  <Form.Control type="text" />
+                  <Form.Label>Valor</Form.Label>
+                  <Form.Control
+                    name="valorImpuesto"
+                    value={formData.valorImpuesto}
+                    onChange={handleInputChange}
+                    type="number"
+                  />
                 </Col>
-
 
                 <Col md={2} className="btn-impuesto">
-
-                  <Button variant="outline-success" className="me-2">Agregar</Button>
-                  <Button variant="outline-danger">Eliminar</Button>
+                  <Button
+                    variant="outline-success"
+                    className="me-2"
+                    type="button"
+                  >
+                    Agregar
+                  </Button>
+                  <Button variant="outline-danger" type="button">
+                    Eliminar
+                  </Button>
                 </Col>
 
-                <DataTable
-                  columns={invoiceColumnstow}
-                  data={tableComponets}
-
-                />
-
-
-
+                <DataTable columns={invoiceColumnsTax} data={tableComponents} />
               </Row>
             </div>
           </div>
@@ -514,9 +580,17 @@ function ProductosAereos({ selectedProductType, onClose }) {
             />
           </Col>
         </Row>
+
+        <div className="d-flex justify-content-end mt-4">
+          <Button variant="secondary" className="me-2" onClick={onClose}>
+            Cancelar
+          </Button>
+          <Button variant="primary" type="submit">
+            Guardar
+          </Button>
+        </div>
       </Form>
     </div>
-
   );
 }
 
