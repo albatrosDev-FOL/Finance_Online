@@ -13,8 +13,9 @@ function ProductosAereos({ selectedProductType, onClose }) {
   const [subProducts, setSubProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [selectedSubProduct, setSelectedSubProduct] = useState("");
+  const [selectedSubProduct, setSelectedSubProduct] = useState(1);
   const [suplier, SetSuplier] = useState("")
+  const [classes, setclasses] = useState([]);
 
   const [suppliers, setSuppliers] = useState([]);
 
@@ -74,7 +75,7 @@ function ProductosAereos({ selectedProductType, onClose }) {
 
         setSubProducts(data.SubProducts || []);
         if (data.SubProducts.length > 0) {
-          setSelectedSubProduct(data.SubProducts[0].IdSubProduct);
+          setSelectedSubProduct(data.SubProducts[0].IdSubProduct.IdProduct);
         }
       } catch (err) {
         setError(err.message || "Error al cargar los productos");
@@ -115,7 +116,7 @@ function ProductosAereos({ selectedProductType, onClose }) {
           idSucursal,
           IdSubProduct: selectedSubProduct
         });
-        setSuppliers(data.Suppliers || []);
+        setSuppliers(data || []);
         const fetchedSuppliers = Array.isArray(data.Suppliers) ? data.Suppliers : [];
         setSuppliers(fetchedSuppliers);
 
@@ -138,7 +139,26 @@ function ProductosAereos({ selectedProductType, onClose }) {
   }, [selectedSubProduct]);
 
 
+  useEffect(() => {
+    const fetchAirportClasses = async () => {
+      const token = localStorage.getItem("Token");
+      try {
 
+        const response = await ProductosAereosService.AirportClasses(
+          token,
+
+        );
+
+        const Classes = response.data.BasicTab;
+        setclasses(Classes);
+        console.log("clases", Classes)
+
+      } catch (error) {
+        console.log("Error en fetchAirportClasses: ", error);
+      }
+    }
+    fetchAirportClasses()
+  },[])
 
 
 
@@ -227,20 +247,19 @@ function ProductosAereos({ selectedProductType, onClose }) {
                   {error}
                 </Alert>
               ) : (
-                <Form.Control
+                <Form.Select
                   as="select"
                   name="producto"
-                  value={selectedSubProduct ?? ""}
+                  value={selectedSubProduct}
                   onChange={(e) => setSelectedSubProduct(e.target.value)}
-                  required
                 >
                   <option value="">Seleccione un producto</option>
                   {subProducts.map((product) => (
-                    <option key={product.IdSubProduct} value={product.IdSubProduct.toString()}>
+                    <option key={product.IdSubProduct} value={product.IdSubProduct}>
                       {product.Name}
                     </option>
                   ))}
-                </Form.Control>
+                </Form.Select>
               )}
 
               <Form.Label>Proveedor</Form.Label>
@@ -374,7 +393,14 @@ function ProductosAereos({ selectedProductType, onClose }) {
                 </Col>
                 <Col md={2}>
                   <Form.Label>Clase</Form.Label>
-                  <Form.Control placeholder="" />
+                  <Form.Select aria-label="Default select example">
+                    <option value=""></option>
+                    {classes.map((clases) => (
+                      <option key={`agent-${clases.Id}`} value={clases.Id}>
+                        {clases.Name}
+                      </option>
+                    ))}
+                  </Form.Select>
                 </Col>
                 <Col md={3}>
                   <Form.Label>Fecha</Form.Label>

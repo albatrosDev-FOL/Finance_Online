@@ -38,7 +38,33 @@ async getSupplier(token, {idSucursal, IdSubProduct}) {
     }
   }
 
+  async AirportClasses (token){
+   try {
+    
+      const response = await axios.get(`${this.url}BasicTable/AirportClasses`,
+         {
+        
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      console.error("Error al obtener Agentes:", errorMessage);
+      throw new Error("No se pudieron obtener los agentes");
+    }
+    
+  }
+
 }
+
+
+
+
+
+
 
 
 export default new ProductosAereosService () ;
