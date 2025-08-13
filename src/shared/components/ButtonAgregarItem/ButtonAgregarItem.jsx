@@ -27,11 +27,11 @@ function ButtonAgregarItem({ cuerpoModalItem, selectedProductType }) {
       <ModalGenerico
         show={showModal}
         onHide={handleCloseModal}
-        titulo="Tipos de productos"
+        titulo="Productos Aereos"
         cuerpo={
           <div className={mostrarBuscador ? "cuerpo-modal-grande" : ""}>
             {mostrarBuscador ? (
-              <ProductosAereos selectedProductType={selectedProductType} />
+              <ProductosAereos  selectedProductType={selectedProductType} />
             ) : (
               cuerpoModalItem
             )}

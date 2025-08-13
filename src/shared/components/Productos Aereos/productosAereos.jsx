@@ -4,23 +4,31 @@ import { Button, Form, Row, Col, Spinner, Alert } from "react-bootstrap";
 import FacturaService from "../../../services/FacturaService";
 import ProductosAereosService from "../../../services/ProductosAereosService";
 import "./productosAereos.css";
+import imgPagos from "/image/pagos.png";
 
 function ProductosAereos({ selectedProductType, onClose }) {
   // Estados para productos y proveedores
   const [subProducts, setSubProducts] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
+  const [tax, setTax] = useState([]);
   const [loading, setLoading] = useState({
     products: false,
     suppliers: false,
+    tax: true,
   });
   const [error, setError] = useState({
     products: null,
     suppliers: null,
+    tax: null
   });
   const [selectedSubProduct, setSelectedSubProduct] = useState("");
   const [selectedProductId, setSelectedProductId] = useState("");
+  const [selectedTaxId, setSelectedTaxId] = useState("");
 
-  // Estado para todos los campos del formulario
+  const [classes, setClasses] = useState([]);
+  const [meThods, setmeThods] = useState([]);
+  const [nationalOrigin, setnationalOrigin] = useState([]);
+  const [internatinalOrigin,setinternationalOrigin] = useState([])
   const [formData, setFormData] = useState({
     producto: "",
     proveedor: "",
@@ -65,6 +73,13 @@ function ProductosAereos({ selectedProductType, onClose }) {
     { name: "Valor", selector: (row) => row.id, sortable: true },
   ];
 
+  const invoiceColumnsPay = [
+    { name: "", selector: (row) => row.id, sortable: true },
+    { name: "Forma de pago", selector: (row) => row.origen, sortable: true },
+    { name: "Valor ", selector: (row) => row.destino, sortable: true },
+    { name: "Documento", selector: (row) => row.fecha, sortable: true },
+  ];
+
   // Cargar subproductos cuando cambie el tipo de producto
   useEffect(() => {
     const fetchSubProducts = async () => {
@@ -85,7 +100,7 @@ function ProductosAereos({ selectedProductType, onClose }) {
         });
 
         setSubProducts(data.SubProducts || []);
-        
+
         // Resetear selecciones sin asignar automáticamente el primer producto
         setSelectedSubProduct("");
         setSelectedProductId("");
@@ -130,6 +145,8 @@ function ProductosAereos({ selectedProductType, onClose }) {
           IdSubProduct: selectedProductId,
         });
 
+        console.log("Producto", data)
+
         setSuppliers(data.Suppliers || []);
 
         if (data.Suppliers?.length > 0) {
@@ -157,42 +174,192 @@ function ProductosAereos({ selectedProductType, onClose }) {
     fetchSuppliers();
   }, [selectedProductId]);
 
+  // Cargar proveedores cuando cambie el impuesto seleccionado
+
+  useEffect(() => {
+    if (!selectedProductId) {
+      setTax([]);
+      return;
+    }
+    setLoading((prev) => ({ ...prev, tax: true }));
+    setError((prev) => ({ ...prev, tax: null }));
+
+   
+    const fetchTaxesx = async () => {
+
+
+      try {
+
+
+        const token = localStorage.getItem("Token");
+
+        const data = await ProductosAereosService.getTaxesx(token, {
+
+
+          IdSubProduct: selectedProductId
+        });
+
+        console.log("Impuestos", data)
+
+        setTax(data.Taxes || []);
+
+        if (data.Taxes?.length > 0) {
+          setFormData((prev) => ({
+            ...prev,
+            impuesto: prev.impuesto || (data.Taxes?.[0]?.IdTax?.toString() || ""),
+          }));
+        } else {
+          setFormData((prev) => ({
+            ...prev,
+            impuesto: "",
+          }));
+        }
+      } catch (err) {
+        setError((prev) => ({
+          ...prev,
+          impuesto: err.message || "Error al cargar proveedores",
+        }));
+        setTax([]);
+      } finally {
+        setLoading((prev) => ({ ...prev, tax: false }));
+      }
+    };
+
+    fetchTaxesx();
+  }, [selectedProductId]);
+
+
+  useEffect(() => {
+    const fecthClasses = async () => {
+      const token = localStorage.getItem("Token");
+
+      try {
+        const response = await ProductosAereosService.getAirportClasses(
+
+          token,
+
+        );
+        const Classes = response.data.BasicTab;
+        setClasses(Classes);
+      } catch (error) {
+        console.log("Error al optener clases: ", error);
+      }
+    }
+    fecthClasses()
+  }, [])
+
+  useEffect(() => {
+
+    const fecthPayMethods = async () => {
+      const token = localStorage.getItem("Token");
+
+      try {
+        const response = await ProductosAereosService.getPaymentMethods(
+
+          token,
+
+        );
+        const Methods = response.data.BasicTab;
+        console.log(" metodos de pago", Methods)
+        setmeThods(Methods);
+      } catch (error) {
+        console.log("Error al optener metodos de pago: ", error);
+      }
+    }
+
+    fecthPayMethods()
+  }, [])
+
+  useEffect(() => {
+    const fetchNationalAirports = async () => {
+      const token = localStorage.getItem("Token");
+
+      try {
+        const response = await ProductosAereosService.getNationalAirports(
+
+          token,
+
+        );
+        const NationalOrigin = response.data;
+        console.log("Destinos nacionales", NationalOrigin)
+        setnationalOrigin(NationalOrigin);
+      } catch (error) {
+        console.log("Error al optener metodos de pago: ", error);
+      }
+    }
+    fetchNationalAirports()
+  }, [])
+
+  useEffect(() => {
+    const fetchInternationalAirports = async () => {
+      const token = localStorage.getItem("Token");
+      try {
+        const response = await ProductosAereosService.getInternationalAirports(
+          token,
+        );
+        const InternationalOrigin = response.data;
+        console.log("Destinos internacionales", InternationalOrigin)
+        setinternationalOrigin(InternationalOrigin);
+      } catch (error) {
+        console.log("Error al optener metodos de pago: ", error);
+      } }
+
+      fetchInternationalAirports()
+  },[])
+
+
   // Manejar cambios en los inputs
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+
+
+
+
   };
 
   // Manejar cambio de producto
   const handleProductChange = (e) => {
     const selectedId = e.target.value;
-    
+
     if (!selectedId) {
-      // Si selecciona la opción vacía
-      setSelectedSubProduct("");
       setSelectedProductId("");
+      setSelectedSubProduct("");
       setFormData((prev) => ({
         ...prev,
         producto: "",
         proveedor: "",
+        impuesto: "",
       }));
       return;
     }
 
     const selectedProduct = subProducts.find(
-      (product) => product.IdSubProduct.toString() === selectedId
+      (product) => product.IdProduct.toString() === selectedId
     );
 
     if (selectedProduct) {
-      setSelectedSubProduct(selectedId);
-      setSelectedProductId(selectedProduct.IdProduct.toString());
+      setSelectedProductId(selectedId);
+      setSelectedSubProduct(selectedProduct.IdSubProduct.toString());
       setFormData((prev) => ({
         ...prev,
         producto: selectedId,
         proveedor: "",
+        impuesto: "",
       }));
     }
   };
+
+  const handleInputImpuestoChange = (e) => {
+    const { value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      impuesto: value,
+    }));
+  };
+
+
 
   // Manejar envío del formulario
   const handleSubmit = (e) => {
@@ -221,15 +388,15 @@ function ProductosAereos({ selectedProductType, onClose }) {
                 <Form.Select
                   as="select"
                   name="producto"
-                  value={selectedSubProduct}
+                  value={selectedProductId}
                   onChange={handleProductChange}
                   required
                 >
                   <option value="">Seleccione un producto</option>
                   {subProducts.map((product) => (
                     <option
-                      key={product.IdSubProduct}
-                      value={product.IdSubProduct.toString()}
+                      key={product.IdProduct}
+                      value={product.IdProduct.toString()}
                     >
                       {product.Name}
                     </option>
@@ -266,11 +433,33 @@ function ProductosAereos({ selectedProductType, onClose }) {
               )}
 
               <Form.Label>Proveedor del servicio</Form.Label>
-              <Form.Control
-                name="proveedorServicio"
-                value={formData.proveedorServicio}
-                onChange={handleInputChange}
-              />
+              {loading.suppliers ? (
+                <div className="text-center">
+                  <Spinner animation="border" size="sm" />
+                  <span className="ms-2">Cargando proveedores de servicio...</span>
+                </div>
+              ) : error.suppliers ? (
+                <Alert variant="danger" className="py-2">
+                  {error.suppliers}
+                </Alert>
+              ) : (
+                <Form.Control
+                  as="select"
+                  name="proveedorServicio"
+                  value={formData.proveedorServicio || ""}
+                  onChange={handleInputChange}
+                  required
+                  disabled={!selectedProductId || suppliers.length === 0}
+                >
+                  <option value="">Seleccione un proveedor</option>
+                  {suppliers.map((supplier) => (
+                    <option key={supplier.Id} value={supplier.Id}>
+                      {supplier.FullName || "Proveedor sin nombre"}
+                    </option>
+                  ))}
+                </Form.Control>
+              )}
+
             </Col>
 
             <Col md={4} className="col-checkboxes">
@@ -505,13 +694,37 @@ function ProductosAereos({ selectedProductType, onClose }) {
               <Row className="mb-3">
                 <Col md={2}>
                   <Form.Label>Impuesto</Form.Label>
+
                 </Col>
                 <Col md={9}>
-                  <Form.Control
-                    name="impuesto"
-                    value={formData.impuesto}
-                    onChange={handleInputChange}
-                  />
+                  {loading.tax ? (
+                    <div className="text-center">
+                      <Spinner animation="border" size="sm" />
+                      <span className="ms-2">Cargando impuestos...</span>
+                    </div>
+                  ) : error.tax ? (
+                    <Alert variant="danger" className="py-2">
+                      {error.tax}
+                    </Alert>
+                  ) : (
+
+
+                    <Form.Control
+                      as="select"
+                      name="impuesto"
+                      value={formData.impuesto}
+                      onChange={handleInputImpuestoChange}
+                      required
+                      disabled={!selectedProductId || tax.length === 0}
+                    >
+                      <option value="">Seleccione un impuesto</option>
+                      {tax.map((item) => (
+                        <option key={item.IdTax} value={item.IdTax.toString()}>
+                          {item.Name || "impuesto sin nombre"}
+                        </option>
+                      ))}
+                    </Form.Control>
+                  )}
                 </Col>
 
                 <Col md={2}>
@@ -561,34 +774,96 @@ function ProductosAereos({ selectedProductType, onClose }) {
           </div>
         </div>
 
-        <Row className="mb-3 form-pago">
-          <Col md={6}>
-            <Form.Control
-              placeholder="Forma de Pago"
-              name="formaPago"
-              value={formData.formaPago}
-              onChange={handleInputChange}
-            />
-          </Col>
-          <Col md={6}>
-            <Form.Control
-              placeholder="Valor"
-              name="valorPago"
-              value={formData.valorPago}
-              onChange={handleInputChange}
-              type="number"
-            />
-          </Col>
-        </Row>
 
-        <div className="d-flex justify-content-end mt-4">
-          <Button variant="secondary" className="me-2" onClick={onClose}>
-            Cancelar
-          </Button>
-          <Button variant="primary" type="submit">
-            Guardar
-          </Button>
+        <div className="form-tipo-dre-seccion-pay" >
+          <div className="form-tipo-form">
+
+            <Row className="mb-3 form-pago">
+              <Col md={4}>
+                <Form.Label>Forma de Pago</Form.Label>
+                <Form.Select
+                  aria-label="Default select example"
+                  name="formaPago"
+                  value={formData.formaPago}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value=""></option>
+                  {meThods.map((metodos) => (
+                    <option key={`agent-${metodos.Id}`} value={metodos.Id}>
+                      {metodos.Name}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Col>
+              <Col md={4}>
+                <Form.Label>Valor</Form.Label>
+                <Form.Control
+                  placeholder="Valor"
+                  name="valorPago"
+
+                  onChange={handleInputChange}
+                  type="number"
+                />
+              </Col>
+
+              <Col md={4} style={{ display: 'flex', alignItems: 'flex-end' }}>
+                <Button type="button">Agregar</Button>
+              </Col>
+
+
+
+
+            </Row>
+
+            <Row className="mb-3 form-pago">
+              <Col md={4}>
+                <Form.Control
+                  placeholder=""
+                  name="formaPago"
+                  onChange={handleInputChange}
+                />
+              </Col>
+            </Row>
+            <Row className="mb-3 form-pago">
+              <Col md={4}>
+                <Form.Control
+                  placeholder=""
+                  name="formaPago"
+                  onChange={handleInputChange}
+                />
+              </Col>
+              <Col md={2}>
+                <Button type="button" className="imgimpuesto">
+                  <img src={imgPagos} alt="imgimpuesto" className="img-fluid" />
+                </Button>
+              </Col>
+              <Col md={2}>
+                <Form.Control
+                  placeholder=""
+                  name="formaPago"
+                  onChange={handleInputChange}
+                />
+              </Col>
+              <Col md={3}>
+                <Form.Control
+                  placeholder=""
+                  name="formaPago"
+                  onChange={handleInputChange}
+                />
+              </Col>
+            </Row>
+
+
+
+          </div>
+          <div className="form-tipo-table">
+            <DataTable columns={invoiceColumnsPay} />
+          </div>
+
         </div>
+
+
       </Form>
     </div>
   );

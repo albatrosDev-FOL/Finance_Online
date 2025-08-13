@@ -24,7 +24,7 @@ function ButtonProductosAereos({ cuerpoModalProducto, piePagina, onSearchClick }
       <ModalGenerico
         show={showModal}
         onHide={handleCloseModal}
-        titulo="Tipos de productos"
+        titulo="Productos Aereos"
         cuerpo={cuerpoModalProducto}
         onGuardar={handleCloseModal}
         botonBuscar="Ver"

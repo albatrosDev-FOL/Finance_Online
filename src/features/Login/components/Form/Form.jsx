@@ -7,6 +7,7 @@ import Buttom from "../../../../shared/components/Buttom/Buttom";
 import Input from "../Input/Input";
 import UsuarioService from "../../../../services/UsuarioService";
 import logoimg from "/image/Login.jpg";
+import GroupLogin from "/image/GroupLogin.png";
 import "./Form.css";
 
 const Form = () => {
@@ -90,11 +91,15 @@ const Form = () => {
   };
 
   return (
-    <section className="register">
-      <form onSubmit={handleSubmit}>
+    <section className="login">
+
+      <body>
+        <div className="register">
+         <form onSubmit={handleSubmit}>
         <img src={logoimg} className="logo" alt="Logo" />
         <h2>Usuario</h2>
         <Input
+          type="text"
           name="UserName" // Cambiado para coincidir con el backend
           onChange={handleChange}
           value={formData.UserName}
@@ -109,7 +114,24 @@ const Form = () => {
         <a href="#">¿Olvidó su contraseña?</a>
         <Buttom type="submit">Inicio</Buttom>
       </form>
+
+    
+      </div>
+        
+      </body>
+      
+    
+     
+     
+ <div className="imgregister">
+        <img src={GroupLogin}alt="" />
+      </div>
+    
+     
+      
     </section>
+    
+    
   );
 };
 

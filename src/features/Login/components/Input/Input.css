@@ -9,10 +9,11 @@
   width: 170%;
   height: 35px;
   font-size: 20px;
+  text-align: center;
   border-radius: 20px;
   display: flex;
-  background-color: rgba(63, 111, 126, 0.5);
-  border: 3px solid rgba(20, 30, 52, 1);
+  background-color:rgba(63, 111, 126, 0.6);
+  border: 3px solid rgb(25, 40, 71);
 }
 
 /* Para teléfonos móviles (max-width: 576px) */

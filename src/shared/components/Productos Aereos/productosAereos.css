@@ -3,6 +3,9 @@
   padding: 10px;
   border-style: inset;
   font-size: 14px;
+  background-color:rgba(217, 217, 217, 0.28);
+  
+  
 
 }
 
@@ -10,7 +13,6 @@
 .form-tipo-dre .seccion {
   padding: 10px;
   margin-bottom: 10px;
-  border-style: inset;
 }
 
 /* Etiquetas del formulario */
@@ -54,16 +56,17 @@
  
   width: 1060px;
   display: flex;
-  justify-content: space-around;
-  gap: 12px;
+  justify-content: space-between;
+  
+  gap: 5px;
   
   
 }
 
 .form-tipo-dre .vuelo-impuesto .form-tipo-vuelo{
-  width: 530px;
- border-style: inset;
- padding-left: 5px;
+ width: 500px;
+ padding-top: 10px;
+ padding-left: 10px;
  
 }
 
@@ -98,11 +101,10 @@
 }
 
 .form-tipo-dre .form-tipo-impuesto{
-   width: 530px;
-   margin-right: 15px;
-   padding-left: 10px;
+   width: 500px;
+   margin-right: 40px;
    padding-top: 10px;
-   border-style: inset;
+   padding-left: 10px;
 
 }
 
@@ -130,4 +132,41 @@
 .form-tipo-impuesto .custom-table{
   height: auto;
   width: 200px;
+}
+
+.form-tipo-dre-seccion-pay{
+  width: 1030px;
+  height: 200px;
+  margin-top: 10px;
+  border-style: inset;
+   display: flex;
+  justify-content: space-around;
+  gap: 12px;
+}
+
+.form-tipo-dre-seccion-pay .form-tipo-form{
+  width: 520px;
+  height: 255px;
+ 
+  padding-left: 20px;
+  
+
+
+}
+
+.form-tipo-dre-seccion-pay .form-tipo-table{
+  width: 520px;
+  height: 255px;
+ 
+}
+
+.imgimpuesto {
+  width: 35px;
+  height: 35px;
+  padding: 0;
+}
+.imgimpuesto img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }

@@ -7,10 +7,12 @@ function Input({type,name, onChange}) {
     <div className='inputs'>
         
    
-      <input
+      <input            
+      autoComplete="off"
       type={ type || "text" }
       name={name}
       onChange={onChange}/>
+      
 
     </div>
   )

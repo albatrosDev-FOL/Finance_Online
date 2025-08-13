@@ -7,8 +7,9 @@
 /* Estilo específico para el cuerpo cuando muestra ProductosAéreos */
 .cuerpo-modal-grande {
   min-height: 70vh;
-  overflow-y: auto;
+  overflow-y: hidden;
   padding: 20px;
+
 }
 
 /* Estilos para el contenido del formulario */
