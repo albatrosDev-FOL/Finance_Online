@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
-import { Button, Form, Row, Col, Spinner, Alert } from "react-bootstrap";
+import { Button, Form, Row, Col, Spinner, Alert, Modal } from "react-bootstrap";
 import FacturaService from "../../../services/FacturaService";
 import ProductosAereosService from "../../../services/ProductosAereosService";
 import "./productosAereos.css";
 import imgPagos from "/image/pagos.png";
 
 function ProductosAereos({ selectedProductType, onClose }) {
+
+  const [showModal, setShowModal] = useState(false);
   // Estados para productos y proveedores
   const [subProducts, setSubProducts] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
@@ -28,7 +30,7 @@ function ProductosAereos({ selectedProductType, onClose }) {
   const [classes, setClasses] = useState([]);
   const [meThods, setmeThods] = useState([]);
   const [nationalOrigin, setnationalOrigin] = useState([]);
-  const [internatinalOrigin,setinternationalOrigin] = useState([])
+  const [internatinalOrigin, setinternationalOrigin] = useState([])
   const [formData, setFormData] = useState({
     producto: "",
     proveedor: "",
@@ -61,10 +63,11 @@ function ProductosAereos({ selectedProductType, onClose }) {
   ];
 
   const invoiceColumns = [
-    { name: "", selector: (row) => row.id, sortable: true },
     { name: "Origen", selector: (row) => row.origen, sortable: true },
     { name: "Destino", selector: (row) => row.destino, sortable: true },
+    { name: "clase", selector: (row) => row.clase, sortable: true },
     { name: "Fecha", selector: (row) => row.fecha, sortable: true },
+    { name: "Número de Vuelo", selector: (row) => row.numeroVuelo, sortable: true },
   ];
 
   const invoiceColumnsTax = [
@@ -184,7 +187,7 @@ function ProductosAereos({ selectedProductType, onClose }) {
     setLoading((prev) => ({ ...prev, tax: true }));
     setError((prev) => ({ ...prev, tax: null }));
 
-   
+
     const fetchTaxesx = async () => {
 
 
@@ -275,14 +278,13 @@ function ProductosAereos({ selectedProductType, onClose }) {
       const token = localStorage.getItem("Token");
 
       try {
-        const response = await ProductosAereosService.getNationalAirports(
+        const data = await ProductosAereosService.getNationalAirports(
 
           token,
 
         );
-        const NationalOrigin = response.data;
-        console.log("Destinos nacionales", NationalOrigin)
-        setnationalOrigin(NationalOrigin);
+        console.log("Destinos nacionales", data)
+        setnationalOrigin(data.data.Airports || []);
       } catch (error) {
         console.log("Error al optener metodos de pago: ", error);
       }
@@ -294,18 +296,19 @@ function ProductosAereos({ selectedProductType, onClose }) {
     const fetchInternationalAirports = async () => {
       const token = localStorage.getItem("Token");
       try {
-        const response = await ProductosAereosService.getInternationalAirports(
+        const data = await ProductosAereosService.getInternationalAirports(
           token,
         );
-        const InternationalOrigin = response.data;
-        console.log("Destinos internacionales", InternationalOrigin)
-        setinternationalOrigin(InternationalOrigin);
+
+        console.log("Destinos internacionales", data.data.Airports)
+        setinternationalOrigin(data.data.Airports || []);
       } catch (error) {
         console.log("Error al optener metodos de pago: ", error);
-      } }
+      }
+    }
 
-      fetchInternationalAirports()
-  },[])
+    fetchInternationalAirports()
+  }, [])
 
 
   // Manejar cambios en los inputs
@@ -314,10 +317,26 @@ function ProductosAereos({ selectedProductType, onClose }) {
     setFormData((prev) => ({ ...prev, [name]: value }));
 
 
+    if (name === "origen" && value.length === 3) {
+      setShowModal(true);
+    };
+
+     if (name === "destino" && value.length === 3) {
+      setShowModal(true);
+    };
+
+
 
 
 
   };
+
+  const handleCloseModal = () => setShowModal(false);
+
+
+
+
+
 
   // Manejar cambio de producto
   const handleProductChange = (e) => {
@@ -639,16 +658,83 @@ function ProductosAereos({ selectedProductType, onClose }) {
                     name="origen"
                     value={formData.origen}
                     onChange={handleInputChange}
-                  />
+                    required
+                  >
+                    {/* <option value="">Seleccione un aeropuerto</option>
+                    {(Array.isArray(selectedProductType === 1 ? nationalOrigin : internatinalOrigin)
+                      ? (selectedProductType === 1 ? nationalOrigin : internatinalOrigin)
+                      : []
+                    ).map((airport) => (
+                      <option key={airport.IATACode} value={airport.Name}>
+                        {airport.IATACode},{airport.Name}
+                      </option>
+                    ))} */}
+                  </Form.Control>
+
+
                 </Col>
+
+
                 <Col md={3}>
                   <Form.Label>Destino</Form.Label>
                   <Form.Control
                     name="destino"
                     value={formData.destino}
                     onChange={handleInputChange}
-                  />
+                    required
+                  >
+
+                  </Form.Control>
                 </Col>
+
+
+                <Modal show={showModal} onHide={handleCloseModal} centered>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Buscar Aeropuerto</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                   <div>
+                    <Form.Control
+                      type="text"
+                      placeholder="Ingrese el nombre del aeropuerto"
+                      onChange={(e) => {
+                        const searchValue = e.target.value.toUpperCase();
+                        const airports = selectedProductType === 1 ? nationalOrigin : internatinalOrigin;
+                        const filteredAirports = airports.filter(airport =>
+                          airport.Name.toUpperCase().includes(searchValue) ||
+                          airport.IATACode.toUpperCase().includes(searchValue)
+                        );
+                        setnationalOrigin(filteredAirports);
+                      }}
+                    />
+                    <ul className="list-group mt-2">
+                      {(selectedProductType === 1 ? nationalOrigin : internatinalOrigin).map((airport) => (
+                        <li
+                          key={airport.IATACode}
+                          className="list-group-item"
+                          onClick={() => {
+                            setFormData((prev) => ({
+                              ...prev,
+                              origen: airport.Name,
+                              destino: airport.Name,
+                            }));
+                            handleCloseModal();
+                          }}
+                        >
+                          {airport.IATACode} - {airport.Name}
+                        </li>
+                      ))}
+                    </ul>
+                   </div>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseModal}>
+                      Cerrar
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+
+
                 <Col md={2}>
                   <Form.Label>Clase</Form.Label>
                   <Form.Select aria-label="Default select example">
@@ -687,7 +773,14 @@ function ProductosAereos({ selectedProductType, onClose }) {
                 </Col>
               </Row>
 
-              <DataTable columns={invoiceColumns} data={tableComponents} />
+              <DataTable
+                className="table-flydates"
+                columns={invoiceColumns}
+                data={tableComponents}
+                highlightOnHover
+                striped
+                dense
+              />
             </div>
 
             <div className="form-tipo-impuesto">
