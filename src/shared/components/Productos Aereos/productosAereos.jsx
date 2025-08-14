@@ -5,10 +5,15 @@ import FacturaService from "../../../services/FacturaService";
 import ProductosAereosService from "../../../services/ProductosAereosService";
 import "./productosAereos.css";
 import imgPagos from "/image/pagos.png";
+import AirportSearchModal from "../SearchModalAirport/AirportSearchModal";
 
 function ProductosAereos({ selectedProductType, onClose }) {
 
   const [showModal, setShowModal] = useState(false);
+  const [modalField, setModalField] = useState(""); // "origen" o "desti
+
+  const [tableComponents, setTableComponents] = useState([]);
+
   // Estados para productos y proveedores
   const [subProducts, setSubProducts] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
@@ -55,12 +60,36 @@ function ProductosAereos({ selectedProductType, onClose }) {
     valorNeto: "",
     formaPago: "",
     valorPago: "",
+    fechaVuelo: ""
   });
 
-  // Datos de ejemplo para las tablas
-  const tableComponents = [
-    { id: "", origen: "ESP", destino: "BGT", fecha: "19/03/2025" },
-  ];
+  const handleAddRow = () => {
+
+    const claseSeleccionada = classes.find(
+      (c) => c.Id === parseInt(formData.clase)
+    );
+    const newRow = {
+      id: tableComponents.length + 1,
+      origen: formData.origen,
+      destino: formData.destino,
+      clase: claseSeleccionada ? claseSeleccionada.Name : "",
+      fecha: formData.fechaVuelo,
+      numeroVuelo: formData.numeroVuelo
+    };
+
+    setTableComponents((prev) => [...prev, newRow]);
+
+    // Opcional: limpiar campos después de agregar
+    setFormData({
+      origen: "",
+      destino: "",
+      clase: "",
+      fechaVuelo: "",
+      numeroVuelo: ""
+    });
+  };
+
+
 
   const invoiceColumns = [
     { name: "Origen", selector: (row) => row.origen, sortable: true },
@@ -232,24 +261,19 @@ function ProductosAereos({ selectedProductType, onClose }) {
   }, [selectedProductId]);
 
 
-  useEffect(() => {
+    useEffect(() => {
     const fecthClasses = async () => {
       const token = localStorage.getItem("Token");
-
       try {
-        const response = await ProductosAereosService.getAirportClasses(
-
-          token,
-
-        );
+        const response = await ProductosAereosService.getAirportClasses(token);
         const Classes = response.data.BasicTab;
         setClasses(Classes);
       } catch (error) {
-        console.log("Error al optener clases: ", error);
+        console.log("Error al obtener clases: ", error);
       }
-    }
-    fecthClasses()
-  }, [])
+    };
+    fecthClasses();
+  }, []);
 
   useEffect(() => {
 
@@ -316,20 +340,12 @@ function ProductosAereos({ selectedProductType, onClose }) {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-
-    if (name === "origen" && value.length === 3) {
+    if ((name === "origen" || name === "destino") && value.length === 3) {
+      setModalField(name); // Guardamos si es origen o destino
       setShowModal(true);
-    };
-
-     if (name === "destino" && value.length === 3) {
-      setShowModal(true);
-    };
-
-
-
-
-
+    }
   };
+
 
   const handleCloseModal = () => setShowModal(false);
 
@@ -655,21 +671,15 @@ function ProductosAereos({ selectedProductType, onClose }) {
                 <Col md={3}>
                   <Form.Label>Origen</Form.Label>
                   <Form.Control
+
                     name="origen"
                     value={formData.origen}
                     onChange={handleInputChange}
                     required
                   >
-                    {/* <option value="">Seleccione un aeropuerto</option>
-                    {(Array.isArray(selectedProductType === 1 ? nationalOrigin : internatinalOrigin)
-                      ? (selectedProductType === 1 ? nationalOrigin : internatinalOrigin)
-                      : []
-                    ).map((airport) => (
-                      <option key={airport.IATACode} value={airport.Name}>
-                        {airport.IATACode},{airport.Name}
-                      </option>
-                    ))} */}
+
                   </Form.Control>
+
 
 
                 </Col>
@@ -688,56 +698,27 @@ function ProductosAereos({ selectedProductType, onClose }) {
                 </Col>
 
 
-                <Modal show={showModal} onHide={handleCloseModal} centered>
-                  <Modal.Header closeButton>
-                    <Modal.Title>Buscar Aeropuerto</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                   <div>
-                    <Form.Control
-                      type="text"
-                      placeholder="Ingrese el nombre del aeropuerto"
-                      onChange={(e) => {
-                        const searchValue = e.target.value.toUpperCase();
-                        const airports = selectedProductType === 1 ? nationalOrigin : internatinalOrigin;
-                        const filteredAirports = airports.filter(airport =>
-                          airport.Name.toUpperCase().includes(searchValue) ||
-                          airport.IATACode.toUpperCase().includes(searchValue)
-                        );
-                        setnationalOrigin(filteredAirports);
-                      }}
-                    />
-                    <ul className="list-group mt-2">
-                      {(selectedProductType === 1 ? nationalOrigin : internatinalOrigin).map((airport) => (
-                        <li
-                          key={airport.IATACode}
-                          className="list-group-item"
-                          onClick={() => {
-                            setFormData((prev) => ({
-                              ...prev,
-                              origen: airport.Name,
-                              destino: airport.Name,
-                            }));
-                            handleCloseModal();
-                          }}
-                        >
-                          {airport.IATACode} - {airport.Name}
-                        </li>
-                      ))}
-                    </ul>
-                   </div>
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseModal}>
-                      Cerrar
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
+                <AirportSearchModal
+                  show={showModal}
+                  onClose={handleCloseModal}
+                  airports={selectedProductType === 1 ? nationalOrigin : internatinalOrigin}
+                  field={modalField}
+                  onSelectAirport={(airport, field) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      [field]: `${airport.IATACode}`
+                    }))
+                  }
+                />
+
 
 
                 <Col md={2}>
                   <Form.Label>Clase</Form.Label>
-                  <Form.Select aria-label="Default select example">
+                  <Form.Select
+                    name="clase"
+
+                    aria-label="Default select example">
                     <option value=""></option>
                     {classes.map((clases) => (
                       <option key={`agent-${clases.Id}`} value={clases.Id}>
@@ -769,7 +750,10 @@ function ProductosAereos({ selectedProductType, onClose }) {
                   />
                 </Col>
                 <Col md={3}>
-                  <Button type="button">Agregar</Button>
+                  <Button type="button" onClick={handleAddRow}>
+                    Agregar
+                  </Button>
+
                 </Col>
               </Row>
 
