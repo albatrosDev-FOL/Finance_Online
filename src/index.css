@@ -1,6 +1,19 @@
+@import "tailwindcss";
+
+/* Tu CSS existente va después de estas líneas */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 
+}
+
+/* Puedes poner esto en src/index.css o src/App.css */
+#root-portal {
+  z-index: 99999 !important;
+  position: relative;
+}
+.react-datepicker-popper {
+  z-index: 99999 !important;
 }

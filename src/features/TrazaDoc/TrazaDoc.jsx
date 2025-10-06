@@ -1,19 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import NavBar from '../../shared/components/NavBar/Navbar'
+import NavBar from '../../shared/components/NavBar/Navbar';
+import './TrazaDoc.css';
 
 const TrazaDoc = () => {
-  const { id } = useParams(); // Obtén el id de la sucursal desde la URL
+  const { id } = useParams();
 
   useEffect(() => {
-    // Aquí puedes usar el id para hacer una solicitud a la API o realizar otras acciones
-    console.log("Sucursal seleccionada:", id);
+    if (id) {
+      console.log("Sucursal seleccionada:", id);
+    }
   }, [id]);
+
   return (
     <>
-    <NavBar/>
-    </>
-  )
-}
+      <NavBar />
 
-export default TrazaDoc
+    </>
+  );
+};
+
+export default TrazaDoc;

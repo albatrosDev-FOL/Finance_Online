@@ -12,9 +12,20 @@ import Row from "react-bootstrap/Row";
 import DatePicker from "react-datepicker";
 import "./FormDetalles.css";
 import { format } from "date-fns";
+import { useTrm } from "../../contexts/contexts";
+
 
 function FormDetalles() {
-  const [selectedProductType, setSelectedProductType] = useState(1);
+
+
+
+  const { 
+    trmEditValue, 
+    setTrmEditValue, 
+    trmData, 
+    selectedProductType, 
+    setSelectedProductType 
+  } = useTrm();
   const [Destination, setDestination] = useState([]);
   const [Coins, setCoins] = useState([]);
   const [selectedCoin, setSelectedCoin] = useState("");
@@ -22,8 +33,6 @@ function FormDetalles() {
   const [Agent, setAgent] = useState([]);
   const [Seller, setSeller] = useState([]);
   const [validated, setValidated] = useState(false);
-  const [trmEditValue, setTrmEditValue] = useState("");
-  const [trmData, setTrmData] = useState(null);
   const [fecha] = useState(new Date());
   const today = new Date();
 
@@ -43,7 +52,15 @@ function FormDetalles() {
     if (trmData?.Trm?.TrmValue !== undefined) {
       setTrmEditValue(trmData.Trm.TrmValue);
     }
+    console.log("TRM")
   }, [trmData]);
+
+      useEffect(()=>{
+      console.log("TRM", trmEditValue)
+
+    },[trmEditValue])
+
+
 
   useEffect(() => {
     //obtener vendedor
@@ -63,6 +80,10 @@ function FormDetalles() {
         console.error("Error:", error);
       }
     };
+    
+  
+
+
 
     //obtener tiqueteadores
     const fetchAgent = async () => {
@@ -81,6 +102,8 @@ function FormDetalles() {
         console.error("Error en fetchAgent:", error);
       }
     };
+
+    
 
     //obtener Tipo viaje
     const fechtTravelType = async () => {
@@ -297,10 +320,11 @@ function FormDetalles() {
           <Form.Label>TMR</Form.Label>
           <InputGroup>
             <Form.Control
+            
               type="number"
-              value={trmEditValue}
+              trmEditValue={trmEditValue}
               onChange={(e) => setTrmEditValue(e.target.value)}
-              step="0.0001"
+              step="0.001"
               min="0"
             />
             {trmEditValue !== trmData?.Trm?.TrmValue && (

@@ -13,6 +13,8 @@ import "./Form.css";
 const Form = () => {
   const navigate = useNavigate();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     UserName: "",
     Password: "",
@@ -37,101 +39,137 @@ const Form = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); 
+    setError("");
 
-    if (!formData.UserName || !formData.Password) {
+    // ✅ Validación más robusta
+    const validationErrors = validateForm();
+    if (validationErrors.length > 0) {
+      setError(validationErrors[0]); // Actualiza estado de error
       izitoast.warning({
-        title: 'Recordatorio',
-        message: 'Por favor, completa todos los campos.',
+        title: 'Validación',
+        message: validationErrors[0],
         position: 'bottomRight',
       });
       return;
     }
 
-    const requestBody = {
-      LoginUser: {
-        ...formData,
-        EndPoint: "string",
-        IdCompany: 0,
-        IdUser: 0,
-        IdSession: 0,
-      },
-    };
+    // ✅ Manejo de loading state
+    setIsLoading(true);
 
     try {
+      const requestBody = {
+        LoginUser: {
+          ...formData,
+          EndPoint: "string",
+          IdCompany: 0,
+          IdUser: 0,
+          IdSession: 0,
+        },
+      };
+
       const response = await UsuarioService.login_usuario(requestBody);
-      console.log("Respuesta del servidor:", response);
 
       if (response && response.Token) {
-        console.log(
-          "Inicio de sesión exitoso. Token recibido:",
-          response.Token
-        );
         localStorage.setItem("Token", response.Token);
         localStorage.setItem("UserName", response.UserName);
         localStorage.setItem("Agencia", response.AgencyName);
-        navigate("/Sucursales");
+
         izitoast.success({
           title: 'Bienvenido',
           message: 'Inicio de sesión exitoso.',
           position: 'bottomRight',
         });
+
+        navigate("/Sucursales");
       } else {
-        setError("Inicio de sesión fallido. Verifica tus credenciales.");
+        const errorMsg = response?.Message || "Credenciales incorrectas";
+        setError(errorMsg);
         izitoast.error({
           title: 'Error',
-          message: response.Message,
+          message: errorMsg,
           position: 'bottomRight',
         });
       }
     } catch (err) {
       console.error("Error en el inicio de sesión:", err);
-      setError("Ocurrió un error al iniciar sesión.");
+      const errorMsg = err.response?.data?.message || "Error de conexión";
+      setError(errorMsg);
+      izitoast.error({
+        title: 'Error',
+        message: errorMsg,
+        position: 'bottomRight',
+      });
+    } finally {
+      // ✅ Siempre quita el loading
+      setIsLoading(false);
     }
   };
 
+  // ✅ Función de validación separada
+  const validateForm = () => {
+    const errors = [];
+
+    if (!formData.UserName?.trim()) {
+      errors.push("El usuario es requerido");
+    }
+
+    if (!formData.Password?.trim()) {
+      errors.push("La contraseña es requerida");
+    } else if (formData.Password.length < 3) {
+      errors.push("La contraseña debe tener al menos 4 caracteres");
+    }
+
+    return errors;
+  };
+
   return (
-    <section className="login">
+    <div className="login">
 
-      <body>
-        <div className="register">
-         <form onSubmit={handleSubmit}>
-        <img src={logoimg} className="logo" alt="Logo" />
-        <h2>Usuario</h2>
-        <Input
-          type="text"
-          name="UserName" // Cambiado para coincidir con el backend
-          onChange={handleChange}
-          value={formData.UserName}
-        />
-        <h2>Contraseña</h2>
-        <Input
-          type="password"
-          name="Password" // Cambiado para coincidir con el backend
-          onChange={handleChange}
-          value={formData.Password}
-        />
-        <a href="#">¿Olvidó su contraseña?</a>
-        <Buttom type="submit">Inicio</Buttom>
-      </form>
+    <div className="container">
+           <div className="register">
+        <form onSubmit={handleSubmit}>
+          <img src={logoimg} className="logo" alt="Logo" />
+          <h2>Usuario</h2>
+          <Input
+            type="text"
+            name="UserName" // Cambiado para coincidir con el backend
+            onChange={handleChange}
+            value={formData.UserName}
+          />
+          <h2>Contraseña</h2>
+          <Input
+            type="password"
+            name="Password" // Cambiado para coincidir con el backend
+            onChange={handleChange}
+            value={formData.Password}
+          />
+          <a href="#">¿Olvidó su contraseña?</a>
+          <Buttom type="submit" disabled={isLoading}>
+            {isLoading ? 'Iniciando...' : 'Inicio'}
+          </Buttom>
+        </form>
+
 
     
+            </div>
+
+
+
+<div className="imgregister">
+        <img src={GroupLogin} alt="" />
       </div>
-        
-      </body>
+
+
+
       
-    
-     
-     
- <div className="imgregister">
-        <img src={GroupLogin}alt="" />
-      </div>
-    
-     
-      
-    </section>
-    
-    
+    </div>
+ 
+
+
+
+    </div>
+
+
   );
 };
 

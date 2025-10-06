@@ -9,20 +9,28 @@ import imgText from "/search/text.png";
 import imgSave from "/search/save.png";
 import imgImprimir from "/search/imprimir.png";
 import imgReturn from "/search/return.png";
-import ModalGenerico from '../ModalGenerico/ModalGenerico'; // Importar el modal genérico
+import ModalGenerico from '../ModalGenerico/ModalGenerico';
 import { useNavigate } from 'react-router-dom'
-import ProductosAereos from "../Productos Aereos/productosAereos"
 
-const FacNavbar = ({ cuerpoModal, piePagina, onSearchClick }) => {
+// ✅ SOLO AGREGAR: Función para manejar la búsqueda
+const FacNavbar = ({ cuerpoModal, piePagina, onSearchClick, onSearchExecute }) => {
   const [showModal, setShowModal] = React.useState(false);
 
   const handleSearchClick = () => {
     setShowModal(true);
-    if (onSearchClick) onSearchClick(); // Notificar al componente padre que se hizo clic en buscar
+    if (onSearchClick) onSearchClick();
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
+  };
+
+  // ✅ SOLO AGREGAR: Esta función para ejecutar búsqueda
+  const handleSearchExecute = () => {
+    if (onSearchExecute) {
+      onSearchExecute(); // Ejecutar búsqueda en el componente padre
+    }
+    setShowModal(false); // Cerrar modal después de buscar
   };
 
   const navegate = useNavigate();
@@ -39,7 +47,7 @@ const FacNavbar = ({ cuerpoModal, piePagina, onSearchClick }) => {
         }}
       >
         {[
-          { src: imgFile, alt: "File",  label: "", onClick:() => navegate("/DetallesFacturacion")},
+          { src: imgFile, alt: "File", label: "", onClick: () => navegate("/DetallesFacturacion") },
           { src: imgArchivar, alt: "Archivar", label: "" },
           { src: imgCancel, alt: "Cancelar", label: "" },
           { src: imgExit, alt: "Exit", label: "" },
@@ -85,13 +93,15 @@ const FacNavbar = ({ cuerpoModal, piePagina, onSearchClick }) => {
         ))}
       </div>
 
-      {/* Modal genérico */}
+      {/* ✅ SOLO CAMBIAR: onGuardar para ejecutar búsqueda */}
       <ModalGenerico
         show={showModal}
         onHide={handleCloseModal}
         titulo="Buscar"
         cuerpo={cuerpoModal}
-        onGuardar={handleCloseModal}
+        onGuardar={handleSearchExecute} // ✅ Cambiar esto
+        textBotonGuardar="Buscar"       // ✅ Agregar esto
+        textBotonCancelar="Cancelar"    // ✅ Agregar esto
       />
     </div>
   );

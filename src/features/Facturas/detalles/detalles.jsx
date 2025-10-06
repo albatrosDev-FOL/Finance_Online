@@ -262,7 +262,7 @@ function Detalles() {
         <DataTable
           columns={columnas}
           data={filteredData}
-          className="custom-table"
+          className="custom-table-detalles"
           conditionalRowStyles={conditionalRowStyles}
           onRowClicked={handleRowClick}
           customStyles={customStyles}

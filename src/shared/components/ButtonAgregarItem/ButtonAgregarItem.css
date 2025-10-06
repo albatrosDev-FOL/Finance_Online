@@ -9,7 +9,7 @@
   min-height: 70vh;
   overflow-y: hidden;
   padding: 20px;
-
+  background-color: RGB(196, 213, 215);
 }
 
 /* Estilos para el contenido del formulario */

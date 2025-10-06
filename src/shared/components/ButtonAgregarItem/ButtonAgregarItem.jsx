@@ -2,7 +2,9 @@ import React, { useState } from "react";
 // import "./ButtonDetails.css"
 import ModalGenerico from "../ModalGenerico/ModalGenerico"; // Importar el modal genérico
 import ProductosAereos from "../Productos Aereos/productosAereos";
+import ProductoasAereos1 from"../Productos Aereos/productoAereos1"
 import "./ButtonAgregarItem.css";
+
 
 function ButtonAgregarItem({ cuerpoModalItem, selectedProductType }) {
   const [showModal, setShowModal] = React.useState(false);
@@ -31,10 +33,11 @@ function ButtonAgregarItem({ cuerpoModalItem, selectedProductType }) {
         cuerpo={
           <div className={mostrarBuscador ? "cuerpo-modal-grande" : ""}>
             {mostrarBuscador ? (
-              <ProductosAereos  selectedProductType={selectedProductType} />
+              <ProductoasAereos1 selectedProductType={selectedProductType} />
             ) : (
               cuerpoModalItem
             )}
+            
           </div>
         }
         onGuardar={handleCloseModal}

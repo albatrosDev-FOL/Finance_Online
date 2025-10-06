@@ -8,12 +8,14 @@ import AppLayout from '../../shared/components/layouts/AppLayout'; // Importa el
 import ListadoFacturacion from '../../features/Facturas/listado/listado'
 import DetalleFacturas from '../../features/Facturas/detalles/detalles'
 import RepresentacionGrafica from "../../features/Facturas/grafica/grafica"
+import { TrmProvider } from "../../contexts/contexts"; // 
 
 function App() {
 
   return (
 
-    <AppLayout>
+    <TrmProvider>
+      <AppLayout>
       <Router>
         <Routes>
           <Route path="/" element={<Form />} />
@@ -27,6 +29,8 @@ function App() {
       </Router>
 
     </AppLayout>
+    </TrmProvider>
+
 
   )
 }

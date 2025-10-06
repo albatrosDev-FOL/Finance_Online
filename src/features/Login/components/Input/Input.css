@@ -16,6 +16,10 @@
   border: 3px solid rgb(25, 40, 71);
 }
 
+.inputs-error .input-field,
+.input-field-error {
+  border-color: #ef4444 !important;
+}
 /* Para teléfonos móviles (max-width: 576px) */
 @media (max-width: 576px) {
   .inputs input {
